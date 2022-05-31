@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - feature/*
+
+  workflow_dispatch:
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: My test step
+        run: |
+          npm install
+          npm run test
+
+      - name: Create pull request
+        if: ${{ job.status == 'success' }}
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { repo, owner } = context.repo;
+            const result = await github.rest.pulls.create({
+              title: '[kanban number] title',
+              owner,
+              repo,
+              head: '${{ github.ref_name }}',
+              base: 'dev',
+              body: [
+                '## 노션 칸반 링크',
+                '- [카드 제목](url주소)',
+                '## 카드에서 구현 혹은 해결하려는 내용',
+                '-',
+                '## 테스트 방법',
+                '-',
+                '## 기타 사항',
+                '- 그 외 코드 내용에서 읽는 사람이 이해하기 어렵거나, 이렇게 구현하는게 맞는지 고민되는 부분이 있으면 코멘트 달기',
+                '- 그 외 코드 내용에서 리뷰어가 이해하기 어렵거나, 이렇게 구현하는게 맞는지 고민되는 부분이 있으면 코멘트 달기',
+                '- 예: (이 부분은 이러이러하게 고민하다가 이렇게 결정했는데 혹시 ~님(리뷰어)은 어떻게 생각하시나요?)',
+                '- 예: (이 부분은 이러이러한 배경 때문에 가독성이 떨어지지만 이렇게 짜게 됐습니다.)'
+              ].join('\n')
+            });
