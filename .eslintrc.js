@@ -23,6 +23,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "react", "prettier"],
   rules: {
+    "@typescript-eslint/no-var-requires": "off",
     "prettier/prettier": "error",
     indent: ["warn", 2],
     "linebreak-style": ["error", "unix"],
