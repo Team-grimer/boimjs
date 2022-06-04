@@ -1,19 +1,7 @@
-const path = require("path");
-
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const InjectBodyPlugin = require("inject-body-webpack-plugin").default;
 const TerserPlugin = require("terser-webpack-plugin");
 
-module.exports = {
+const commonConfig = {
   mode: "production",
-  entry: {
-    index: "../pages/index.js",
-    home: "../pages/Home.js",
-  },
-  output: {
-    filename: "[name].js",
-    path: path.resolve("../dist"),
-  },
   optimization: {
     minimize: true,
     minimizer: [
@@ -38,12 +26,6 @@ module.exports = {
       },
     ],
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      filename: (entryName) => entryName + ".html",
-    }),
-    new InjectBodyPlugin({
-      content: '<div id="__boim"></div>',
-    }),
-  ],
 };
+
+module.exports = commonConfig;

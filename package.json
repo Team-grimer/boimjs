@@ -4,38 +4,12 @@
   "description": "The React Framework",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:client": "webpack --config webpack.config.js",
-    "build:server": "webpack --config webpack.config.js",
-    "build": "npm run build:client && npm run build:server",
-    "start": "npm run build && node ../build/boim.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "grimer",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.1",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/preset-env": "^7.18.2",
-    "@babel/preset-react": "^7.17.12",
-    "@typescript-eslint/eslint-plugin": "^5.27.0",
-    "@typescript-eslint/parser": "^5.27.0",
-    "babel-loader": "^8.2.5",
-    "dotenv": "^16.0.1",
-    "eslint": "^8.16.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "eslint-plugin-react": "^7.28.0",
-    "html-webpack-plugin": "^5.5.0",
-    "inject-body-webpack-plugin": "^1.3.0",
-    "jest": "^28.1.0",
-    "prettier": "^2.5.1",
-    "terser-webpack-plugin": "^5.3.3",
-    "webpack": "^5.73.0",
-    "webpack-cli": "^4.9.2"
   }
 }
