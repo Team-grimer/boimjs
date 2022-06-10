@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node"],
     "baseUrl": "./",
     "outDir": "../../../dist/compile/",
     "allowSyntheticDefaultImports": true,
@@ -17,6 +18,7 @@
     "allowJs": true,
   },
   "include": [
-    "*"
+    "libs/*", "server/*", "pages/*", "common/*"
   ],
+  "exclude": ["node_modules"]
 }
