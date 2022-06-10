@@ -32,7 +32,7 @@ module.exports = {
     "no-var": "error",
     "no-unused-vars": "warn",
     "import/order": [
-      "error",
+      "wanning",
       {
         groups: ["builtin", "external", "internal", ["parent", "sibling"]],
         pathGroups: [
@@ -44,10 +44,6 @@ module.exports = {
         ],
         pathGroupsExcludedImportTypes: ["react"],
         "newlines-between": "always",
-        alphabetize: {
-          order: "asc",
-          caseInsensitive: true,
-        },
       },
     ],
   },
