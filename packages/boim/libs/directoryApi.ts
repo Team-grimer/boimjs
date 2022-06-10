@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+import pathAlias from "./pathAlias";
+
 export default class Directory {
   filePaths: { [key: string]: string };
   cssFiles: Array<string>;
@@ -57,7 +59,9 @@ export default class Directory {
   }
 
   writeHydrateComponent(entries: { [key: string]: string }): void {
-    fs.mkdirSync("../boim/client/hydratedComponents", { recursive: true });
+    fs.mkdirSync(`${pathAlias.root}/client/hydratedComponents`, {
+      recursive: true,
+    });
 
     function isFile(dir: string): boolean {
       return dir.lastIndexOf("/") === 0;
@@ -68,18 +72,14 @@ export default class Directory {
     }
 
     for (const dir of Object.keys(entries)) {
-      const componentsPath: string = path.resolve(__dirname, "../../pages");
-      const outPath: string = path.resolve(
-        __dirname,
-        "../../boimjs/packages/boim/client/hydratedComponents"
-      );
+      const componentsPath = `${pathAlias.client}/pages`;
+      const outPath = `${pathAlias.root}client/hydratedComponents`;
 
       const content = `import React from "react";
 import ReactDOM from "react-dom";
 import App from "${componentsPath + dir}.js";
 const container = document.getElementById("__boim");
-ReactDOM.hydrate(<App />, container);
-      `;
+ReactDOM.hydrate(<App />, container);`;
 
       try {
         !isFile(dir) &&
