@@ -1,4 +1,4 @@
-import React, { JSXElementConstructor, ReactElement } from "react";
+import React, { ReactElement } from "react";
 
 import ReactDOMServer from "react-dom/server";
 
@@ -7,15 +7,22 @@ import _Document from "../_document";
 import Context from "../../libs/contextApi";
 
 interface HTMLProps {
-  main: ReactElement<any, string | JSXElementConstructor<any>>;
+  main: ReactElement;
   srcList: Array<string>;
 }
 
-function renderPageTree (App: any, Component: ReactElement, props: object | undefined): ReactElement {
+function renderPageTree(
+  App: any,
+  Component: ReactElement,
+  props: object | undefined
+): ReactElement {
   return <App Component={Component} pageProps={props} />;
 }
 
-export function getHTML(Component: ReactElement, srcList: Array<string>): string {
+export function getHTML(
+  Component: ReactElement,
+  srcList: Array<string>
+): string {
   const htmlProps: HTMLProps = {
     main: renderPageTree(_App, Component, {}),
     srcList,
