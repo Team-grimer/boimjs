@@ -73,7 +73,7 @@ export default class Directory {
 
     for (const dir of Object.keys(entries)) {
       const componentsPath = `${pathAlias.client}/pages`;
-      const outPath = `${pathAlias.root}client/hydratedComponents`;
+      const outPath = `${pathAlias.root}/client/hydratedComponents`;
 
       const content = `import React from "react";
 import ReactDOM from "react-dom";
