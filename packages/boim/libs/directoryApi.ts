@@ -34,22 +34,22 @@ export default class Directory {
         }
 
         if (Absolute.match(/\.(js|jsx|ts|tsx)$/)) {
-          const fileName: string = Absolute.replace(startDirectoryPath, "").replace(
-            ".js",
+          const fileName: string = Absolute.replace(
+            startDirectoryPath,
             ""
-          );
+          ).replace(".js", "");
 
           this.filePaths[fileName] = Absolute;
         }
       });
-    }
+    };
     recursivelySearchDirectory(startDirectoryPath);
   }
 
   clearWriteSync(filepath: string): void {
     fs.readFileSync(filepath, "utf-8");
     fs.writeFileSync(filepath, "", "utf-8");
-  };
+  }
 
   updateWriteSync(filepath: string, content: string): void {
     fs.readFileSync(filepath, "utf-8");
@@ -58,11 +58,11 @@ export default class Directory {
 
   writeHydrateComponent(entries: { [key: string]: string }): void {
     fs.mkdirSync("../boim/client/hydratedComponents", { recursive: true });
-    
+
     function isFile(dir: string): boolean {
       return dir.lastIndexOf("/") === 0;
     }
-    
+
     function isRoot(dir: string): boolean {
       return dir === "/index";
     }
@@ -73,14 +73,14 @@ export default class Directory {
         __dirname,
         "../../boimjs/packages/boim/client/hydratedComponents"
       );
-        
-      const content: string = `import React from "react";
+
+      const content = `import React from "react";
 import ReactDOM from "react-dom";
 import App from "${componentsPath + dir}.js";
 const container = document.getElementById("__boim");
 ReactDOM.hydrate(<App />, container);
       `;
-  
+
       try {
         !isFile(dir) &&
           !isRoot(dir) &&

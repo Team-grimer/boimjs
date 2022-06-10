@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   env: {
     browser: true,
     es2021: true,
@@ -16,6 +17,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: "latest",
   },
+  ignorePatterns: [".eslintrc.js"],
   settings: {
     react: {
       version: "detect",
@@ -32,7 +34,7 @@ module.exports = {
     "no-var": "error",
     "no-unused-vars": "warn",
     "import/order": [
-      "wanning",
+      "warn",
       {
         groups: ["builtin", "external", "internal", ["parent", "sibling"]],
         pathGroups: [
@@ -46,5 +48,12 @@ module.exports = {
         "newlines-between": "always",
       },
     ],
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [".js", ".jsx", ".ts", ".tsx"]
+      }
+    }
   },
 };

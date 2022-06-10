@@ -4,7 +4,7 @@
     "outDir": "../../../dist/compile/",
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
-    "module": "es6",
+    "module": "commonjs",
     "noImplicitAny": false,
     "preserveConstEnums": true,
     "removeComments": true,
