@@ -1,7 +1,11 @@
 /node_modules
 
-dist
+/dist
 
-build
+/build
 
 .env
+
+/client/hydratedComponents
+
+/ts_build

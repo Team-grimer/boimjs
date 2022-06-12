@@ -30,6 +30,7 @@
     "./libs/*",
     "./server/*",
     "./pages/*",
+    "./pages/templates/*",
     "./common/*",
   ],
   "exclude": [

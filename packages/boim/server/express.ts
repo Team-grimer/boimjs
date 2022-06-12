@@ -1,5 +1,6 @@
-import loader from "./loader";
 import { Express } from "express";
+
+import loader from "./loader";
 
 export default function boot(): void {
   const app: Express = loader();
