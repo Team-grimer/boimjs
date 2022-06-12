@@ -25,6 +25,7 @@ module.exports = {
   },
   plugins: ["@typescript-eslint", "react", "prettier"],
   rules: {
+    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-var-requires": "off",
     "prettier/prettier": "error",
     indent: ["warn", 2],
