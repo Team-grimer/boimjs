@@ -34,8 +34,6 @@ describe.only("contextApi test", () => {
 
     render(<Page />);
 
-    console.log("TYPE OF ---->", typeof Context.HtmlContext);
-
     expect(screen.getByText(/Context Test/i)).toBeTruthy();
   });
 });
