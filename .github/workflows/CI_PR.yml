@@ -19,6 +19,7 @@ jobs:
 
       - name: My test step
         run: |
+          cd packages/boim
           npm install
           npm run test
 
