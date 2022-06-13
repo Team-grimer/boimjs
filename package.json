@@ -1,0 +1,21 @@
+{
+  "name": "boimjs",
+  "version": "1.0.0",
+  "description": "The React Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "grimer",
+  "license": "MIT",
+  "dependencies": {
+    "webpack": "^5.72.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.27.0",
+    "@typescript-eslint/parser": "^5.27.0",
+    "eslint": "^8.16.0",
+    "eslint-plugin-import": "^2.26.0",
+    "jest": "^28.1.0"
+  }
+}
