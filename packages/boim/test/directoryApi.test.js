@@ -31,7 +31,6 @@ export default Sample;
     `;
     const samplePath = path.resolve(__dirname + "/sample/sample.js");
     const originData = fs.readFileSync(samplePath, "utf-8");
-
     dir.clearWriteSync(samplePath);
     const clearData = fs.readFileSync(samplePath, "utf-8");
 
