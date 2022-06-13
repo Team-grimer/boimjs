@@ -46,13 +46,14 @@ export default async function handleGetPage(
   const client: Client = require(`../../../../pages${url + "index.js"}`);
   const Component: ReactElement = client.default;
   const type: string = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
+
   const result: Data = await Fetch.getProps(type, client[type]);
 
   const app: string = getHTML(Component, result.renderProps, [
     url + "index.js",
   ]);
 
-  if (html.length !== app.length) {
+  if (html === app) {
     const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);

@@ -77,10 +77,25 @@ export default class Directory {
 
       const content = `import React from "react";
 import ReactDOM from "react-dom";
-import App from "${componentsPath + dir}.js";
+import * as App from "${componentsPath + dir}.js";
 
-const container = document.getElementById("__boim");
-ReactDOM.hydrate(<App />, container);
+import Fetch from "${pathAlias.root}/libs/fetchApi";
+
+const app = {};
+
+Object.entries(App).forEach(([key, value]) => {
+  app[key] = value;
+});
+
+const Component = app["default"];
+const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+
+async function hydrate() {
+  const result = await Fetch.getProps(type, app[type]);
+  const container = document.getElementById("__boim");
+  ReactDOM.hydrate(<Component {...result.renderProps.props} />, container);
+}
+hydrate();
 `;
 
       try {
