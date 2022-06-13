@@ -9,7 +9,7 @@
     "outDir": "./ts_build",
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
-    "module": "ES6",
+    "module": "esnext",
     "noImplicitAny": false,
     "preserveConstEnums": true,
     "removeComments": true,

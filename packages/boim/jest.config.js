@@ -14,7 +14,7 @@ const config = {
   testMatch: ["**/*.test.js", "**/*.test.ts", "**/*.test.tsx"],
   coveragePathIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  testEnviroment: "jsdom",
+  testEnvironment: "jsdom",
 };
 
 module.exports = config;
