@@ -5,11 +5,12 @@ import pageRouter from "./route";
 import pathAlias from "../libs/pathAlias";
 
 dotenv.config();
-const app: Express = express();
-
-app.use("/", pageRouter);
-app.use(express.static(`${pathAlias.client}/dist/pages`));
 
 export default function (): Express {
+  const app: Express = express();
+
+  app.use("/", pageRouter);
+  app.use(express.static(`${pathAlias.client}/dist/pages`));
+
   return app;
 }
