@@ -11,7 +11,7 @@ import Context from "../libs/contextApi";
 describe.only("contextApi test", () => {
   test("provider test", () => {
     function Body() {
-      return <div id="__boim">Context Test</div>;
+      return <div>Context Test</div>;
     }
 
     function Content() {
