@@ -19,21 +19,21 @@ export default class Fetch {
     };
   }
 
-  static async SSG(cb: any): Promise<FetchResult> {
+  static async SSG(cb: () => Props): Promise<FetchResult> {
     return {
       renderType: "StaticSiteGeneration",
       renderProps: await cb(),
     };
   }
 
-  static async SSR(cb: any): Promise<FetchResult> {
+  static async SSR(cb: () => Props): Promise<FetchResult> {
     return {
       renderType: "ServerSideRendering",
       renderProps: await cb(),
     };
   }
 
-  static async getProps(type: string, cb: any): Promise<FetchResult> {
+  static async getProps(type: string, cb: () => Props): Promise<FetchResult> {
     if (type === "SSG") {
       return await Fetch.SSG(cb);
     } else if (type === "SSR") {

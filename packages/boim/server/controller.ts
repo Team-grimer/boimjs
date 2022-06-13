@@ -53,7 +53,7 @@ export default async function handleGetPage(
     url + "index.js",
   ]);
 
-  if (html === app) {
+  if (html !== app) {
     const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);
