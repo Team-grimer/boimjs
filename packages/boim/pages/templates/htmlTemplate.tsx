@@ -12,19 +12,20 @@ interface HTMLProps {
 }
 
 function renderPageTree(
-  App: any,
+  App: React.FunctionComponent<any>,
   Component: ReactElement,
-  props: object | undefined
+  pageProps: object
 ): ReactElement {
-  return <App Component={Component} pageProps={props} />;
+  return <App Component={Component} pageProps={pageProps} />;
 }
 
 export function getHTML(
   Component: ReactElement,
+  pageProps: object,
   srcList: Array<string>
 ): string {
   const htmlProps: HTMLProps = {
-    main: renderPageTree(_App, Component, {}),
+    main: renderPageTree(_App, Component, pageProps),
     srcList,
   };
 

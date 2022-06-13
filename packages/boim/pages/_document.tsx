@@ -7,7 +7,6 @@ interface Props {
   children?: React.ReactNode;
 }
 
-
 export function Html({ lang, children }: Props): ReactElement {
   return <html lang={lang}>{children}</html>;
 }
@@ -22,13 +21,12 @@ export function Head(): ReactElement {
   );
 }
 
-function Body({ children }): ReactElement {
+function Body({ children }: Props): ReactElement {
   return <div id="__boim">{children}</div>;
 }
 
 export function Main(): ReactElement {
   const { main } = useContext(Context.HtmlContext);
-
   return <Body>{main}</Body>;
 }
 
@@ -36,7 +34,9 @@ export function Script(): ReactElement {
   const { srcList } = useContext(Context.HtmlContext);
   return (
     <>
-      {srcList.map(path => <script key={path} src={path}></script>)}
+      {srcList.map((path) => (
+        <script key={path} src={path}></script>
+      ))}
     </>
   );
 }

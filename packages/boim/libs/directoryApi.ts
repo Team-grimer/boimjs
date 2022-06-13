@@ -78,8 +78,10 @@ export default class Directory {
       const content = `import React from "react";
 import ReactDOM from "react-dom";
 import App from "${componentsPath + dir}.js";
+
 const container = document.getElementById("__boim");
-ReactDOM.hydrate(<App />, container);`;
+ReactDOM.hydrate(<App />, container);
+`;
 
       try {
         !isFile(dir) &&
