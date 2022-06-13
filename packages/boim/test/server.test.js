@@ -1,9 +1,8 @@
-// @ts-nocheck
 import app from "../server/loader";
 
 const request = require("supertest");
 
-let server = app();
+const server = app();
 let appServer;
 
 beforeEach(() => {
