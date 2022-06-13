@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand --detectOpenHandles",
+    "test": "jest --forceExit --runInBand --detectOpenHandles",
     "build:lib": "webpack --config ./config/webpack.lib.config.js",
     "build:component": "webpack --config ./config/webpack.component.config.js",
     "build:hydration": "webpack --config ./config/webpack.hydration.config.js",
@@ -36,7 +36,6 @@
     "@typescript-eslint/eslint-plugin": "^5.27.0",
     "@typescript-eslint/parser": "^5.27.0",
     "babel-loader": "^8.2.5",
-    "chai": "^4.3.6",
     "clean-webpack-plugin": "^4.0.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.16.0",
