@@ -15,6 +15,7 @@ const config = {
   coveragePathIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   testEnvironment: "jsdom",
+  globalTeardown: "./config/test-teardown-globals.js",
 };
 
 module.exports = config;
