@@ -6,7 +6,7 @@ import Directory from "../libs/directoryApi";
 describe("directoryApi test", () => {
   const dir = new Directory();
 
-  test("defines setRule()", () => {
+  test("type test", () => {
     expect(typeof dir.getFilePaths).toBe("function");
     expect(typeof dir.getCssFiles).toBe("function");
     expect(typeof dir.searchDirectory).toBe("function");
