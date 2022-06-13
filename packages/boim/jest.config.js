@@ -14,7 +14,7 @@ const config = {
   testMatch: ["**/*.test.js", "**/*.test.ts", "**/*.test.tsx"],
   coveragePathIgnorePatterns: ["/node_modules/"],
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  testEnvironment: "jsdom",
+  testEnvironment: "jest-environment-node",
   globalTeardown: "./config/test-teardown-globals.js",
 };
 
