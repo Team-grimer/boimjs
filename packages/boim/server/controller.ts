@@ -42,13 +42,10 @@ export default async function handleGetPage(
     "index.html"
   );
   const html: string = fs.readFileSync(htmlfilePath, "utf-8");
-
   const client: Client = require(`../../../../pages${url + "index.js"}`);
   const Component: ReactElement = client.default;
   const type: string = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
-
   const result: Data = await Fetch.getProps(type, client[type]);
-
   const app: string = getHTML(Component, result.renderProps, [
     url + "index.js",
   ]);
