@@ -53,10 +53,6 @@ export default async function handleGetPage(
   ]);
 
   if (html !== app) {
-    // 첫 요청에만 if 문이 동작한다.
-    //
-    console.log("html !== app");
-    //
     const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);
