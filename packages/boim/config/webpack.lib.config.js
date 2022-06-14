@@ -1,6 +1,7 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
@@ -57,4 +58,14 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new CleanWebpackPlugin({
+      dry: true,
+      dangerouslyAllowCleanPatternsOutsideProject: true,
+      cleanOnceBeforeBuildPatterns: [
+        `${client}/dist/*`,
+        `${root}/client/hydratedComponents/*`,
+      ],
+    }),
+  ],
 };
