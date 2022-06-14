@@ -35,9 +35,9 @@ describe("fetchApi test", () => {
       };
     }
 
-    const props = await Fetch.getProps("SSG", SSG);
+    const props = await Fetch.SSG(SSG);
 
-    expect(props.renderProps).toEqual(result.renderProps);
+    expect(props).toEqual(result);
   });
 
   test("SSR static method test", async () => {
@@ -58,9 +58,9 @@ describe("fetchApi test", () => {
       };
     }
 
-    const props = await Fetch.getProps("SSR", SSR);
+    const props = await Fetch.SSR(SSR);
 
-    expect(props.renderProps).toEqual(result.renderProps);
+    expect(props).toEqual(result);
   });
 
   test("getProps static method test", async () => {
