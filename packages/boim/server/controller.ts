@@ -42,15 +42,21 @@ export default async function handleGetPage(
     "index.html"
   );
   const html: string = fs.readFileSync(htmlfilePath, "utf-8");
+
   const client: Client = require(`../../../../pages${url + "index.js"}`);
-  const Component: ReactElement = client.default;
   const type: string = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
+  const Component: ReactElement = client.default;
   const result: Data = await Fetch.getProps(type, client[type]);
+
   const app: string = getHTML(Component, result.renderProps, [
     url + "index.js",
   ]);
 
-  if (html === app) {
+  if (html !== app) {
+    // 첫 요청에만 if 문이 동작한다.
+    //
+    console.log("html !== app");
+    //
     const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);
