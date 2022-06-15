@@ -30,9 +30,9 @@ describe("contextApi test", () => {
       };
 
       return (
-        <Context.ContextProvider value={props}>
+        <Context.HtmlProvider value={props}>
           <Content />
-        </Context.ContextProvider>
+        </Context.HtmlProvider>
       );
     }
 

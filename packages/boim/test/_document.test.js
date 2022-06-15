@@ -9,6 +9,8 @@ import { renderToString } from "react-dom/server";
 import { Html, Head, Main, Script } from "../pages/_document";
 import Context from "../libs/contextApi";
 
+const { HtmlProvider, HeadProvider } = Context;
+
 describe.only("_document component", () => {
   test("Html Component render and props test", () => {
     function Test() {
@@ -28,20 +30,20 @@ describe.only("_document component", () => {
     const mockSetHead = jest.fn();
 
     render(
-      <Context.ContextProvider
+      <HtmlProvider
         value={{
           context: {
             main: null,
             srcList: null,
-            head: null,
           },
-          setHead: mockSetHead,
         }}
       >
-        <Head>
-          <title>성공</title>
-        </Head>
-      </Context.ContextProvider>
+        <HeadProvider value={{ setHead: mockSetHead }}>
+          <Head>
+            <title>성공</title>
+          </Head>
+        </HeadProvider>
+      </HtmlProvider>
     );
 
     expect(mockSetHead).toBeCalledTimes(1);
@@ -53,18 +55,16 @@ describe.only("_document component", () => {
     }
 
     const elementHtml = renderToString(
-      <Context.ContextProvider
+      <HtmlProvider
         value={{
           context: {
             main: <Test />,
             srcList: null,
-            head: null,
           },
-          setHead: null,
         }}
       >
         <Main />
-      </Context.ContextProvider>
+      </HtmlProvider>
     );
 
     expect(elementHtml).toContain("TEST");
@@ -75,18 +75,16 @@ describe.only("_document component", () => {
     const mockScriptList = ["index,js"];
 
     const elementHtml = renderToString(
-      <Context.ContextProvider
+      <HtmlProvider
         value={{
           context: {
             main: null,
             srcList: mockScriptList,
-            head: null,
           },
-          setHead: null,
         }}
       >
         <Script />
-      </Context.ContextProvider>
+      </HtmlProvider>
     );
 
     expect(elementHtml).toContain("index,js");
