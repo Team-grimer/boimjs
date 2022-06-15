@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express, { Express } from "express";
+import serveStatic from "serve-static";
 
 import pageRouter from "./route";
 import pathAlias from "../libs/pathAlias";
@@ -8,7 +9,9 @@ dotenv.config();
 
 export default function (): Express {
   const app: Express = express();
-  const options = {
+  const options: serveStatic.ServeStaticOptions<
+    express.Response<unknown, Record<string, unknown>>
+  > = {
     maxAge: "31557600",
     setHeaders: function (res) {
       res.set("Cache-Control", "public, must-revalidate");
