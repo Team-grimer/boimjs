@@ -6,12 +6,11 @@ import ReactDOMServer from "react-dom/server";
 
 import Context from "../../libs/contextApi";
 
-const HtmlContextProvider = Context.ContextProvider;
+const { HtmlProvider, HeadProvider } = Context;
 
 interface HTMLProps {
   main: ReactElement;
   srcList: Array<string>;
-  head: ReactElement | null;
 }
 
 interface HEADProps {
@@ -53,25 +52,27 @@ export function getHTML(
   pageProps: object,
   srcList: Array<string>
 ): string {
+  const headComponentList = [];
   const htmlProps: HTMLProps = {
-    head: null,
     main: renderPageTree(_App, Component, pageProps),
     srcList: srcList,
   };
 
-  const headComponentList = [];
-
-  const value = {
+  const htmlContextValue = {
     context: htmlProps,
+  };
+  const headContextValue = {
     setHead: (headChildren) => {
       if (headChildren) headComponentList.push(headChildren);
     },
   };
 
   const document: ReactElement = (
-    <HtmlContextProvider value={value}>
-      <_Document />
-    </HtmlContextProvider>
+    <HtmlProvider value={htmlContextValue}>
+      <HeadProvider value={headContextValue}>
+        <_Document />
+      </HeadProvider>
+    </HtmlProvider>
   );
 
   let html: string = ReactDOMServer.renderToString(document);
