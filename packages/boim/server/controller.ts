@@ -27,6 +27,7 @@ export default async function handleGetPage(
   next: NextFunction
 ): Promise<Response<unknown, Record<string, unknown>> | void> {
   if (req.url.endsWith("/favicon.ico")) {
+    res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
     return res.end();
   }
 
@@ -42,19 +43,29 @@ export default async function handleGetPage(
     "index.html"
   );
   const html: string = fs.readFileSync(htmlfilePath, "utf-8");
+
   const client: Client = require(`../../../../pages${url + "index.js"}`);
-  const Component: ReactElement = client.default;
   const type: string = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
+  const Component: ReactElement = client.default;
   const result: Data = await Fetch.getProps(type, client[type]);
+
   const app: string = getHTML(Component, result.renderProps, [
     url + "index.js",
   ]);
 
-  if (html === app) {
+  if (type === "SSG" || type === "DEFAULT") {
+    res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+    res.send(app);
+    return;
+  }
+
+  if (html !== app) {
     const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);
   }
 
-  return res.send(app);
+  res.set("Cache-Control", "no-store");
+  res.send(app);
+  return;
 }
