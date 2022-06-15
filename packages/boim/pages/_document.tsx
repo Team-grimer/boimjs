@@ -8,6 +8,7 @@ interface Props {
 }
 
 const HtmlContext = Context.HtmlContext;
+const HeadContext = Context.HeadContext;
 
 export function Html({ lang = "en", children }: Props): ReactElement {
   return (
@@ -19,7 +20,7 @@ export function Html({ lang = "en", children }: Props): ReactElement {
 }
 
 export function Head({ children }: Props): ReactElement {
-  const { setHead } = useContext(HtmlContext);
+  const { setHead } = useContext(HeadContext);
 
   setHead(children);
 
