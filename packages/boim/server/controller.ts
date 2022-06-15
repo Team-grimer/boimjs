@@ -27,6 +27,7 @@ export default async function handleGetPage(
   next: NextFunction
 ): Promise<Response<unknown, Record<string, unknown>> | void> {
   if (req.url.endsWith("/favicon.ico")) {
+    res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
     return res.end();
   }
 
@@ -52,11 +53,19 @@ export default async function handleGetPage(
     url + "index.js",
   ]);
 
+  if (type === "SSG" || type === "DEFAULT") {
+    res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+    res.send(app);
+    return;
+  }
+
   if (html !== app) {
     const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);
   }
 
-  return res.send(app);
+  res.set("Cache-Control", "no-store");
+  res.send(app);
+  return;
 }
