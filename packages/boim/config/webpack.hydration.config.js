@@ -7,7 +7,6 @@ const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 
 const Directory = require(`${client}/dist/lib/directoryApi`).default;
-
 const dir = new Directory();
 dir.searchDirectory(`${root}/client/hydratedComponents`);
 const hydratedComponentEntries = dir.getFilePaths();

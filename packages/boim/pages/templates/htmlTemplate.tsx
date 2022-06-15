@@ -28,14 +28,6 @@ function DefaultHead(): ReactElement {
   );
 }
 
-function renderPageTree(
-  App: React.FunctionComponent<any>,
-  Component: ReactElement,
-  pageProps: object
-): ReactElement {
-  return <App Component={Component} pageProps={pageProps} />;
-}
-
 function CustomHead({ headList }: HEADProps) {
   return (
     <>
@@ -46,6 +38,14 @@ function CustomHead({ headList }: HEADProps) {
       )}
     </>
   );
+}
+
+function renderPageTree(
+  App: React.FunctionComponent<any>,
+  Component: ReactElement,
+  pageProps: object
+): ReactElement {
+  return <App Component={Component} pageProps={pageProps} />;
 }
 
 export function getHTML(
