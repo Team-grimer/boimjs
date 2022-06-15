@@ -9,34 +9,44 @@ import Context from "../../libs/contextApi";
 const HtmlContextProvider = Context.ContextProvider;
 
 interface HTMLProps {
-  main: ReactElement;
-  srcList: Array<string>;
   head: ReactElement | null;
+  main: ReactElement;
+  cssList: Array<string>;
+  scriptList: Array<string>;
 }
 
 interface HEADProps {
   headList?: Array<React.ReactNode> | null;
+  cssList?: Array<string> | null;
 }
 
 function DefaultHead(): ReactElement {
   return (
-    <head>
+    <>
       <meta charSet="utf-8"></meta>
       <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
       <title>Boim js</title>
-    </head>
+    </>
   );
 }
 
-function CustomHead({ headList }: HEADProps) {
+function CustomHead({ headList, cssList }: HEADProps): ReactElement {
   return (
-    <>
+    <head>
       {headList.length ? (
-        <head>{headList.map((value) => value)}</head>
+        <>{headList.map((value) => value)}</>
       ) : (
         <DefaultHead />
       )}
-    </>
+
+      {cssList.length ? (
+        <>
+          {cssList.map((value, index) => {
+            return <link key={index} rel="stylesheet" href={value}></link>;
+          })}
+        </>
+      ) : undefined}
+    </head>
   );
 }
 
@@ -51,15 +61,17 @@ function renderPageTree(
 export function getHTML(
   Component: ReactElement,
   pageProps: object,
-  srcList: Array<string>
+  cssList: Array<string>,
+  scriptList: Array<string>
 ): string {
   const htmlProps: HTMLProps = {
     head: null,
     main: renderPageTree(_App, Component, pageProps),
-    srcList: srcList,
+    cssList,
+    scriptList,
   };
 
-  const headComponentList = [];
+  const headComponentList: ReactElement[] = [];
 
   const value = {
     context: htmlProps,
@@ -76,7 +88,7 @@ export function getHTML(
 
   let html: string = ReactDOMServer.renderToString(document);
   const head: string = ReactDOMServer.renderToString(
-    <CustomHead headList={headComponentList} />
+    <CustomHead headList={headComponentList} cssList={value.context.cssList} />
   );
 
   html = html.replace("<head></head>", head);

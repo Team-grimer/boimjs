@@ -1,22 +1,26 @@
 import React, { createContext, ReactElement } from "react";
 
-type State = {
+interface State {
   context: {
     main: ReactElement | null;
-    srcList: Array<string> | null;
+    cssList: Array<string> | null;
+    scriptList: Array<string> | null;
     head: React.ReactNode | null;
   } | null;
   setHead: (arg: React.ReactNode) => void | null;
-};
+}
 
 export default class Context {
   static HtmlContext = createContext<State>({
     context: {
       main: null,
       head: null,
-      srcList: null,
+      cssList: null,
+      scriptList: null,
     },
-    setHead: function () {},
+    setHead: function () {
+      return null;
+    },
   });
 
   static ContextProvider = this.HtmlContext.Provider;

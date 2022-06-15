@@ -40,7 +40,7 @@ export function Script(): ReactElement {
   const { context } = useContext(HtmlContext);
   return (
     <>
-      {context.srcList.map((path) => (
+      {context.scriptList.map((path) => (
         <script key={path} src={path}></script>
       ))}
     </>
