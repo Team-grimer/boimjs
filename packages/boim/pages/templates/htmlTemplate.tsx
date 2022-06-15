@@ -6,12 +6,10 @@ import ReactDOMServer from "react-dom/server";
 
 import Context from "../../libs/contextApi";
 
-const HtmlContextProvider = Context.ContextProvider;
+const { HtmlProvider, HeadProvider } = Context;
 
 interface HTMLProps {
-  head: ReactElement | null;
   main: ReactElement;
-  cssList: Array<string>;
   scriptList: Array<string>;
 }
 
@@ -65,30 +63,37 @@ export function getHTML(
   scriptList: Array<string>
 ): string {
   const htmlProps: HTMLProps = {
-    head: null,
     main: renderPageTree(_App, Component, pageProps),
-    cssList,
     scriptList,
   };
 
   const headComponentList: ReactElement[] = [];
 
-  const value = {
+  const htmlContextValue = {
     context: htmlProps,
+  };
+
+  const headContextValue = {
+    cssList,
     setHead: (headChildren) => {
       if (headChildren) headComponentList.push(headChildren);
     },
   };
 
   const document: ReactElement = (
-    <HtmlContextProvider value={value}>
-      <_Document />
-    </HtmlContextProvider>
+    <HtmlProvider value={htmlContextValue}>
+      <HeadProvider value={headContextValue}>
+        <_Document />
+      </HeadProvider>
+    </HtmlProvider>
   );
 
   let html: string = ReactDOMServer.renderToString(document);
   const head: string = ReactDOMServer.renderToString(
-    <CustomHead headList={headComponentList} cssList={value.context.cssList} />
+    <CustomHead
+      headList={headComponentList}
+      cssList={headContextValue.cssList}
+    />
   );
 
   html = html.replace("<head></head>", head);

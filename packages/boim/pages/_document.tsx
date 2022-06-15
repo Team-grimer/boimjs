@@ -7,7 +7,7 @@ interface Props {
   children?: React.ReactNode | null;
 }
 
-const HtmlContext = Context.HtmlContext;
+const { HtmlContext, HeadContext } = Context;
 
 export function Html({ lang = "en", children }: Props): ReactElement {
   return (
@@ -19,7 +19,7 @@ export function Html({ lang = "en", children }: Props): ReactElement {
 }
 
 export function Head({ children }: Props): ReactElement {
-  const { setHead } = useContext(HtmlContext);
+  const { setHead } = useContext(HeadContext);
 
   setHead(children);
 
