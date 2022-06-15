@@ -4,23 +4,23 @@ interface route {
   path: string | null;
 }
 
-type htmlState = {
+interface htmlState {
   context: {
     main: ReactElement | null;
     srcList: Array<string> | null;
   } | null;
-};
+}
 
-type headState = {
+interface headState {
   setHead: (headChildren: React.ReactNode) => void | null;
-};
+}
 
-type routeState = {
+interface routeState {
   routeContext: {
     path: string | null;
   };
   setRouteContext: (router: route) => void | null;
-};
+}
 
 export default class Context {
   static HtmlContext = createContext<htmlState>({
@@ -31,7 +31,9 @@ export default class Context {
   });
 
   static HeadContext = createContext<headState>({
-    setHead: function () {},
+    setHead: function () {
+      return null;
+    },
   });
 
   static RouterContext = createContext<routeState>({

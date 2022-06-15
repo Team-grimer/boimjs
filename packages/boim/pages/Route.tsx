@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, ReactElement } from "react";
 
 import { createBrowserHistory } from "history";
 import ReactDom from "react-dom";
@@ -13,21 +13,34 @@ interface RouteProps {
   routeInfo: {
     path: string;
   };
-  componentPath: string;
+}
+
+interface routeContext {
+  path: string;
+}
+
+interface componentProps {
+  renderProps: {
+    props: {
+      [key: string]: any;
+    };
+  };
 }
 
 export function RouteProvider({ routeInfo }: RouteProps) {
-  const [routeContext, setRouteContext] = useState(routeInfo);
-  const [result, setResult] = useState({ renderProps: { props: {} } });
-  const [headList, setHeadList] = useState([]);
+  const [routeContext, setRouteContext] = useState<routeContext>(routeInfo);
+  const [componentProps, setComponentProps] = useState<componentProps>({
+    renderProps: { props: {} },
+  });
+  const [headList, setHeadList] = useState<Array<React.ReactNode>>([]);
 
   useEffect(() => {
-    async function setComponentProps() {
-      const result = await Fetch.getProps(type, app[type]);
-      setResult(result);
+    async function getComponentProps() {
+      const componentProps = await Fetch.getProps(type, app[type]);
+      setComponentProps(componentProps);
     }
 
-    setComponentProps();
+    getComponentProps();
   }, [routeContext]);
 
   useEffect(() => {
@@ -47,23 +60,22 @@ export function RouteProvider({ routeInfo }: RouteProps) {
     app[key] = value;
   });
 
-  const Component = app["default"];
-  const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+  const Component: React.FC = app["default"];
+  const type: string = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
 
-  const path = routeContext.path.replace("index", "");
+  const path: string = routeContext.path.replace("index", "");
   history.push(path);
 
   const headContextValue = {
     setHead: (headChildren) => {
-      // 헤당 로직 수정
-      // setHeadList((prevSate) => [...prevSate, headChildren]);
+      return null;
     },
   };
 
   return (
     <RouterProvider value={{ routeContext, setRouteContext }}>
       <HeadProvider value={headContextValue}>
-        <Component {...result.renderProps.props} />
+        <Component {...componentProps.renderProps.props} />
       </HeadProvider>
     </RouterProvider>
   );

@@ -81,7 +81,7 @@ import { RouteProvider } from "${pathAlias.root}/pages/Route"
 
 const container = document.getElementById("__boim");
 
-ReactDom.hydrate(<RouteProvider componentPath="../../../../" routeInfo={{path: "${dir}"}} />, container);
+ReactDom.hydrate(<RouteProvider routeInfo={{path: "${dir}"}} />, container);
 `;
       try {
         !isFile(dir) &&
