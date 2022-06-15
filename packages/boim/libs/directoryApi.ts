@@ -72,32 +72,17 @@ export default class Directory {
     }
 
     for (const dir of Object.keys(entries)) {
-      const componentsPath = `${pathAlias.client}/pages`;
       const outPath = `${pathAlias.root}/client/hydratedComponents`;
 
       const content = `import React from "react";
-import ReactDOM from "react-dom";
-import * as App from "${componentsPath + dir}.js";
+import ReactDom from "react-dom";
+import Context from "${pathAlias.root}/libs/contextApi";
+import { RouteProvider } from "${pathAlias.root}/pages/Route"
 
-import Fetch from "${pathAlias.root}/libs/fetchApi";
+const container = document.getElementById("__boim");
 
-const app = {};
-
-Object.entries(App).forEach(([key, value]) => {
-  app[key] = value;
-});
-
-const Component = app["default"];
-const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
-
-async function hydrate() {
-  const result = await Fetch.getProps(type, app[type]);
-  const container = document.getElementById("__boim");
-  ReactDOM.hydrate(<Component {...result.renderProps.props} />, container);
-}
-hydrate();
+ReactDom.hydrate(<RouteProvider componentPath="../../../../" routeInfo={{path: "${dir}"}} />, container);
 `;
-
       try {
         !isFile(dir) &&
           !isRoot(dir) &&
