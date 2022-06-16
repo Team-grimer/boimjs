@@ -12,13 +12,15 @@ export default class Search {
   static appPath: string;
   static documentPath: string;
 
-  static getComponentPath() {
+  static getFileList(directoryPath) {
+    return fs.readdirSync(directoryPath);
+  }
+
+  static getBaseComponentPath(fileList) {
     Search.appPath = "";
     Search.documentPath = "";
 
-    const directoryList = fs.readdirSync(`${pathAlias.client}/pages`);
-
-    directoryList.forEach((value) => {
+    fileList.forEach((value) => {
       if (value === "_app.js" || value === "_app.ts") {
         Search.appPath = `${pathAlias.client}/pages/${value}`;
         return;
@@ -28,17 +30,15 @@ export default class Search {
         Search.documentPath = `${pathAlias.client}/pages/${value}`;
         return;
       }
-
-      if (Search.appPath === "") {
-        Search.appPath = `${pathAlias.root}/pages/_app.tsx`;
-        return;
-      }
-
-      if (Search.documentPath == "") {
-        Search.documentPath = `${pathAlias.root}/pages/_document.tsx`;
-        return;
-      }
     });
+
+    if (Search.appPath === "") {
+      Search.appPath = `${pathAlias.root}/pages/_app.tsx`;
+    }
+
+    if (Search.documentPath == "") {
+      Search.documentPath = `${pathAlias.root}/pages/_document.tsx`;
+    }
 
     return {
       _app: Search.appPath,

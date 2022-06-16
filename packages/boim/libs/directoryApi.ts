@@ -64,24 +64,27 @@ export default class Directory {
     for (const dir of Object.keys(entries)) {
       const componentsPath = `${pathAlias.client}/pages`;
       const outPath = `${pathAlias.root}/client/hydratedComponents`;
-      const content = `import React from "react";
-      import ReactDOM from "react-dom";
-      import * as App from "${componentsPath + dir}.js";
-      import Fetch from "${pathAlias.root}/libs/fetchApi";
-      const app = {};
-      Object.entries(App).forEach(([key, value]) => {
-        app[key] = value;
-      });
-      const Component = app["default"];
-      const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
-      async function hydrate() {
-        const result = await Fetch.getProps(type, app[type]);
-        const container = document.getElementById("__boim");
-        ReactDOM.hydrate(<Component {...result.renderProps.props} />, container);
-      }
-      hydrate();
-      `;
 
+      const content = `import React from "react";
+import ReactDOM from "react-dom";
+import * as App from "${componentsPath + dir}.js";
+import Fetch from "${pathAlias.root}/libs/fetchApi";
+
+import Route from "${pathAlias.root}/pages/Route";
+
+const app = {};
+Object.entries(App).forEach(([key, value]) => {
+  app[key] = value;
+});
+const Component = app["default"];
+const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+async function hydrate() {
+  const result = await Fetch.getProps(type, app[type]);
+  const container = document.getElementById("__boim");
+  ReactDOM.hydrate(<Route initialInfo={{ result, Component }} />, container);
+}
+hydrate();
+`;
       try {
         !isFile(dir) &&
           !isRoot(dir) &&

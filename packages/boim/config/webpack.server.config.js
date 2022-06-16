@@ -6,7 +6,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 const Search = require(`${client}/dist/lib/searchApi`).default;
-const { _app, _document } = Search.getComponentPath();
+const fileList = Search.getFileList(`${client}/pages`);
+const { _app, _document } = Search.getBaseComponentPath(fileList);
 
 module.exports = {
   target: "node",
