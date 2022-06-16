@@ -26,12 +26,23 @@ export default async function handleGetPage(
   res: Response,
   next: NextFunction
 ): Promise<Response<unknown, Record<string, unknown>> | void> {
+  console.log("LOG ---->", req.url); // 요청 URL 체크
+
   if (req.url.endsWith("/favicon.ico")) {
     res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
     return res.end();
   }
 
-  if (req.url.endsWith(".js") || req.url.endsWith(".css")) {
+  if (
+    req.url.endsWith(".js") ||
+    req.url.endsWith(".css") ||
+    req.url.endsWith(".png") ||
+    req.url.endsWith(".jpg") ||
+    req.url.endsWith(".jpeg") ||
+    req.url.endsWith(".gif") ||
+    req.url.endsWith(".svg") ||
+    req.url.endsWith(".txt")
+  ) {
     return next();
   }
 
