@@ -2,12 +2,19 @@ import { useContext } from "react";
 
 import Context from "../libs/contextApi";
 
-export function useRouter() {
-  const { setRouteContext } = useContext(Context.RouterContext);
+const { RouterContext } = Context;
 
-  return {
-    push: (path) => {
-      setRouteContext({ path });
-    },
+interface RouteState {
+  push: (arg: string, state: { [key: string]: any }) => void | null;
+  path: string;
+  param: {
+    [key: string]: any;
   };
+  query: {
+    [key: string]: string;
+  };
+}
+
+export function useRouter(): RouteState {
+  return useContext(RouterContext);
 }
