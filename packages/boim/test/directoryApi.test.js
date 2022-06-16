@@ -13,6 +13,7 @@ describe("directoryApi test", () => {
     expect(typeof dir.clearWriteSync).toBe("function");
     expect(typeof dir.updateWriteSync).toBe("function");
     expect(typeof dir.writeHydrateComponent).toBe("function");
+    expect(typeof dir.parseJsonSync).toBe("function");
   });
 
   test("method test", () => {
@@ -40,5 +41,9 @@ export default Sample;
     const updateData = fs.readFileSync(samplePath, "utf-8");
 
     expect(updateData.trim()).toBe(originData.trim());
+
+    const data = dir.parseJsonSync(__dirname + "/sample/searchSample.json");
+
+    expect(typeof data).toBe("object");
   });
 });

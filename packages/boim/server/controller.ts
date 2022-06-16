@@ -9,6 +9,7 @@ import { getHTML } from "../pages/templates/htmlTemplate";
 import Directory from "../libs/directoryApi";
 import pathAlias from "../libs/pathAlias";
 import Fetch from "../libs/fetchApi";
+import Search from "../libs/searchApi";
 
 interface Client {
   default: ReactElement;
@@ -21,6 +22,14 @@ interface Data {
   renderProps: object;
 }
 
+interface Injection {
+  html: string | null;
+  css: string | null;
+  js: string | null;
+}
+
+const dir = new Directory();
+
 export default async function handleGetPage(
   req: Request,
   res: Response,
@@ -31,27 +40,46 @@ export default async function handleGetPage(
     return res.end();
   }
 
-  if (req.url.endsWith(".js")) {
+  if (
+    req.url.endsWith(".js") ||
+    req.url.endsWith(".css") ||
+    req.url.endsWith(".png") ||
+    req.url.endsWith(".jpg") ||
+    req.url.endsWith(".jpeg") ||
+    req.url.endsWith(".gif") ||
+    req.url.endsWith(".svg") ||
+    req.url.endsWith(".txt")
+  ) {
     return next();
   }
 
   const url: string = req.url.endsWith("/") ? req.url : req.url + "/";
+  const manifestData: object = dir.parseJsonSync(
+    `${pathAlias.client}/dist/manifest.json`
+  );
+  const injectionFile: Injection = Search.getInjectionFile(
+    manifestData,
+    url,
+    req.url
+  );
   const htmlfilePath: string = path.join(
     pathAlias.client,
     "/dist/pages",
-    url,
-    "index.html"
+    manifestData[injectionFile.html]
   );
   const html: string = fs.readFileSync(htmlfilePath, "utf-8");
-
-  const client: Client = require(`../../../../pages${url + "index.js"}`);
+  const client: Client = require(`../../../../pages${url}index.js`);
   const type: string = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
   const Component: ReactElement = client.default;
   const result: Data = await Fetch.getProps(type, client[type]);
-
-  const app: string = getHTML(Component, result.renderProps, [
-    url + "index.js",
-  ]);
+  const cssList: Array<string> = [manifestData[injectionFile.css]];
+  const scriptList: Array<string> = [manifestData[injectionFile.js]];
+  const app: string = getHTML(
+    Component,
+    result.renderProps,
+    cssList,
+    scriptList
+  );
 
   if (type === "SSG" || type === "DEFAULT") {
     res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
@@ -60,7 +88,6 @@ export default async function handleGetPage(
   }
 
   if (html !== app) {
-    const dir = new Directory();
     dir.clearWriteSync(htmlfilePath);
     dir.updateWriteSync(htmlfilePath, app);
   }

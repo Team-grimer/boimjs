@@ -3,11 +3,12 @@ import React, { createContext, ReactElement } from "react";
 interface HtmlState {
   context: {
     main: ReactElement | null;
-    srcList: Array<string> | null;
+    scriptList: Array<string> | null;
   } | null;
 }
 
 interface HeadState {
+  cssList: Array<string> | null;
   setHead: (headChildren: React.ReactNode) => void | null;
 }
 
@@ -26,12 +27,13 @@ export default class Context {
   static HtmlContext: React.Context<HtmlState> = createContext<HtmlState>({
     context: {
       main: null,
-      srcList: null,
+      scriptList: null,
     },
   });
 
   static HeadContext: React.Context<HeadState> = createContext<HeadState>({
-    setHead: () => {
+    cssList: null,
+    setHead: function () {
       return null;
     },
   });
@@ -45,7 +47,7 @@ export default class Context {
     query: {},
   });
 
-  static HtmlProvider = this.HtmlContext.Provider;
-  static HeadProvider = this.HeadContext.Provider;
-  static RouterProvider = this.RouterContext.Provider;
+  static HtmlProvider = Context.HtmlContext.Provider;
+  static HeadProvider = Context.HeadContext.Provider;
+  static RouterProvider = Context.RouterContext.Provider;
 }

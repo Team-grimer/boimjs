@@ -137,6 +137,13 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
     getComponentProps();
   }, [routeStatus]);
 
+  const headContextValue = {
+    cssList: null,
+    setHead: (headChildren) => {
+      return null;
+    },
+  };
+
   return (
     <RouterProvider value={renderInfo.context}>
       <MemoedPage componentInfo={renderInfo.renderOption} />

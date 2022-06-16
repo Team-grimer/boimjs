@@ -23,7 +23,8 @@ describe("contextApi test", () => {
       const props = {
         context: {
           main: <Body />,
-          srcList: [],
+          cssList: [],
+          scriptList: [],
           head: null,
         },
         setHead: null,

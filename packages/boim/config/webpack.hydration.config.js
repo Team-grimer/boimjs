@@ -2,13 +2,19 @@ const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 
 const Directory = require(`${client}/dist/lib/directoryApi`).default;
-
 const dir = new Directory();
+
+dir.searchDirectory(`${client}/pages`);
+const componentEntries = dir.getFilePaths();
+dir.writeHydrateComponent(componentEntries);
+
 dir.searchDirectory(`${root}/client/hydratedComponents`);
 const hydratedComponentEntries = dir.getFilePaths();
 
@@ -18,9 +24,11 @@ module.exports = {
   entry: hydratedComponentEntries,
   output: {
     path: `${client}/dist/pages`,
+    filename: "[name][chunkhash].js",
     library: "build-page",
     libraryTarget: "umd",
     globalObject: "this",
+    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -59,12 +67,50 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(less|scss|css|)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: true,
+            },
+          },
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+          "less-loader",
+        ],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024,
+          },
+        },
+      },
+      {
+        test: /\.svg$/,
+        use: ["@svgr/webpack"],
+      },
+      {
+        test: /\.(txt)$/i,
+        type: "asset/source",
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: false,
-      filename: (entryName) => `.${entryName}.html`,
+      inject: true,
+      filename: ".[name].html",
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name][contenthash].css",
+    }),
+    new WebpackManifestPlugin({
+      fileName: "../manifest.json",
     }),
   ],
 };

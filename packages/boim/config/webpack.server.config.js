@@ -1,19 +1,21 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
-const ComponentPath = require(`${client}/dist/lib/componentFileApi`).default;
-const { _app, _document } = new ComponentPath().getComponentPath();
+const Search = require(`${client}/dist/lib/searchApi`).default;
+const { _app, _document } = Search.getComponentPath();
 
-const serverConfig = {
+module.exports = {
   target: "node",
   mode: "production",
   entry: `${root}/server/_www.ts`,
   output: {
     filename: "_www.js",
     path: `${client}/dist/server`,
+    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -54,8 +56,39 @@ const serverConfig = {
           },
         ],
       },
+      {
+        test: /\.(less|scss|css|)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+          "less-loader",
+        ],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024,
+          },
+        },
+      },
+      {
+        test: /\.svg$/,
+        use: ["@svgr/webpack"],
+      },
+      {
+        test: /\.(txt)$/i,
+        type: "asset/source",
+      },
     ],
   },
+  plugins: [new MiniCssExtractPlugin()],
 };
-
-module.exports = serverConfig;
