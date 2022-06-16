@@ -52,7 +52,7 @@ export function getHTML(
   pageProps: object,
   srcList: Array<string>
 ): string {
-  const headComponentList = [];
+  const headComponentList: Array<React.ReactNode> = [];
   const htmlProps: HTMLProps = {
     main: renderPageTree(_App, Component, pageProps),
     srcList: srcList,
