@@ -26,6 +26,7 @@ module.exports = {
     library: "build-page",
     libraryTarget: "umd",
     globalObject: "this",
+    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -78,6 +79,19 @@ module.exports = {
           "sass-loader",
           "less-loader",
         ],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: "asset",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024,
+          },
+        },
+      },
+      {
+        test: /\.(txt)$/i,
+        type: "asset/source",
       },
     ],
   },
