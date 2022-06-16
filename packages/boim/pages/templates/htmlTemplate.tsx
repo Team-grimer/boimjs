@@ -10,19 +10,40 @@ const { HtmlProvider, HeadProvider } = Context;
 
 interface HTMLProps {
   main: ReactElement;
-  srcList: Array<string>;
+  scriptList: Array<string>;
 }
 
 interface HEADProps {
   headList?: Array<React.ReactNode> | null;
+  cssList?: Array<string> | null;
 }
 
 function DefaultHead(): ReactElement {
   return (
-    <head>
+    <>
       <meta charSet="utf-8"></meta>
       <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
       <title>Boim js</title>
+    </>
+  );
+}
+
+function CustomHead({ headList, cssList }: HEADProps): ReactElement {
+  return (
+    <head>
+      {headList.length ? (
+        <>{headList.map((value) => value)}</>
+      ) : (
+        <DefaultHead />
+      )}
+
+      {cssList.length ? (
+        <>
+          {cssList.map((value, index) => {
+            return <link key={index} rel="stylesheet" href={value}></link>;
+          })}
+        </>
+      ) : undefined}
     </head>
   );
 }
@@ -35,33 +56,25 @@ function renderPageTree(
   return <App Component={Component} pageProps={pageProps} />;
 }
 
-function CustomHead({ headList }: HEADProps) {
-  return (
-    <>
-      {headList.length ? (
-        <head>{headList.map((value) => value)}</head>
-      ) : (
-        <DefaultHead />
-      )}
-    </>
-  );
-}
-
 export function getHTML(
   Component: ReactElement,
   pageProps: object,
-  srcList: Array<string>
+  cssList: Array<string>,
+  scriptList: Array<string>
 ): string {
-  const headComponentList = [];
   const htmlProps: HTMLProps = {
     main: renderPageTree(_App, Component, pageProps),
-    srcList: srcList,
+    scriptList,
   };
+
+  const headComponentList: ReactElement[] = [];
 
   const htmlContextValue = {
     context: htmlProps,
   };
+
   const headContextValue = {
+    cssList,
     setHead: (headChildren) => {
       if (headChildren) headComponentList.push(headChildren);
     },
@@ -77,7 +90,10 @@ export function getHTML(
 
   let html: string = ReactDOMServer.renderToString(document);
   const head: string = ReactDOMServer.renderToString(
-    <CustomHead headList={headComponentList} />
+    <CustomHead
+      headList={headComponentList}
+      cssList={headContextValue.cssList}
+    />
   );
 
   html = html.replace("<head></head>", head);

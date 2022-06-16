@@ -31,7 +31,7 @@ export default async function handleGetPage(
     return res.end();
   }
 
-  if (req.url.endsWith(".js")) {
+  if (req.url.endsWith(".js") || req.url.endsWith(".css")) {
     return next();
   }
 
@@ -44,14 +44,20 @@ export default async function handleGetPage(
   );
   const html: string = fs.readFileSync(htmlfilePath, "utf-8");
 
-  const client: Client = require(`../../../../pages${url + "index.js"}`);
+  const client: Client = require(`../../../../pages${url}index.js`);
+
   const type: string = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
   const Component: ReactElement = client.default;
   const result: Data = await Fetch.getProps(type, client[type]);
+  const cssList: Array<string> = [url + "index.css"];
+  const scriptList: Array<string> = [url + "index.js"];
 
-  const app: string = getHTML(Component, result.renderProps, [
-    url + "index.js",
-  ]);
+  const app: string = getHTML(
+    Component,
+    result.renderProps,
+    cssList,
+    scriptList
+  );
 
   if (type === "SSG" || type === "DEFAULT") {
     res.set("Cache-Control", "public, must-revalidate, max-age=31557600");

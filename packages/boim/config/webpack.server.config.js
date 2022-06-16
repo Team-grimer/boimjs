@@ -1,13 +1,14 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 const ComponentPath = require(`${client}/dist/lib/componentFileApi`).default;
 const { _app, _document } = new ComponentPath().getComponentPath();
 
-const serverConfig = {
+module.exports = {
   target: "node",
   mode: "production",
   entry: `${root}/server/_www.ts`,
@@ -54,8 +55,22 @@ const serverConfig = {
           },
         ],
       },
+      {
+        test: /\.(less|scss|css|)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+          "less-loader",
+        ],
+      },
     ],
   },
+  plugins: [new MiniCssExtractPlugin()],
 };
-
-module.exports = serverConfig;

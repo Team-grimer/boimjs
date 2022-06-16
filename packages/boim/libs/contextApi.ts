@@ -7,11 +7,12 @@ interface route {
 interface htmlState {
   context: {
     main: ReactElement | null;
-    srcList: Array<string> | null;
+    scriptList: Array<string> | null;
   } | null;
 }
 
 interface headState {
+  cssList: Array<string> | null;
   setHead: (headChildren: React.ReactNode) => void | null;
 }
 
@@ -26,11 +27,12 @@ export default class Context {
   static HtmlContext = createContext<htmlState>({
     context: {
       main: null,
-      srcList: null,
+      scriptList: null,
     },
   });
 
   static HeadContext = createContext<headState>({
+    cssList: null,
     setHead: function () {
       return null;
     },
@@ -43,7 +45,7 @@ export default class Context {
     setRouteContext: null,
   });
 
-  static HtmlProvider = this.HtmlContext.Provider;
-  static HeadProvider = this.HeadContext.Provider;
-  static RouterProvider = this.RouterContext.Provider;
+  static HtmlProvider = Context.HtmlContext.Provider;
+  static HeadProvider = Context.HeadContext.Provider;
+  static RouterProvider = Context.RouterContext.Provider;
 }
