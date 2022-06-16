@@ -5,8 +5,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
-const ComponentPath = require(`${client}/dist/lib/componentFileApi`).default;
-const { _app, _document } = new ComponentPath().getComponentPath();
+const Search = require(`${client}/dist/lib/searchApi`).default;
+const { _app, _document } = Search.getComponentPath();
 
 module.exports = {
   target: "node",
@@ -15,6 +15,7 @@ module.exports = {
   output: {
     filename: "_www.js",
     path: `${client}/dist/server`,
+    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -69,6 +70,23 @@ module.exports = {
           "sass-loader",
           "less-loader",
         ],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024,
+          },
+        },
+      },
+      {
+        test: /\.svg$/,
+        use: ["@svgr/webpack"],
+      },
+      {
+        test: /\.(txt)$/i,
+        type: "asset/source",
       },
     ],
   },

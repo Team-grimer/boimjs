@@ -48,16 +48,6 @@ export default class Directory {
     recursivelySearchDirectory(startDirectoryPath);
   }
 
-  clearWriteSync(filepath: string): void {
-    fs.readFileSync(filepath, "utf-8");
-    fs.writeFileSync(filepath, "", "utf-8");
-  }
-
-  updateWriteSync(filepath: string, content: string): void {
-    fs.readFileSync(filepath, "utf-8");
-    fs.writeFileSync(filepath, content, "utf-8");
-  }
-
   writeHydrateComponent(entries: { [key: string]: string }): void {
     fs.mkdirSync(`${pathAlias.root}/client/hydratedComponents`, {
       recursive: true,
@@ -103,5 +93,20 @@ export default class Directory {
         console.log("Cannot create folder and file ", e);
       }
     }
+  }
+
+  clearWriteSync(filepath: string): void {
+    fs.readFileSync(filepath, "utf-8");
+    fs.writeFileSync(filepath, "", "utf-8");
+  }
+
+  updateWriteSync(filepath: string, content: string): void {
+    fs.readFileSync(filepath, "utf-8");
+    fs.writeFileSync(filepath, content, "utf-8");
+  }
+
+  parseJsonSync(filepath: string): object {
+    const jsonFile: string = fs.readFileSync(filepath, "utf-8");
+    return JSON.parse(jsonFile);
   }
 }
