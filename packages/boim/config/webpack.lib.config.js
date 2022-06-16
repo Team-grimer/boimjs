@@ -11,7 +11,7 @@ module.exports = {
   mode: "production",
   entry: {
     directoryApi: `${root}/libs/directoryApi`,
-    componentFileApi: `${root}/libs/componentFileApi`,
+    searchApi: `${root}/libs/searchApi`,
   },
   output: {
     path: `${client}/dist/lib`,

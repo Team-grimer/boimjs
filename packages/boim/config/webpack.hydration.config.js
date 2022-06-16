@@ -1,8 +1,9 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
@@ -23,6 +24,7 @@ module.exports = {
   entry: hydratedComponentEntries,
   output: {
     path: `${client}/dist/pages`,
+    filename: "[name][chunkhash].js",
     library: "build-page",
     libraryTarget: "umd",
     globalObject: "this",
@@ -81,13 +83,17 @@ module.exports = {
         ],
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
-        type: "asset",
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
         parser: {
           dataUrlCondition: {
             maxSize: 8 * 1024,
           },
         },
+      },
+      {
+        test: /\.svg$/,
+        use: ["@svgr/webpack"],
       },
       {
         test: /\.(txt)$/i,
@@ -97,11 +103,14 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: false,
-      filename: (entryName) => `.${entryName}.html`,
+      inject: true,
+      filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
-      filename: "../pages[name].css",
+      filename: "[name][contenthash].css",
+    }),
+    new WebpackManifestPlugin({
+      fileName: "../manifest.json",
     }),
   ],
 };
