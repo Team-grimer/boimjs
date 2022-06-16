@@ -1,6 +1,7 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const root = path.resolve("./");
@@ -8,6 +9,11 @@ const client = path.resolve(root, "../../../");
 
 const Directory = require(`${client}/dist/lib/directoryApi`).default;
 const dir = new Directory();
+
+dir.searchDirectory(`${client}/pages`);
+const componentEntries = dir.getFilePaths();
+dir.writeHydrateComponent(componentEntries);
+
 dir.searchDirectory(`${root}/client/hydratedComponents`);
 const hydratedComponentEntries = dir.getFilePaths();
 
@@ -58,12 +64,30 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(less|scss|css|)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: true,
+            },
+          },
+          "css-loader",
+          "postcss-loader",
+          "sass-loader",
+          "less-loader",
+        ],
+      },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       inject: false,
       filename: (entryName) => `.${entryName}.html`,
+    }),
+    new MiniCssExtractPlugin({
+      filename: "../pages[name].css",
     }),
   ],
 };

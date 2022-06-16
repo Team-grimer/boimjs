@@ -34,11 +34,11 @@ describe.only("_document component", () => {
         value={{
           context: {
             main: null,
-            srcList: null,
+            scriptList: null,
           },
         }}
       >
-        <HeadProvider value={{ setHead: mockSetHead }}>
+        <HeadProvider value={{ setHead: mockSetHead, cssList: [] }}>
           <Head>
             <title>성공</title>
           </Head>
@@ -59,7 +59,7 @@ describe.only("_document component", () => {
         value={{
           context: {
             main: <Test />,
-            srcList: null,
+            scriptList: null,
           },
         }}
       >
@@ -79,7 +79,7 @@ describe.only("_document component", () => {
         value={{
           context: {
             main: null,
-            srcList: mockScriptList,
+            scriptList: mockScriptList,
           },
         }}
       >

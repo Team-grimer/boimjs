@@ -67,6 +67,7 @@ export function RouteProvider({ routeInfo }: RouteProps) {
   history.push(path);
 
   const headContextValue = {
+    cssList: null,
     setHead: (headChildren) => {
       return null;
     },

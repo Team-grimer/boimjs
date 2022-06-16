@@ -45,7 +45,7 @@ export default class Context {
     setRouteContext: null,
   });
 
-  static HtmlProvider = this.HtmlContext.Provider;
-  static HeadProvider = this.HeadContext.Provider;
-  static RouterProvider = this.RouterContext.Provider;
+  static HtmlProvider = Context.HtmlContext.Provider;
+  static HeadProvider = Context.HeadContext.Provider;
+  static RouterProvider = Context.RouterContext.Provider;
 }
