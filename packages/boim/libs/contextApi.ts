@@ -1,46 +1,48 @@
 import React, { createContext, ReactElement } from "react";
 
-interface route {
-  path: string | null;
-}
-
-interface htmlState {
+interface HtmlState {
   context: {
     main: ReactElement | null;
     srcList: Array<string> | null;
   } | null;
 }
 
-interface headState {
+interface HeadState {
   setHead: (headChildren: React.ReactNode) => void | null;
 }
 
-interface routeState {
-  routeContext: {
-    path: string | null;
+interface RouteState {
+  push: (arg: string, state: { [key: string]: any }) => void | null;
+  path: string;
+  param: {
+    [key: string]: any;
   };
-  setRouteContext: (router: route) => void | null;
+  query: {
+    [key: string]: string;
+  };
 }
 
 export default class Context {
-  static HtmlContext = createContext<htmlState>({
+  static HtmlContext: React.Context<HtmlState> = createContext<HtmlState>({
     context: {
       main: null,
       srcList: null,
     },
   });
 
-  static HeadContext = createContext<headState>({
-    setHead: function () {
+  static HeadContext: React.Context<HeadState> = createContext<HeadState>({
+    setHead: () => {
       return null;
     },
   });
 
-  static RouterContext = createContext<routeState>({
-    routeContext: {
-      path: "",
+  static RouterContext: React.Context<RouteState> = createContext<RouteState>({
+    push: () => {
+      return null;
     },
-    setRouteContext: null,
+    path: "",
+    param: {},
+    query: {},
   });
 
   static HtmlProvider = this.HtmlContext.Provider;
