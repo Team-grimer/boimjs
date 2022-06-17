@@ -5,18 +5,18 @@ import pathAlias from "./pathAlias";
 
 export default class Directory {
   filePaths: { [key: string]: string };
-  cssFiles: Array<string>;
+  cssFiles: { [key: string]: string };
 
   constructor() {
     this.filePaths = {};
-    this.cssFiles = [];
+    this.cssFiles = {};
   }
 
   getFilePaths(): { [key: string]: string } {
     return this.filePaths;
   }
 
-  getCssFiles(): Array<string> {
+  getCssFiles(): { [key: string]: string } {
     return this.cssFiles;
   }
 
@@ -30,9 +30,14 @@ export default class Directory {
           return;
         }
 
-        if (Absolute.match(/\.css$/)) {
-          this.cssFiles.push(Absolute);
-          return;
+        if (Absolute.match(/\.(css|less|sass|scss)$/)) {
+          const fileName: string = Absolute.replace(startDirectoryPath, "")
+            .replace(".css", "")
+            .replace(".less", "")
+            .replace(".sass", "")
+            .replace(".scss", "");
+
+          this.cssFiles[fileName] = Absolute;
         }
 
         if (Absolute.match(/\.(js|jsx|ts|tsx)$/)) {
@@ -69,18 +74,21 @@ export default class Directory {
 import ReactDOM from "react-dom";
 import * as App from "${componentsPath + dir}.js";
 import Fetch from "${pathAlias.root}/libs/fetchApi";
-
 import Route from "${pathAlias.root}/pages/Route";
 
 const app = {};
+
 Object.entries(App).forEach(([key, value]) => {
   app[key] = value;
 });
+
 const Component = app["default"];
 const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+
 async function hydrate() {
   const result = await Fetch.getProps(type, app[type]);
   const container = document.getElementById("__boim");
+
   ReactDOM.hydrate(<Route initialInfo={{ result, Component }} />, container);
 }
 hydrate();

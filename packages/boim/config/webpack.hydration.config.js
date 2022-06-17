@@ -73,7 +73,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: true,
+              emit: false,
             },
           },
           "css-loader",
@@ -103,14 +103,12 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: true,
+      inject: false,
       filename: ".[name].html",
     }),
-    new MiniCssExtractPlugin({
-      filename: "[name][contenthash].css",
-    }),
+    new MiniCssExtractPlugin(),
     new WebpackManifestPlugin({
-      fileName: "../manifest.json",
+      fileName: "../htmlAndScriptManifest.json",
     }),
   ],
 };
