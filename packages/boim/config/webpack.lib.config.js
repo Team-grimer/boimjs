@@ -63,8 +63,8 @@ module.exports = {
       dry: true,
       dangerouslyAllowCleanPatternsOutsideProject: true,
       cleanOnceBeforeBuildPatterns: [
-        `${client}/dist/*`,
-        `${root}/client/hydratedComponents/*`,
+        `${client}/dist/**/*`,
+        `${root}/client/**/*`,
       ],
     }),
   ],

@@ -68,18 +68,62 @@ module.exports = {
         ],
       },
       {
-        test: /\.(less|scss|css|)$/,
+        test: /\.(less|scss)$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: false,
+              emit: true,
             },
           },
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
           "postcss-loader",
-          "sass-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
           "less-loader",
+        ],
+      },
+      {
+        test: /\.module.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: true,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: true,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: false,
+            },
+          },
         ],
       },
       {
@@ -106,7 +150,9 @@ module.exports = {
       inject: false,
       filename: ".[name].html",
     }),
-    new MiniCssExtractPlugin(),
+    new MiniCssExtractPlugin({
+      filename: ".[name][contenthash].css",
+    }),
     new WebpackManifestPlugin({
       fileName: "../htmlAndScriptManifest.json",
     }),

@@ -63,7 +63,7 @@ const styleConfig = {
   module: {
     rules: [
       {
-        test: /\.(less|scss|css|)$/,
+        test: /\.(less|scss|css|module.css)$/,
         use: [
           {
             loader: ExtractCssChunks.loader,
@@ -71,7 +71,12 @@ const styleConfig = {
               emit: true,
             },
           },
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
           "postcss-loader",
           "sass-loader",
           "less-loader",
