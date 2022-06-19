@@ -60,11 +60,16 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin({
-      dry: true,
       dangerouslyAllowCleanPatternsOutsideProject: true,
+      root: `${client}`,
+      dry: false,
+      verbose: true,
       cleanOnceBeforeBuildPatterns: [
-        `${client}/dist/**/*`,
-        `${root}/client/**/*`,
+        "**/*",
+        "!stats.json",
+        "!important.js",
+        "!folder/**/*",
+        `${root}/client/hydratedComponents`,
       ],
     }),
   ],
