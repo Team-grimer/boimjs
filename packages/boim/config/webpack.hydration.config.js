@@ -155,7 +155,7 @@ module.exports = {
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
-      filename: "[name].css",
+      filename: "[name][contenthash:8].css",
     }),
     new WebpackManifestPlugin({
       fileName: "../manifest.json",

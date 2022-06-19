@@ -2,6 +2,7 @@ const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
@@ -18,6 +19,7 @@ module.exports = {
     library: "build-module",
     libraryTarget: "umd",
     globalObject: "this",
+    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -56,9 +58,86 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.(less|scss)$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+          "postcss-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "less-loader",
+        ],
+      },
+      {
+        test: /\.module.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: false,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
+        parser: {
+          dataUrlCondition: {
+            maxSize: 8 * 1024,
+          },
+        },
+      },
+      {
+        test: /\.svg$/,
+        use: ["@svgr/webpack"],
+      },
+      {
+        test: /\.(txt)$/i,
+        type: "asset/source",
+      },
     ],
   },
   plugins: [
+    new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
       root: `${client}`,
@@ -69,7 +148,7 @@ module.exports = {
         "!stats.json",
         "!important.js",
         "!folder/**/*",
-        `${root}/client/hydratedComponents`,
+        `${root}/client/**/*`,
       ],
     }),
   ],
