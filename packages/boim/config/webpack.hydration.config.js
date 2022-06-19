@@ -156,10 +156,10 @@ module.exports = {
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
-      filename: ".[name][contenthash].css",
+      filename: "[name][contenthash].css",
     }),
     new WebpackManifestPlugin({
-      fileName: "../htmlAndScriptManifest.json",
+      fileName: "../manifest.json",
     }),
   ],
 };

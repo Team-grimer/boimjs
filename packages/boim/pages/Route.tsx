@@ -6,6 +6,7 @@ import reactElementToJSXString from "react-element-to-jsx-string";
 import Context from "../libs/contextApi";
 import Fetch from "../libs/fetchApi";
 import History from "../libs/historyApi";
+import Document from "../libs/documentApi";
 
 interface Props {
   _App: React.ElementType;
@@ -63,11 +64,6 @@ const { history } = History;
 const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
 <title>Boim js</title></head>`;
-const headTargetList: Array<string> = [
-  "meta[charset]",
-  "meta[name=\"viewport\"]",
-  "title",
-];
 
 const MemoedPage: React.FC<PageProps> = React.memo(Page);
 
@@ -81,66 +77,37 @@ function Page({ componentInfo }: PageProps): ReactElement {
 }
 
 function PageHead({ headList }: PageHeadProps): ReactElement {
-  if (headList.length === 0) {
-    const headDocument = document.querySelector("head");
-
-    const DomParser = new DOMParser();
-
-    const defaultHeadNode = DomParser.parseFromString(
-      defaultHeadTag,
-      "text/html"
-    ).querySelector("head");
-
-    while (headDocument.firstChild) {
-      headDocument.removeChild(headDocument.lastChild);
-    }
-
-    Object.entries(defaultHeadNode.children).forEach(([_, value]) => {
-      headDocument.appendChild(value);
-    });
-
-    return null;
-  }
-
-  const headElementList = headList.flat();
-
-  const headDocument = document.querySelector("head");
   const DomParser = new DOMParser();
 
-  const defaultHeadNode = DomParser.parseFromString(
+  const headElement = document.querySelector("head");
+  const defaultHeadElement = DomParser.parseFromString(
     defaultHeadTag,
     "text/html"
   ).querySelector("head");
 
+  const docuement = new Document(headElement, defaultHeadElement);
+
+  docuement.removeChildrenOfHeadElement();
+  docuement.addDefaultHeadChildren();
+
+  if (!headList.length) {
+    return null;
+  }
+
+  const headElementList = headList.flat();
   const headTagString = headElementList
     .map((value) => {
       return reactElementToJSXString(value);
     })
     .join("");
-
   const customHeadDocument = DomParser.parseFromString(
     headTagString,
     "text/html"
-  );
-  const customHeadNode = customHeadDocument.querySelector("head");
+  ).querySelector("head");
 
-  while (headDocument.firstChild) {
-    headDocument.removeChild(headDocument.lastChild);
-  }
-
-  Object.entries(defaultHeadNode.children).forEach(([_, value]) => {
-    headDocument.appendChild(value);
-  });
-
-  headTargetList.forEach((value) => {
-    if (customHeadNode.querySelector(value)) {
-      headDocument.querySelector(value).remove();
-    }
-  });
-
-  Object.entries(customHeadNode.children).forEach(([_, value]) => {
-    headDocument.appendChild(value);
-  });
+  docuement.setElement("customHead", customHeadDocument);
+  docuement.removeDuplicateHead();
+  docuement.addCustomHeadChildren();
 
   return null;
 }
@@ -186,7 +153,6 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
         param: location.state,
         query: qs.parse(location.search),
       });
-      // setPageHeadList([]);
     });
 
     return () => {
