@@ -161,10 +161,11 @@ hydrate();
             import ReactDOM from "react-dom";
             import Component from "${pathAlias.client}/pages${directoryPath}/index.js";
             import Route from "${pathAlias.root}/pages/Route";
+            import _App from "app";
 
             const result = ${props}
             const container = document.getElementById("__boim");
-            ReactDOM.hydrate(<Route initialInfo={{ result, Component }} />, container);
+            ReactDOM.hydrate(<Route initialInfo={{ _App, result, Component }} />, container);
           `;
 
           const key: string = directoryPath
