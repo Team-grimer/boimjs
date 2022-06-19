@@ -2,10 +2,25 @@ import fs from "fs";
 
 import pathAlias from "./pathAlias";
 
-interface Injection {
-  html: string | null;
-  css: string | null;
-  js: string | null;
+interface File {
+  key: string;
+  value: string;
+}
+interface ExpectFiles {
+  html: Array<string>;
+  js: Array<string>;
+  css: Array<string>;
+}
+
+interface FoundFiles {
+  html: Array<File>;
+  js: Array<File>;
+  css: Array<File>;
+}
+
+interface FileInfo {
+  fileInfo: FoundFiles;
+  hasValue: boolean;
 }
 
 export default class Search {
@@ -46,49 +61,80 @@ export default class Search {
     };
   }
 
-  static getInjectionFile(
-    data: object,
-    url: string,
-    requestUrl: string
-  ): Injection {
-    const manifestEntries: Array<string> = Object.keys(data);
+  static searchManifest(staticFiles, dynamicFiles, url) {
+    const expectFiles = createExpectFileName(url);
+    const staticResult = getFilesInfo(staticFiles, expectFiles);
+    const dynamicResult = getFilesInfo(dynamicFiles, expectFiles);
 
-    const injectionFile: Injection = {
-      html: null,
-      css: null,
-      js: null,
-    };
+    if (!staticResult.hasValue && !dynamicResult.hasValue) {
+      console.log("not found");
+      return; // 에러 처리 필요 404
+    }
 
-    manifestEntries.forEach((entry: string) => {
-      const requestUrlSlices: Array<string> = requestUrl.split("/");
-      const entrySlices: Array<string> = entry.split("/");
-
-      if (entrySlices[entrySlices.length - 1].endsWith(".html")) {
-        entrySlices.shift();
-      }
-
-      while (requestUrlSlices.length) {
-        const reqUrlSlice: string = requestUrlSlices.shift();
-        const entrySlice: string = entrySlices.shift();
-
-        if (reqUrlSlice !== entrySlice) {
-          entrySlices.push(entrySlice);
-        }
-      }
-
-      if (entrySlices.length === 1) {
-        if (entrySlices[0].endsWith(".css")) {
-          injectionFile.css = url + entrySlices[0];
-        }
-        if (entrySlices[0].endsWith(".js")) {
-          injectionFile.js = url + entrySlices[0];
-        }
-        if (entrySlices[0].endsWith(".html")) {
-          injectionFile.html = "." + url + entrySlices[0];
-        }
-      }
-    });
-
-    return injectionFile;
+    return { staticResult, dynamicResult };
   }
 }
+
+const createExpectFileName = (reqUrl: string): ExpectFiles => {
+  const result: ExpectFiles = {
+    html: [],
+    js: [],
+    css: [],
+  };
+
+  const extensions = ["html", "js", "css"];
+
+  extensions.forEach((extension) => {
+    const isRootUrl: boolean = reqUrl.length === 0;
+
+    if (extension === "html") {
+      result[extension].push(`.${reqUrl}/index.${extension}`);
+      !isRootUrl && result[extension].push(`.${reqUrl}.${extension}`);
+      return;
+    }
+
+    result[extension].push(`${reqUrl}/index.${extension}`);
+    !isRootUrl && result[extension].push(`${reqUrl}.${extension}`);
+  });
+
+  return result;
+};
+
+const getFilesInfo = (
+  manifestList: object,
+  expectFiles: ExpectFiles
+): FileInfo => {
+  const fileInfo = {
+    html: [],
+    js: [],
+    css: [],
+  };
+
+  let hasValue = false;
+
+  expectFiles.html.forEach((_, index) => {
+    if (manifestList.hasOwnProperty(expectFiles.html[index])) {
+      hasValue = true;
+      fileInfo.html.push({
+        key: expectFiles.html[index],
+        value: manifestList[expectFiles.html[index]],
+      });
+    }
+
+    if (manifestList.hasOwnProperty(expectFiles.js[index])) {
+      fileInfo.js.push({
+        key: expectFiles.js[index],
+        value: manifestList[expectFiles.js[index]],
+      });
+    }
+
+    if (manifestList.hasOwnProperty(expectFiles.css[index])) {
+      fileInfo.css.push({
+        key: expectFiles.css[index],
+        value: manifestList[expectFiles.css[index]],
+      });
+    }
+  });
+
+  return { fileInfo, hasValue };
+};

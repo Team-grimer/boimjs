@@ -1,8 +1,8 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 const root = path.resolve("./");
@@ -11,20 +11,13 @@ const client = path.resolve(root, "../../../");
 const Directory = require(`${client}/dist/lib/directoryApi`).default;
 const dir = new Directory();
 
-dir.searchDirectory(`${client}/pages`);
-const componentEntries = dir.getFilePaths();
-dir.writeHydrateComponent(componentEntries);
-
-const dynamicPaths = dir.getDynamicPaths(`${client}/pages`);
-dir.writeDynamicHydrateComponent(dynamicPaths);
-
-dir.searchDirectory(`${root}/client/hydratedComponents`);
-const hydratedComponentEntries = dir.getFilePaths();
+dir.searchDirectory(`${root}/client/dynamicComponents`);
+const hydratedDynamicComponentEntries = dir.getFilePaths();
 
 module.exports = {
   target: "node",
   mode: "production",
-  entry: hydratedComponentEntries,
+  entry: hydratedDynamicComponentEntries,
   output: {
     path: `${client}/dist/pages`,
     filename: "[name][chunkhash].js",
@@ -157,7 +150,7 @@ module.exports = {
       filename: "[name][contenthash].css",
     }),
     new WebpackManifestPlugin({
-      fileName: "../manifest.json",
+      fileName: "../dynamicManifest.json",
     }),
   ],
 };
