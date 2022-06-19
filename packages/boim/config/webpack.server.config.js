@@ -2,6 +2,7 @@ const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
@@ -135,5 +136,19 @@ module.exports = {
       },
     ],
   },
-  plugins: [new MiniCssExtractPlugin()],
+  plugins: [
+    new MiniCssExtractPlugin(),
+    new CleanWebpackPlugin({
+      dangerouslyAllowCleanPatternsOutsideProject: true,
+      root: `${client}`,
+      verbose: true,
+      dry: false,
+      cleanOnceBeforeBuildPatterns: [
+        "**/*",
+        "!stats.json",
+        "!important.js",
+        "!folder/**/*",
+      ],
+    }),
+  ],
 };

@@ -43,9 +43,9 @@ function CustomHead({ headList, cssList }: HEADProps): ReactElement {
 function renderPageTree(
   App: React.FunctionComponent<any>,
   Component: ReactElement,
-  pageProps: object
+  pageProps: any
 ): ReactElement {
-  return <App Component={Component} pageProps={pageProps} />;
+  return <App Component={Component} pageProps={pageProps.renderProps} />;
 }
 
 function getHeadString(defaultHeadTag, customHeadTagString) {

@@ -1,22 +1,27 @@
 const path = require("path");
 
 const TerserPlugin = require("terser-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 
+const Directory = require(`${client}/dist/lib/directoryApi`).default;
+const dir = new Directory();
+
+dir.searchDirectory(`${root}/client/dynamicComponents`);
+const hydratedDynamicComponentEntries = dir.getFilePaths();
+
 module.exports = {
   target: "node",
   mode: "production",
-  entry: {
-    directoryApi: `${root}/libs/directoryApi`,
-    searchApi: `${root}/libs/searchApi`,
-  },
+  entry: hydratedDynamicComponentEntries,
   output: {
-    path: `${client}/dist/lib`,
-    library: "build-module",
+    path: `${client}/dist/pages`,
+    filename: "[name][chunkhash].js",
+    library: "build-page",
     libraryTarget: "umd",
     globalObject: "this",
     assetModuleFilename: "../public/[contenthash][ext]",
@@ -64,7 +69,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: false,
+              emit: true,
             },
           },
           {
@@ -89,7 +94,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: false,
+              emit: true,
             },
           },
           {
@@ -106,7 +111,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: false,
+              emit: true,
             },
           },
           {
@@ -137,19 +142,15 @@ module.exports = {
     ],
   },
   plugins: [
-    new MiniCssExtractPlugin(),
-    new CleanWebpackPlugin({
-      dangerouslyAllowCleanPatternsOutsideProject: true,
-      root: `${client}`,
-      dry: false,
-      verbose: true,
-      cleanOnceBeforeBuildPatterns: [
-        "**/*",
-        "!stats.json",
-        "!important.js",
-        "!folder/**/*",
-        `${root}/client/**/*`,
-      ],
+    new HtmlWebpackPlugin({
+      inject: false,
+      filename: ".[name].html",
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name][contenthash].css",
+    }),
+    new WebpackManifestPlugin({
+      fileName: "../dynamicManifest.json",
     }),
   ],
 };

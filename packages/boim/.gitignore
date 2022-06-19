@@ -1,11 +1,12 @@
 /node_modules
 
-/dist
-
-/build
-
 .env
 
 /client/hydratedComponents
 
 /ts_build
+
+.DS_Store
+.git*
+.idea
+.vscode

@@ -4,6 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
@@ -14,6 +15,9 @@ const dir = new Directory();
 dir.searchDirectory(`${client}/pages`);
 const componentEntries = dir.getFilePaths();
 dir.writeHydrateComponent(componentEntries);
+
+const dynamicPaths = dir.getDynamicPaths(`${client}/pages`);
+dir.writeDynamicHydrateComponent(dynamicPaths);
 
 dir.searchDirectory(`${root}/client/hydratedComponents`);
 const hydratedComponentEntries = dir.getFilePaths();
@@ -28,7 +32,7 @@ module.exports = {
   entry: hydratedComponentEntries,
   output: {
     path: `${client}/dist/pages`,
-    filename: "[name][chunkhash].js",
+    filename: "[name][contenthash].js",
     library: "build-page",
     libraryTarget: "umd",
     globalObject: "this",
@@ -156,10 +160,24 @@ module.exports = {
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
-      filename: "[name][contenthash].css",
+      filename: "[name][contenthash:8].css",
     }),
     new WebpackManifestPlugin({
       fileName: "../manifest.json",
+    }),
+    new CleanWebpackPlugin({
+      dangerouslyAllowCleanPatternsOutsideProject: true,
+      root: `${client}`,
+      verbose: true,
+      dry: false,
+      cleanOnceBeforeBuildPatterns: [
+        "**/*",
+        "../public/**/*",
+        "../manifest.json",
+        "!stats.json",
+        "!important.js",
+        "!folder/**/*",
+      ],
     }),
   ],
 };

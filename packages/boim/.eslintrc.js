@@ -50,6 +50,7 @@ module.exports = {
         "newlines-between": "always",
       },
     ],
+    "no-prototype-builtins": "warn"
   },
   "settings": {
     "import/resolver": {
