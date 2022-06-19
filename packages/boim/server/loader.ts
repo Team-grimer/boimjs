@@ -20,7 +20,6 @@ export default function (): Express {
 
   app.use("/", pageRouter);
   app.use(express.static(`${pathAlias.client}/dist/pages`, options));
-  app.use(express.static(`${pathAlias.client}/dist`, options));
 
   return app;
 }
