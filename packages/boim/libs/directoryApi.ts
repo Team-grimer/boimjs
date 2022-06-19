@@ -197,7 +197,7 @@ export default class Directory {
         });
       };
 
-      if (dynamicComponent.hasOwnProperty("getStaticPaths")) {
+      if (dynamicComponent.hasOwnProperty("PATHS")) {
         createDynamicFiles();
       }
     }
