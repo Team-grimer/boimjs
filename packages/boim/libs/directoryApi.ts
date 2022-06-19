@@ -144,7 +144,7 @@ export default class Directory {
       const app = Object.assign({}, dynamicComponent);
 
       const createDynamicFiles = async (): Promise<void> => {
-        const { paths } = await app.getStaticPaths();
+        const { paths } = await app.PATHS();
 
         paths.forEach(async (param) => {
           const pageProps: pageProps = await app.SSG(param);
