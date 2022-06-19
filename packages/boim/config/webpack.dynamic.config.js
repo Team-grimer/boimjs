@@ -143,7 +143,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: true,
+      inject: false,
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
