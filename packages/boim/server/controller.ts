@@ -114,15 +114,16 @@ export default async function handleGetPage(
       resource.scriptList
     );
 
-    if (resource.renderType === "SSG" || resource.renderType === "DEFAULT") {
-      res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
-      res.send(newHtml);
-      return;
-    }
-
     if (resource.htmlFile !== newHtml) {
       dir.clearWriteSync(resource.htmlFilePath);
       dir.updateWriteSync(resource.htmlFilePath, newHtml);
+    }
+
+    if (resource.renderType === "SSG" || resource.renderType === "DEFAULT") {
+      res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+      const htmlFile = fs.readFileSync(resource.htmlFilePath, "utf-8");
+      res.send(htmlFile);
+      return;
     }
 
     res.set("Cache-Control", "no-store");
