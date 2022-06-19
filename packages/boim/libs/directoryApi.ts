@@ -24,6 +24,25 @@ export default class Directory {
     return this.cssFiles;
   }
 
+  async getDynamicRouteInfo() {
+    const result: { [key: string]: Array<object> } = {};
+    const dynamicPaths: { [key: string]: string } = this.getDynamicPaths(
+      `${pathAlias.client}/pages`
+    );
+
+    for (const directoryPath of Object.keys(dynamicPaths)) {
+      const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
+      const app = Object.assign({}, dynamicComponent);
+
+      if (dynamicComponent.hasOwnProperty("PATHS")) {
+        const { paths } = await app.PATHS();
+        result[directoryPath] = paths;
+      }
+    }
+
+    return result;
+  }
+
   getDynamicPaths(startDirectoryPath: string): { [key: string]: string } {
     const dynamicPaths: { [key: string]: string } = {};
     const recursivelySearchDynamicPath = (directoryPath: string): void => {
