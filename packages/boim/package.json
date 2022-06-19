@@ -6,10 +6,9 @@
   "scripts": {
     "test": "jest --forceExit --runInBand --detectOpenHandles",
     "build:lib": "webpack --config ./config/webpack.lib.config.js",
-    "build:style": "webpack --config ./config/webpack.style.config.js",
     "build:hydration": "webpack --config ./config/webpack.hydration.config.js",
     "build:server": "webpack --config ./config/webpack.server.config.js",
-    "build": "npm run build:lib && npm run build:style && npm run build:hydration && npm run build:server",
+    "build": "npm run build:lib && npm run build:hydration && npm run build:server",
     "start": "npm run build && node --experimental-modules ../../../dist/server/_www"
   },
   "author": "grimer",

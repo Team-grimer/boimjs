@@ -58,7 +58,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(less|scss|css|)$/,
+        test: /\.(less|scss)$/,
         use: [
           {
             loader: MiniCssExtractPlugin.loader,
@@ -66,10 +66,54 @@ module.exports = {
               emit: false,
             },
           },
-          "css-loader",
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
           "postcss-loader",
-          "sass-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
           "less-loader",
+        ],
+      },
+      {
+        test: /\.module.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: false,
+            },
+          },
         ],
       },
       {
