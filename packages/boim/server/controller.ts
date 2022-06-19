@@ -107,17 +107,12 @@ export default async function handleGetPage(
       );
     }
 
-    console.log("rescoure -------->", resource);
-    console.log("rescoure.cssList -------->", resource.cssList);
-
     const newHtml: string = getHTML(
       resource.component,
       resource.componentProps,
       resource.cssList,
       resource.scriptList
     );
-
-    console.log("new html =========>", newHtml);
 
     if (resource.renderType === "SSG" || resource.renderType === "DEFAULT") {
       res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
