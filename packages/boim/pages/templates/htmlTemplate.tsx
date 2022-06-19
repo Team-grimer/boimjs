@@ -6,6 +6,7 @@ import ReactDOMServer from "react-dom/server";
 import { parse } from "node-html-parser";
 
 import Context from "../../libs/contextApi";
+import Document from "../../libs/documentApi";
 
 interface HTMLProps {
   main: ReactElement;
@@ -19,11 +20,6 @@ interface HEADProps {
 
 const { HtmlProvider, HeadProvider } = Context;
 
-const headTargetList: Array<string> = [
-  "meta[charset]",
-  'meta[name="viewport"]',
-  "title",
-];
 const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
 <title>Boim js</title></head>`;
@@ -52,16 +48,13 @@ function renderPageTree(
   return <App Component={Component} pageProps={pageProps} />;
 }
 
-function setHead(defaultHeadTag, customHeadTagString, targetList) {
+function getHeadString(defaultHeadTag, customHeadTagString) {
   const originalDocument = parse(defaultHeadTag);
   const customHeadDocument = parse(customHeadTagString);
 
-  targetList.forEach((value) => {
-    if (customHeadDocument.querySelector(value)) {
-      originalDocument.querySelector(value).remove();
-    }
-  });
+  const document = new Document(originalDocument, null, customHeadDocument);
 
+  document.removeDuplicateHead();
   originalDocument.querySelector("head").appendChild(customHeadDocument);
 
   return originalDocument.toString();
@@ -108,7 +101,7 @@ export function getHTML(
     />
   );
 
-  const head: string = setHead(defaultHeadTag, customHeadTag, headTargetList);
+  const head: string = getHeadString(defaultHeadTag, customHeadTag);
 
   html = html.replace("<head></head>", head);
 
