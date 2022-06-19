@@ -22,6 +22,10 @@ dir.writeDynamicHydrateComponent(dynamicPaths);
 dir.searchDirectory(`${root}/client/hydratedComponents`);
 const hydratedComponentEntries = dir.getFilePaths();
 
+const Search = require(`${client}/dist/lib/searchApi`).default;
+const fileList = Search.getFileList(`${client}/pages`);
+const { _app } = Search.getBaseComponentPath(fileList);
+
 module.exports = {
   target: "node",
   mode: "production",
@@ -39,6 +43,7 @@ module.exports = {
     alias: {
       react: `${client}/node_modules/react`,
       "react-dom": `${client}/node_modules/react-dom`,
+      app: _app,
     },
   },
   optimization: {

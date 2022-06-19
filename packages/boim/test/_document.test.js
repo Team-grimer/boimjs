@@ -38,7 +38,9 @@ describe.only("_document component", () => {
           },
         }}
       >
-        <HeadProvider value={{ setHead: mockSetHead, cssList: [] }}>
+        <HeadProvider
+          value={{ setHead: mockSetHead, cssList: [], headInstance: new Set() }}
+        >
           <Head>
             <title>성공</title>
           </Head>

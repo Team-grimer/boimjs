@@ -9,6 +9,7 @@ interface HtmlState {
 
 interface HeadState {
   cssList: Array<string> | null;
+  headInstance: Set<unknown>;
   setHead: (headChildren: React.ReactNode) => void | null;
 }
 
@@ -33,6 +34,7 @@ export default class Context {
 
   static HeadContext: React.Context<HeadState> = createContext<HeadState>({
     cssList: null,
+    headInstance: null,
     setHead: function () {
       return null;
     },

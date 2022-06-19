@@ -1,6 +1,8 @@
-import React, { ReactElement, useContext } from "react";
+import React, { ReactElement, useContext, useEffect } from "react";
 
 import Context from "../libs/contextApi";
+
+const isServer = typeof window === "undefined";
 
 interface Props {
   lang?: string | "en";
@@ -19,9 +21,21 @@ export function Html({ lang = "en", children }: Props): ReactElement {
 }
 
 export function Head({ children }: Props): ReactElement {
-  const { setHead } = useContext(HeadContext);
+  const { setHead, headInstance } = useContext(HeadContext);
 
-  setHead(children);
+  if (isServer) {
+    setHead(children);
+  }
+
+  useEffect(() => {
+    headInstance.add(children);
+    setHead([...headInstance]);
+
+    return () => {
+      headInstance.delete(children);
+      setHead([...headInstance]);
+    };
+  });
 
   return null;
 }
