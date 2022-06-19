@@ -15,6 +15,9 @@ dir.searchDirectory(`${client}/pages`);
 const componentEntries = dir.getFilePaths();
 dir.writeHydrateComponent(componentEntries);
 
+const dynamicPaths = dir.getDynamicPaths(`${client}/pages`);
+dir.writeDynamicHydrateComponent(dynamicPaths);
+
 dir.searchDirectory(`${root}/client/hydratedComponents`);
 const hydratedComponentEntries = dir.getFilePaths();
 
@@ -147,14 +150,14 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: false,
+      inject: true,
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
-      filename: ".[name][contenthash].css",
+      filename: "[name][contenthash].css",
     }),
     new WebpackManifestPlugin({
-      fileName: "../htmlAndScriptManifest.json",
+      fileName: "../manifest.json",
     }),
   ],
 };
