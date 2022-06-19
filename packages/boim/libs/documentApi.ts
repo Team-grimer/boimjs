@@ -11,7 +11,7 @@ export default class Document {
     this.headTargetList = ["meta[charset]", "meta[name=\"viewport\"]", "title"];
   }
 
-  setElement(type, element) {
+  setElement(type: string, element: HTMLElement) {
     switch (type) {
       case "head":
         this.headElement = element;
@@ -52,7 +52,10 @@ export default class Document {
     this.addChildrenToTarget(this.headElement, this.customHeadElement.children);
   }
 
-  addChildrenToTarget(targetElement, childrenElement) {
+  addChildrenToTarget(
+    targetElement: HTMLElement | null,
+    childrenElement: HTMLCollection | null
+  ) {
     Object.entries(childrenElement).forEach(([_, value]) => {
       targetElement.appendChild(value);
     });

@@ -77,15 +77,15 @@ function Page({ componentInfo }: PageProps): ReactElement {
 }
 
 function PageHead({ headList }: PageHeadProps): ReactElement {
-  const DomParser = new DOMParser();
+  const DomParser: DOMParser = new DOMParser();
 
-  const headElement = document.querySelector("head");
-  const defaultHeadElement = DomParser.parseFromString(
+  const headElement: HTMLElement = document.querySelector("head");
+  const defaultHeadElement: HTMLElement = DomParser.parseFromString(
     defaultHeadTag,
     "text/html"
   ).querySelector("head");
 
-  const docuement = new Document(headElement, defaultHeadElement);
+  const docuement: Document = new Document(headElement, defaultHeadElement);
 
   docuement.removeChildrenOfHeadElement();
   docuement.addDefaultHeadChildren();
@@ -94,13 +94,13 @@ function PageHead({ headList }: PageHeadProps): ReactElement {
     return null;
   }
 
-  const headElementList = headList.flat();
-  const headTagString = headElementList
+  const headElementList: Array<ReactElement> = headList.flat();
+  const headTagString: string = headElementList
     .map((value) => {
       return reactElementToJSXString(value);
     })
     .join("");
-  const customHeadDocument = DomParser.parseFromString(
+  const customHeadDocument: HTMLElement = DomParser.parseFromString(
     headTagString,
     "text/html"
   ).querySelector("head");

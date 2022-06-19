@@ -3,7 +3,7 @@ import React, { ReactElement } from "react";
 import _Document from "document";
 import _App from "app";
 import ReactDOMServer from "react-dom/server";
-import { parse } from "node-html-parser";
+import { parse, HTMLElement } from "node-html-parser";
 
 import Context from "../../libs/contextApi";
 import Document from "../../libs/documentApi";
@@ -49,10 +49,14 @@ function renderPageTree(
 }
 
 function getHeadString(defaultHeadTag, customHeadTagString) {
-  const originalDocument = parse(defaultHeadTag);
-  const customHeadDocument = parse(customHeadTagString);
+  const originalDocument: HTMLElement = parse(defaultHeadTag);
+  const customHeadDocument: HTMLElement = parse(customHeadTagString);
 
-  const document = new Document(originalDocument, null, customHeadDocument);
+  const document: Document = new Document(
+    originalDocument,
+    null,
+    customHeadDocument
+  );
 
   document.removeDuplicateHead();
   originalDocument.querySelector("head").appendChild(customHeadDocument);
