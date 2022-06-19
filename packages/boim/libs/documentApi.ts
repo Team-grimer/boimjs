@@ -27,37 +27,47 @@ export default class Document {
     }
   }
 
-  removeChildrenOfHeadElement() {
+  removeChildrenOfHeadElement(): () => void {
     while (this.headElement.firstChild) {
       this.headElement.removeChild(this.headElement.lastChild);
     }
+
+    return null;
   }
 
-  removeDuplicateHead() {
+  removeDuplicateHead(): () => void {
     this.headTargetList.forEach((value) => {
       if (this.customHeadElement.querySelector(value)) {
         this.headElement.querySelector(value).remove();
       }
     });
+
+    return null;
   }
 
-  addDefaultHeadChildren() {
+  addDefaultHeadChildren(): () => void {
     this.addChildrenToTarget(
       this.headElement,
       this.defaultHeadElement.children
     );
+
+    return null;
   }
 
-  addCustomHeadChildren() {
+  addCustomHeadChildren(): () => void {
     this.addChildrenToTarget(this.headElement, this.customHeadElement.children);
+
+    return null;
   }
 
   addChildrenToTarget(
     targetElement: HTMLElement | null,
     childrenElement: HTMLCollection | null
-  ) {
+  ): () => void {
     Object.entries(childrenElement).forEach(([_, value]) => {
       targetElement.appendChild(value);
     });
+
+    return null;
   }
 }
