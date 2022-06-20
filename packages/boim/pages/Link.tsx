@@ -9,6 +9,19 @@ type href = {
   query: { [key: string]: string };
 };
 
+function createPropError(args: {
+  key: string;
+  expected: string;
+  actual: string;
+}) {
+  return new Error(
+    `Failed prop type: The prop \`${args.key}\` expects a ${args.expected} in \`<Link>\`, but got \`${args.actual}\` instead.` +
+      (typeof window !== "undefined"
+        ? "\nOpen your browser's console to view the Component stack trace."
+        : "")
+  );
+}
+
 function verificationHref(href) {
   if (typeof href === "string") {
     return href;
@@ -37,6 +50,41 @@ function clickLink(router, href, e) {
 }
 
 export default function Link(props) {
+  const requiredProps = {
+    href: true,
+  };
+  const optionnalProps = {
+    onClick: true,
+  };
+
+  Object.keys(requiredProps).forEach((key) => {
+    if (key === "href") {
+      if (
+        props[key] === null ||
+        (typeof props[key] !== "string" && typeof props[key] !== "object")
+      ) {
+        throw createPropError({
+          key,
+          expected: "`string` or `object`",
+          actual: props[key] === null ? "null" : typeof props[key],
+        });
+      }
+    }
+  });
+  Object.keys(optionnalProps).forEach((key) => {
+    const valType = typeof props[key];
+
+    if (key === "onClick") {
+      if (props[key] && valType !== "function") {
+        throw createPropError({
+          key,
+          expected: "`function`",
+          actual: valType,
+        });
+      }
+    }
+  });
+
   const { href: herfProp, children: childrenProp } = props;
   let children: React.ReactNode = childrenProp;
   let child;
