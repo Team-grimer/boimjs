@@ -22,6 +22,10 @@ function verificationHref(href) {
       queryString += `${key}=${value}&`;
     });
 
+    if (queryString.lastIndexOf("&")) {
+      queryString = queryString.substring(0, queryString.length - 1);
+    }
+
     return path.concat(queryString);
   }
 }
@@ -37,8 +41,10 @@ export default function Link(props) {
   let children: React.ReactNode = childrenProp;
   let child;
 
+  const href = verificationHref(herfProp);
+
   if (typeof childrenProp === "string") {
-    children = <a>{children}</a>;
+    children = <a href={href}>{children}</a>;
   }
 
   try {
@@ -49,14 +55,10 @@ export default function Link(props) {
 
   const router = useContext(RouterContext);
 
-  const href = verificationHref(herfProp);
-
   const childProps = {
     href,
     onClick: (e) => {
-      if (!e.defaultPrevented) {
-        clickLink(router, href, e);
-      }
+      clickLink(router, href, e);
     },
   };
 
