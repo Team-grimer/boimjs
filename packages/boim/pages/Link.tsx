@@ -85,7 +85,7 @@ export default function Link(props) {
     }
   });
 
-  const { href: herfProp, children: childrenProp } = props;
+  const { href: herfProp, children: childrenProp, onClick } = props;
   let children: React.ReactNode = childrenProp;
   let child;
 
@@ -106,6 +106,14 @@ export default function Link(props) {
   const childProps = {
     href,
     onClick: (e) => {
+      if (typeof onClick === "function") {
+        onClick(e);
+      }
+
+      if (child.props && typeof child.props.onClick === "function") {
+        child.props.onClick(e);
+      }
+
       clickLink(router, href, e);
     },
   };
