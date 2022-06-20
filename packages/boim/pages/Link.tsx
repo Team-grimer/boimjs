@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { ReactElement, useContext } from "react";
 
 import Context from "../libs/contextApi";
 
@@ -7,6 +7,11 @@ const { RouterContext } = Context;
 type href = {
   path: string;
   query: { [key: string]: string };
+};
+
+type childProps = {
+  href: string;
+  onClick: (event: React.MouseEvent) => void;
 };
 
 function createPropError(args: {
@@ -22,7 +27,7 @@ function createPropError(args: {
   );
 }
 
-function resolvedHref(href) {
+function resolvedHref(href: href): string {
   if (typeof href === "object") {
     if (!href["path"]) {
       throw new Error("Link component href props required path key");
@@ -53,13 +58,13 @@ function resolvedHref(href) {
   }
 }
 
-function clickLink(router, href, e) {
+function clickLink(router, href, e): void {
   e.preventDefault();
 
   router.push(href, null);
 }
 
-export default function Link(props) {
+export default function Link(props): ReactElement {
   const requiredProps = {
     href: true,
   };
@@ -82,7 +87,7 @@ export default function Link(props) {
     }
   });
   Object.keys(optionnalProps).forEach((key) => {
-    const valType = typeof props[key];
+    const valType: string = typeof props[key];
 
     if (key === "onClick") {
       if (props[key] && valType !== "function") {
@@ -97,9 +102,9 @@ export default function Link(props) {
 
   const { href: herfProp, children: childrenProp, onClick } = props;
   let children: React.ReactNode = childrenProp;
-  let child;
+  let child: any;
 
-  const href = resolvedHref(herfProp);
+  const href: string = resolvedHref(herfProp);
 
   if (typeof childrenProp === "string") {
     children = <a href={href}>{children}</a>;
@@ -113,7 +118,7 @@ export default function Link(props) {
 
   const router = useContext(RouterContext);
 
-  const childProps = {
+  const childProps: childProps = {
     href,
     onClick: (e) => {
       if (typeof onClick === "function") {
