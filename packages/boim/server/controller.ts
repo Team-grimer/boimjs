@@ -49,6 +49,7 @@ interface ManifestResult {
 }
 
 const dir = new Directory();
+const buildId = Math.random().toString(26).slice(2);
 
 export default async function handleGetPage(
   req: Request,
@@ -121,6 +122,7 @@ export default async function handleGetPage(
 
     if (resource.renderType === "SSG" || resource.renderType === "DEFAULT") {
       res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+      res.set({ ETag: buildId });
       const htmlFile = fs.readFileSync(resource.htmlFilePath, "utf-8");
       res.send(htmlFile);
       return;

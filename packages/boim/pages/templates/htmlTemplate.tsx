@@ -3,10 +3,10 @@ import React, { ReactElement } from "react";
 import _Document from "document";
 import _App from "app";
 import ReactDOMServer from "react-dom/server";
+import { parse, HTMLElement } from "node-html-parser";
 
 import Context from "../../libs/contextApi";
-
-const { HtmlProvider, HeadProvider } = Context;
+import Document from "../../libs/documentApi";
 
 interface HTMLProps {
   main: ReactElement;
@@ -18,24 +18,16 @@ interface HEADProps {
   cssList?: Array<string> | null;
 }
 
-function DefaultHead(): ReactElement {
-  return (
-    <>
-      <meta charSet="utf-8"></meta>
-      <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
-      <title>Boim js</title>
-    </>
-  );
-}
+const { HtmlProvider, HeadProvider } = Context;
+
+const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
+<meta name="viewport" content="width=device-width,initial-scale=1"></meta>
+<title>Boim js</title></head>`;
 
 function CustomHead({ headList, cssList }: HEADProps): ReactElement {
   return (
     <head>
-      {headList.length ? (
-        <>{headList.map((value) => value)}</>
-      ) : (
-        <DefaultHead />
-      )}
+      <>{headList.map((value) => value)}</>
 
       {cssList.length ? (
         <>
@@ -54,6 +46,22 @@ function renderPageTree(
   pageProps: any
 ): ReactElement {
   return <App Component={Component} pageProps={pageProps.renderProps} />;
+}
+
+function getHeadString(defaultHeadTag, customHeadTagString) {
+  const originalDocument: HTMLElement = parse(defaultHeadTag);
+  const customHeadDocument: HTMLElement = parse(customHeadTagString);
+
+  const document: Document = new Document(
+    originalDocument,
+    null,
+    customHeadDocument
+  );
+
+  document.removeDuplicateHead();
+  originalDocument.querySelector("head").appendChild(customHeadDocument);
+
+  return originalDocument.toString();
 }
 
 export function getHTML(
@@ -75,6 +83,7 @@ export function getHTML(
 
   const headContextValue = {
     cssList,
+    headInstance: new Set(),
     setHead: (headChildren) => {
       if (headChildren) headComponentList.push(headChildren);
     },
@@ -89,12 +98,14 @@ export function getHTML(
   );
 
   let html: string = ReactDOMServer.renderToString(document);
-  const head: string = ReactDOMServer.renderToString(
+  const customHeadTag: string = ReactDOMServer.renderToString(
     <CustomHead
       headList={headComponentList}
       cssList={headContextValue.cssList}
     />
   );
+
+  const head: string = getHeadString(defaultHeadTag, customHeadTag);
 
   html = html.replace("<head></head>", head);
 

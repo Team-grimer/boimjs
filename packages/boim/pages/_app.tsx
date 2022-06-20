@@ -1,7 +1,7 @@
 import React, { ReactElement } from "react";
 
 interface Props {
-  Component: React.FunctionComponent<unknown>;
+  Component: React.FC<React.ReactNode>;
   pageProps?: {
     props: object;
   };

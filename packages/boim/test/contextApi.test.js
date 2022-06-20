@@ -57,6 +57,7 @@ describe("contextApi test", () => {
     function Page() {
       const props = {
         cssList: null,
+        headInstance: new Set(),
         setHead: mockSetHead,
       };
 

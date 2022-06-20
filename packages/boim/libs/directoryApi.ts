@@ -24,6 +24,25 @@ export default class Directory {
     return this.cssFiles;
   }
 
+  async getDynamicRouteInfo() {
+    const result: { [key: string]: Array<object> } = {};
+    const dynamicPaths: { [key: string]: string } = this.getDynamicPaths(
+      `${pathAlias.client}/pages`
+    );
+
+    for (const directoryPath of Object.keys(dynamicPaths)) {
+      const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
+      const app = Object.assign({}, dynamicComponent);
+
+      if (dynamicComponent.hasOwnProperty("PATHS")) {
+        const { paths } = await app.PATHS();
+        result[directoryPath] = paths;
+      }
+    }
+
+    return result;
+  }
+
   getDynamicPaths(startDirectoryPath: string): { [key: string]: string } {
     const dynamicPaths: { [key: string]: string } = {};
     const recursivelySearchDynamicPath = (directoryPath: string): void => {
@@ -105,21 +124,24 @@ export default class Directory {
       const componentsPath = `${pathAlias.client}/pages`;
       const outPath = `${pathAlias.root}/client/hydratedComponents`;
       const content = `import React from "react";
-        import ReactDOM from "react-dom";
-        import * as App from "${componentsPath + dir}.js";
-        import Fetch from "${pathAlias.root}/libs/fetchApi";
-        import Route from "${pathAlias.root}/pages/Route";
+import ReactDOM from "react-dom";
+import * as App from "${componentsPath + dir}.js";
+import Fetch from "${pathAlias.root}/libs/fetchApi";
+import Route from "${pathAlias.root}/pages/Route";
+import _App from "app";
 
-        const app = Object.assign({}, App);
-        const Component = app["default"];
-        const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
-        async function hydrate() {
-          const result = await Fetch.getProps(type, app[type]);
-          const container = document.getElementById("__boim");
-          ReactDOM.hydrate(<Route initialInfo={{ result, Component }} />, container);
-        }
-        hydrate();
-      `;
+const app = Object.assign({}, App);
+const Component = app["default"];
+const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+
+async function hydrate() {
+  const result = await Fetch.getProps(type, app[type]);
+  const container = document.getElementById("__boim");
+
+  ReactDOM.hydrate(<Route initialInfo={{ _App, result, Component }} />, container);
+}
+hydrate();
+`;
 
       try {
         !isFile(dir) &&
@@ -158,10 +180,11 @@ export default class Directory {
             import ReactDOM from "react-dom";
             import Component from "${pathAlias.client}/pages${directoryPath}/index.js";
             import Route from "${pathAlias.root}/pages/Route";
+            import _App from "app";
 
             const result = ${props}
             const container = document.getElementById("__boim");
-            ReactDOM.hydrate(<Route initialInfo={{ result, Component }} />, container);
+            ReactDOM.hydrate(<Route initialInfo={{ _App, result, Component }} />, container);
           `;
 
           const key: string = directoryPath
