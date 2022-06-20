@@ -22,7 +22,13 @@ function createPropError(args: {
   );
 }
 
-function verificationHref(href) {
+function resolvedHref(href) {
+  if (typeof href === "object") {
+    if (!href["path"]) {
+      throw new Error("Link component href props required path key");
+    }
+  }
+
   if (typeof href === "string") {
     return href;
   }
@@ -30,16 +36,20 @@ function verificationHref(href) {
   if (typeof href === "object" && !Array.isArray(href)) {
     const { path, query }: href = href;
 
-    let queryString = "?";
-    Object.entries(query).forEach(([key, value]) => {
-      queryString += `${key}=${value}&`;
-    });
+    if (href["query"]) {
+      let queryString = "?";
+      Object.entries(query).forEach(([key, value]) => {
+        queryString += `${key}=${value}&`;
+      });
 
-    if (queryString.lastIndexOf("&")) {
-      queryString = queryString.substring(0, queryString.length - 1);
+      if (queryString.lastIndexOf("&")) {
+        queryString = queryString.substring(0, queryString.length - 1);
+      }
+
+      return path.concat(queryString);
     }
 
-    return path.concat(queryString);
+    return path;
   }
 }
 
@@ -89,7 +99,7 @@ export default function Link(props) {
   let children: React.ReactNode = childrenProp;
   let child;
 
-  const href = verificationHref(herfProp);
+  const href = resolvedHref(herfProp);
 
   if (typeof childrenProp === "string") {
     children = <a href={href}>{children}</a>;
