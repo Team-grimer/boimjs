@@ -24,7 +24,7 @@ function createPropError(args: {
   );
 }
 
-function resolvedHref(href: href): string {
+function resolvedHref(href: Href): string {
   if (typeof href === "object") {
     if (!href["path"]) {
       throw new Error("Link component href props required path key");
@@ -36,7 +36,7 @@ function resolvedHref(href: href): string {
   }
 
   if (typeof href === "object" && !Array.isArray(href)) {
-    const { path, query }: href = href;
+    const { path, query }: Href = href;
 
     if (href["query"]) {
       let queryString = "?";
@@ -65,7 +65,7 @@ export default function Link(props): ReactElement {
   const requiredProps = {
     href: true,
   };
-  const optionnalProps = {
+  const optionalProps = {
     onClick: true,
   };
 
@@ -83,7 +83,7 @@ export default function Link(props): ReactElement {
       }
     }
   });
-  Object.keys(optionnalProps).forEach((key) => {
+  Object.keys(optionalProps).forEach((key) => {
     const valType: string = typeof props[key];
 
     if (key === "onClick") {
@@ -115,7 +115,7 @@ export default function Link(props): ReactElement {
 
   const router = useContext(RouterContext);
 
-  const childProps: childProps = {
+  const childProps: ChildProps = {
     href,
     onClick: (e) => {
       if (typeof onClick === "function") {
