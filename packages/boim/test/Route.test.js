@@ -1,14 +1,11 @@
 /**
  * @jest-environment jsdom
  */
-import React, { useContext } from "react";
+import React from "react";
 
 import { render, screen } from "@testing-library/react";
 
-import Context from "../libs/contextApi";
 import Route from "../pages/Route";
-
-const { RouterContext } = Context;
 
 describe("Route Component render test", () => {
   function App({ Component }) {
@@ -16,10 +13,6 @@ describe("Route Component render test", () => {
   }
 
   function Page() {
-    const router = useContext(RouterContext);
-
-    // router.push("/", null);
-
     return <p>boim 페이지</p>;
   }
 
