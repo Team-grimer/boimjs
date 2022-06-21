@@ -70,6 +70,14 @@ export function getHTML(
   cssList: Array<string>,
   scriptList: Array<string>
 ): string {
+  if (process.env.NODE_ENV !== "production") {
+    const isDoucment = React.isValidElement(_Document);
+
+    if (!isDoucment) {
+      throw new Error("Document file is return React Element");
+    }
+  }
+
   const htmlProps: HTMLProps = {
     main: renderPageTree(_App, Component, pageProps),
     scriptList,
@@ -79,6 +87,12 @@ export function getHTML(
 
   const htmlContextValue = {
     context: htmlProps,
+    docComponentRendered: {
+      Html: false,
+      Main: false,
+      Script: false,
+      Head: false,
+    },
   };
 
   const headContextValue = {
@@ -98,6 +112,29 @@ export function getHTML(
   );
 
   let html: string = ReactDOMServer.renderToString(document);
+
+  if (process.env.NODE_ENV !== "production") {
+    const nonRenderedComponents = [];
+    const expectedDocComponents = ["Main", "Head", "Script", "Html"];
+
+    for (const comp of expectedDocComponents) {
+      if (!htmlContextValue.docComponentRendered[comp]) {
+        nonRenderedComponents.push(comp);
+      }
+    }
+
+    if (nonRenderedComponents.length) {
+      const missingComponentList = nonRenderedComponents
+        .map((e) => `<${e} />`)
+        .join(", ");
+      const plural = nonRenderedComponents.length !== 1 ? "s" : "";
+      throw new Error(
+        `Your custom Document (pages/_document) did not render all the required subcomponent${plural}.\n` +
+          `Missing component${plural}: ${missingComponentList}\n`
+      );
+    }
+  }
+
   const customHeadTag: string = ReactDOMServer.renderToString(
     <CustomHead
       headList={headComponentList}
