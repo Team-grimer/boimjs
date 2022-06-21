@@ -14,9 +14,9 @@ const dir = new Directory();
 
 dir.searchDirectory(`${client}/pages`);
 const componentEntries = dir.getFilePaths();
-dir.writeHydrateComponent(componentEntries);
-
 const dynamicPaths = dir.getDynamicPaths(`${client}/pages`);
+
+dir.writeHydrateComponent(componentEntries, dynamicPaths);
 dir.writeDynamicHydrateComponent(dynamicPaths);
 
 dir.searchDirectory(`${root}/client/hydratedComponents`);
