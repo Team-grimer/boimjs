@@ -9,7 +9,7 @@
     "build:hydration": "webpack --config ./config/webpack.hydration.config.js",
     "build:dynamic": "webpack --config ./config/webpack.dynamic.config.js",
     "build:server": "webpack --config ./config/webpack.server.config.js",
-    "dev": "NODE_ENV=development npm run build",
+    "dev": "NODE_ENV=development npm run build && webpack -w",
     "build": "npm run build:lib && npm run build:hydration && npm run build:dynamic && npm run build:server",
     "start": "npm run build && node --experimental-modules ../../../dist/server/_www"
   },
