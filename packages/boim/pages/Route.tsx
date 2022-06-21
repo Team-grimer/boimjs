@@ -13,7 +13,7 @@ interface Props {
   result: {
     [key: string]: any;
   };
-  Component: ReactElement;
+  Component: ReactElement | React.FC;
   dynamicPathInfo: {
     [key: string]: Array<{ params: { [key: string]: string } }>;
   };
@@ -235,8 +235,8 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
         const type: string = app["SSG"]
           ? "SSG"
           : app["SSR"]
-            ? "SSR"
-            : "DEFAULT";
+          ? "SSR"
+          : "DEFAULT";
         result = await Fetch.getProps(type, app[type]);
       }
 
