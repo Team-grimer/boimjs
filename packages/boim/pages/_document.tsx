@@ -12,6 +12,10 @@ interface Props {
 const { HtmlContext, HeadContext } = Context;
 
 export function Html({ lang = "en", children }: Props): ReactElement {
+  const { docComponentRendered } = useContext(HtmlContext);
+
+  docComponentRendered.Html = true;
+
   return (
     <html lang={lang}>
       <head></head>
@@ -22,6 +26,9 @@ export function Html({ lang = "en", children }: Props): ReactElement {
 
 export function Head({ children }: Props): ReactElement {
   const { setHead, headInstance } = useContext(HeadContext);
+  const { docComponentRendered } = useContext(HtmlContext);
+
+  docComponentRendered.Head = true;
 
   if (isServer) {
     setHead(children);
@@ -45,13 +52,18 @@ function Body({ children }: Props): ReactElement {
 }
 
 export function Main(): ReactElement {
-  const { context } = useContext(HtmlContext);
+  const { context, docComponentRendered } = useContext(HtmlContext);
+
+  docComponentRendered.Main = true;
 
   return <Body>{context.main}</Body>;
 }
 
 export function Script(): ReactElement {
-  const { context } = useContext(HtmlContext);
+  const { context, docComponentRendered } = useContext(HtmlContext);
+
+  docComponentRendered.Script = true;
+
   return (
     <>
       {context.scriptList.map((path) => (
