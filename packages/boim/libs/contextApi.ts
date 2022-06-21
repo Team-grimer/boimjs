@@ -5,6 +5,9 @@ interface HtmlState {
     main: ReactElement | null;
     scriptList: Array<string> | null;
   } | null;
+  docComponentRendered: {
+    [key: string]: boolean;
+  };
 }
 
 interface HeadState {
@@ -29,6 +32,12 @@ export default class Context {
     context: {
       main: null,
       scriptList: null,
+    },
+    docComponentRendered: {
+      Html: false,
+      Main: false,
+      Script: false,
+      Head: false,
     },
   });
 
