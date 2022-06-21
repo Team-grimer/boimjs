@@ -4,12 +4,12 @@ import Context from "../libs/contextApi";
 
 const { RouterContext } = Context;
 
-type href = {
+type Href = {
   path: string;
   query: { [key: string]: string };
 };
 
-type childProps = {
+type ChildProps = {
   href: string;
   onClick: (event: React.MouseEvent) => void;
 };
