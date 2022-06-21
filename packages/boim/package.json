@@ -9,6 +9,7 @@
     "build:hydration": "webpack --config ./config/webpack.hydration.config.js",
     "build:dynamic": "webpack --config ./config/webpack.dynamic.config.js",
     "build:server": "webpack --config ./config/webpack.server.config.js",
+    "dev": "NODE_ENV=development npm run build",
     "build": "npm run build:lib && npm run build:hydration && npm run build:dynamic && npm run build:server",
     "start": "npm run build && node --experimental-modules ../../../dist/server/_www"
   },
@@ -48,6 +49,10 @@
     "eslint-plugin-react": "^7.28.0",
     "history": "^5.3.0",
     "html-webpack-plugin": "^5.5.0",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-jpegtran": "^7.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-svgo": "^10.0.1",
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.1",
     "less": "^4.1.3",

@@ -18,9 +18,61 @@ const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
 const { _app } = Search.getBaseComponentPath(fileList);
 
+const isDevelopment = process.env.NODE_ENV === "development";
+console.log("isDevelopment", isDevelopment);
+
 module.exports = {
   target: "node",
-  mode: "production",
+  mode: isDevelopment ? "development" : "production",
+  devServer: isDevelopment
+    ? {
+      allowedHosts: "auto",
+      bonjour: {
+        type: "http",
+        protocol: "udp",
+      },
+      client: {
+        overlay: {
+          errors: true,
+          warnings: false,
+          reconnect: 5,
+        },
+      },
+      compress: true,
+      devMiddleware: {
+        index: true,
+        mimeTypes: { phtml: "text/html" },
+        publicPath: "/publicPathForDevServe",
+        serverSideRender: true,
+        writeToDisk: true,
+      },
+      http2: true,
+      historyApiFallback: true,
+      host: "0.0.0.0",
+      hot: "only",
+      liveReload: false,
+      magicHtml: true,
+      open: true,
+      port: 7777,
+      proxy: {
+        "/api": {
+          target: "http://localhost:3000",
+          bypass: function (req, res, proxyOptions) {
+            if (req.headers.accept.indexOf("html") !== -1) {
+              console.log("Skipping proxy for browser request.");
+              return "/index.html";
+            }
+          },
+        },
+      },
+      static: {
+        directoryPath: [`${client}/dist`],
+        staticOptions: {
+          redirect: true,
+        },
+      }
+    }
+    : undefined,
   entry: hydratedDynamicComponentEntries,
   output: {
     path: `${client}/dist/pages`,
@@ -39,7 +91,7 @@ module.exports = {
     },
   },
   optimization: {
-    minimize: true,
+    minimize: isDevelopment ? false : true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
@@ -69,33 +121,23 @@ module.exports = {
         ],
       },
       {
-        test: /\.(less|scss)$/,
-        use: [
+        test: /\.(less|scss|module.css)$/,
+        use:  isDevelopment ? [
           {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: true,
-            },
-          },
-          {
-            loader: "css-loader",
+            loader: "css-loader?exportOnlyLocals",
             options: {
               modules: true,
             },
           },
-          "postcss-loader",
           {
             loader: "sass-loader",
             options: {
               sourceMap: true,
             },
           },
+          "postcss-loader",
           "less-loader",
-        ],
-      },
-      {
-        test: /\.module.css$/,
-        use: [
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -108,15 +150,30 @@ module.exports = {
               modules: true,
             },
           },
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "postcss-loader",
+          "less-loader",
         ],
       },
       {
         test: /\.css$/,
-        use: [
+        use: isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: false,
+            },
+          },
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: true,
+              emit: false,
             },
           },
           {
@@ -126,8 +183,7 @@ module.exports = {
             },
           },
         ],
-      },
-      {
+      },      {
         test: /\.(png|jpg|jpeg|gif)$/i,
         type: "asset/resource",
         parser: {
