@@ -1,6 +1,5 @@
 import React, { ReactElement } from "react";
 
-import { Response } from "express";
 import * as ReactIs from "react-is";
 import _Document from "document";
 import _App from "app";
@@ -70,38 +69,28 @@ export function getHTML(
   Component: React.FC,
   pageProps: { [key: string]: any },
   cssList: Array<string>,
-  scriptList: Array<string>,
-  url: string,
-  res: Response
+  scriptList: Array<string>
 ): string {
-  if (process.env.NODE_ENV !== "production") {
+  if (process.env.NODE_ENV === "production") {
     if (!ReactIs.isValidElementType(_Document)) {
-      res.statusCode = 405;
-
       throw new Error(
         'The default export is not a React Component in page: "/_document"'
       );
     }
 
     if (!ReactIs.isValidElementType(_App)) {
-      res.statusCode = 405;
-
       throw new Error(
         'The default export is not a React Component in page: "/_app"'
       );
     }
 
     if (!ReactIs.isValidElementType(Component)) {
-      res.statusCode = 405;
-
       throw new Error(
         'The default export is not a React Component in page: "pathname"'
       );
     }
 
     if (!pageProps.renderProps["props"]) {
-      res.statusCode = 405;
-
       throw new Error(
         "function SSG or SSR must return an object containing the props property"
       );
