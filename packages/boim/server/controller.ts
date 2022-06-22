@@ -128,11 +128,10 @@ export default async function handleGetPage(
         resource.component,
         resource.componentProps,
         resource.cssList,
-        resource.scriptList,
-        url,
-        res
+        resource.scriptList
       );
     } catch (err) {
+      res.statusCode = 405;
       next(err);
       return;
     }
