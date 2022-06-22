@@ -84,8 +84,6 @@ const MemoedPage: React.FC<PageProps> = React.memo(Page);
 const MemoedPageHead: React.FC<PageHeadProps> = React.memo(PageHead);
 
 function Page({ componentInfo }: PageProps): ReactElement {
-  console.log("!!!!!!", componentInfo);
-
   return (
     <componentInfo._App
       Component={componentInfo.Component}
@@ -266,8 +264,8 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
           const type: string = app["SSG"]
             ? "SSG"
             : app["SSR"]
-              ? "SSR"
-              : "DEFAULT";
+            ? "SSR"
+            : "DEFAULT";
           initialProps = await Fetch.getProps(type, app[type]);
         }
 
