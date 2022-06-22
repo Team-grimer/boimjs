@@ -36,6 +36,7 @@ describe.only("_document component", () => {
             main: null,
             scriptList: null,
           },
+          docComponentRendered: {},
         }}
       >
         <HeadProvider
@@ -63,6 +64,7 @@ describe.only("_document component", () => {
             main: <Test />,
             scriptList: null,
           },
+          docComponentRendered: {},
         }}
       >
         <Main />
@@ -83,6 +85,7 @@ describe.only("_document component", () => {
             main: null,
             scriptList: mockScriptList,
           },
+          docComponentRendered: {},
         }}
       >
         <Script />
