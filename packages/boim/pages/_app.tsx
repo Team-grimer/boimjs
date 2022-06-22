@@ -1,12 +1,14 @@
 import React, { ReactElement } from "react";
 
 interface Props {
-  Component: React.FC<React.ReactNode>;
+  Component: React.FC;
   pageProps?: {
     props: object;
   };
 }
 
-export default function App({ Component, pageProps }: Props): ReactElement {
+const App: React.FC<Props> = ({ Component, pageProps }) => {
   return <Component {...pageProps.props} />;
-}
+};
+
+export default App;

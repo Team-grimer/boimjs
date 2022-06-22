@@ -11,7 +11,7 @@ interface Props {
 
 const { HtmlContext, HeadContext } = Context;
 
-export function Html({ lang = "en", children }: Props): ReactElement {
+export const Html: React.FC<Props> = ({ lang = "en", children }) => {
   const { docComponentRendered } = useContext(HtmlContext);
 
   docComponentRendered.Html = true;
@@ -22,9 +22,9 @@ export function Html({ lang = "en", children }: Props): ReactElement {
       {children}
     </html>
   );
-}
+};
 
-export function Head({ children }: Props): ReactElement {
+export const Head: React.FC<Props> = ({ children }) => {
   const { setHead, headInstance } = useContext(HeadContext);
   const { docComponentRendered } = useContext(HtmlContext);
 
@@ -45,21 +45,21 @@ export function Head({ children }: Props): ReactElement {
   });
 
   return null;
-}
+};
 
-function Body({ children }: Props): ReactElement {
+export const Body: React.FC<Props> = ({ children }) => {
   return <div id="__boim">{children}</div>;
-}
+};
 
-export function Main(): ReactElement {
+export const Main: React.FC = () => {
   const { context, docComponentRendered } = useContext(HtmlContext);
 
   docComponentRendered.Main = true;
 
   return <Body>{context.main}</Body>;
-}
+};
 
-export function Script(): ReactElement {
+export const Script: React.FC = () => {
   const { context, docComponentRendered } = useContext(HtmlContext);
 
   docComponentRendered.Script = true;
@@ -71,9 +71,9 @@ export function Script(): ReactElement {
       ))}
     </>
   );
-}
+};
 
-export default function Document(): ReactElement {
+const Document: React.FC = () => {
   return (
     <Html>
       <Head />
@@ -83,4 +83,6 @@ export default function Document(): ReactElement {
       </body>
     </Html>
   );
-}
+};
+
+export default Document;
