@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React from "react";
 
 interface Props {
   Component: React.FC;

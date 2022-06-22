@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 
 import Context from "../libs/contextApi";
 
