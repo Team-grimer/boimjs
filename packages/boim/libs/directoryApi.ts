@@ -173,7 +173,6 @@ hydrate();
         const { paths } = await app.PATHS();
 
         paths.forEach(async (param) => {
-          console.log("와우", param);
           const pageProps: pageProps = await app.SSG(param);
           const props = JSON.stringify({
             renderType: "StaticSiteGeneration",
