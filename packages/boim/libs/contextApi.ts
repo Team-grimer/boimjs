@@ -2,7 +2,7 @@ import React, { createContext, ReactElement } from "react";
 
 interface HtmlState {
   context: {
-    main: ReactElement | null;
+    main: ReactElement;
     scriptList: Array<string> | null;
   } | null;
   docComponentRendered: {
