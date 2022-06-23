@@ -90,10 +90,22 @@ export function getHTML(
       );
     }
 
-    if (!pageProps.renderProps["props"]) {
+    if (!pageProps.renderProps || !pageProps.renderProps["props"]) {
       throw new Error(
         "function SSG or SSR must return an object containing the props property"
       );
+    } else if (pageProps.renderProps.props) {
+      if (typeof pageProps.renderProps.props !== "object") {
+        throw new Error("props property must return an object");
+      }
+
+      const propsKeyList = Object.keys(pageProps.renderProps.props);
+
+      if (!propsKeyList.length) {
+        throw new Error(
+          "props property must return an object containing property"
+        );
+      }
     }
   }
 
