@@ -139,10 +139,10 @@ const type = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
 const dynamicPathInfo = ${JSON.stringify(dynamicPaths)};
 
 async function hydrate() {
-  const result = await Fetch.getProps(type, app[type]);
+  const initialProps = await Fetch.getProps(type, app[type]);
   const container = document.getElementById("__boim");
 
-  ReactDOM.hydrate(<Route initialInfo={{ _App, result, Component, dynamicPathInfo }} />, container);
+  ReactDOM.hydrate(<Route initialInfo={{ _App, initialProps, Component, dynamicPathInfo }} />, container);
 }
 hydrate();
 `;
@@ -173,7 +173,6 @@ hydrate();
         const { paths } = await app.PATHS();
 
         paths.forEach(async (param) => {
-          console.log("와우", param);
           const pageProps: pageProps = await app.SSG(param);
           const props = JSON.stringify({
             renderType: "StaticSiteGeneration",
@@ -190,9 +189,9 @@ hydrate();
             import _App from "app";
             const dynamicPathInfo = ${JSON.stringify(files)};
 
-            const result = ${props}
+            const initialProps = ${props}
             const container = document.getElementById("__boim");
-            ReactDOM.hydrate(<Route initialInfo={{ _App, result, Component, dynamicPathInfo }} />, container);
+            ReactDOM.hydrate(<Route initialInfo={{ _App, initialProps, Component, dynamicPathInfo }} />, container);
           `;
 
           const key: string = directoryPath

@@ -19,7 +19,7 @@ describe("Route Component render test", () => {
   test("Route Component render test", () => {
     const initialInfo = {
       _App: App,
-      result: {},
+      initialProps: {},
       Component: Page,
       dynamicPathInfo: {},
     };

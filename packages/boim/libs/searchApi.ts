@@ -67,8 +67,7 @@ export default class Search {
     const dynamicResult = getFilesInfo(dynamicFiles, expectFiles);
 
     if (!staticResult.hasValue && !dynamicResult.hasValue) {
-      console.log("not found");
-      return; // 에러 처리 필요 404
+      throw new Error("Page Not Found");
     }
 
     return { staticResult, dynamicResult };
