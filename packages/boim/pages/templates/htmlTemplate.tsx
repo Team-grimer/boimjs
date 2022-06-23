@@ -1,5 +1,6 @@
 import React, { ReactElement } from "react";
 
+import * as ReactIs from "react-is";
 import _Document from "document";
 import _App from "app";
 import ReactDOMServer from "react-dom/server";
@@ -24,7 +25,7 @@ const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
 <title>Boim js</title></head>`;
 
-function CustomHead({ headList, cssList }: HEADProps): ReactElement {
+const CustomHead: React.FC<HEADProps> = ({ headList, cssList }) => {
   return (
     <head>
       <>{headList.map((value) => value)}</>
@@ -38,13 +39,13 @@ function CustomHead({ headList, cssList }: HEADProps): ReactElement {
       ) : undefined}
     </head>
   );
-}
+};
 
 function renderPageTree(
   App: React.FunctionComponent<any>,
-  Component: ReactElement,
+  Component: React.FC,
   pageProps: any
-): ReactElement {
+) {
   return <App Component={Component} pageProps={pageProps.renderProps} />;
 }
 
@@ -65,13 +66,41 @@ function getHeadString(defaultHeadTag, customHeadTagString) {
 }
 
 export function getHTML(
-  Component: ReactElement,
-  pageProps: object,
+  Component: React.FC,
+  pageProps: { [key: string]: any },
   cssList: Array<string>,
   scriptList: Array<string>
 ): string {
+  if (process.env.NODE_ENV === "production") {
+    if (!ReactIs.isValidElementType(_Document)) {
+      throw new Error(
+        'The default export is not a React Component in page: "/_document"'
+      );
+    }
+
+    if (!ReactIs.isValidElementType(_App)) {
+      throw new Error(
+        'The default export is not a React Component in page: "/_app"'
+      );
+    }
+
+    if (!ReactIs.isValidElementType(Component)) {
+      throw new Error(
+        'The default export is not a React Component in page: "pathname"'
+      );
+    }
+
+    if (!pageProps.renderProps["props"]) {
+      throw new Error(
+        "function SSG or SSR must return an object containing the props property"
+      );
+    }
+  }
+
+  const pageComponent = renderPageTree(_App, Component, pageProps);
+
   const htmlProps: HTMLProps = {
-    main: renderPageTree(_App, Component, pageProps),
+    main: pageComponent,
     scriptList,
   };
 
@@ -79,6 +108,12 @@ export function getHTML(
 
   const htmlContextValue = {
     context: htmlProps,
+    docComponentRendered: {
+      Html: false,
+      Main: false,
+      Script: false,
+      Head: false,
+    },
   };
 
   const headContextValue = {
@@ -97,12 +132,75 @@ export function getHTML(
     </HtmlProvider>
   );
 
-  let html: string = ReactDOMServer.renderToString(document);
+  let html: string;
+
+  html = ReactDOMServer.renderToString(document);
+
+  if (process.env.NODE_ENV === "production") {
+    const nonRenderedComponents = [];
+    const expectedDocComponents = ["Main", "Head", "Script", "Html"];
+
+    for (const comp of expectedDocComponents) {
+      if (!htmlContextValue.docComponentRendered[comp]) {
+        nonRenderedComponents.push(comp);
+      }
+    }
+
+    if (nonRenderedComponents.length) {
+      const missingComponentList = nonRenderedComponents
+        .map((e) => `<${e} />`)
+        .join(", ");
+      const plural = nonRenderedComponents.length !== 1 ? "s" : "";
+      throw new Error(
+        `Your custom Document (pages/_document) did not render all the required subcomponent${plural}.\n` +
+          `Missing component${plural}: ${missingComponentList}\n`
+      );
+    }
+  }
+
   const customHeadTag: string = ReactDOMServer.renderToString(
     <CustomHead
       headList={headComponentList}
       cssList={headContextValue.cssList}
     />
+  );
+
+  const head: string = getHeadString(defaultHeadTag, customHeadTag);
+
+  html = html.replace("<head></head>", head);
+
+  return html;
+}
+
+export function renderToErrorPage(
+  Component: React.FC,
+  pageProps: { [key: string]: any }
+) {
+  const headComponentList: ReactElement[] = [];
+
+  const headContextValue = {
+    cssList: [],
+    headInstance: new Set(),
+    setHead: (headChildren) => {
+      if (headChildren) headComponentList.push(headChildren);
+    },
+  };
+
+  const document: ReactElement = (
+    <HeadProvider value={headContextValue}>
+      <html>
+        <head></head>
+        <body>
+          <Component {...pageProps.renderProps.props} />
+        </body>
+      </html>
+    </HeadProvider>
+  );
+
+  let html: string = ReactDOMServer.renderToString(document);
+
+  const customHeadTag: string = ReactDOMServer.renderToString(
+    <CustomHead headList={headComponentList} cssList={[]} />
   );
 
   const head: string = getHeadString(defaultHeadTag, customHeadTag);

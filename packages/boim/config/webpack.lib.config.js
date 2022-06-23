@@ -8,60 +8,11 @@ const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 
 const isDevelopment = process.env.NODE_ENV === "development";
-console.log("isDevelopment", isDevelopment);
+console.log("isDevelopment <lib>", isDevelopment);
 
 module.exports = {
   target: "node",
   mode: isDevelopment ? "development" : "production",
-  devServer: isDevelopment
-    ? {
-      allowedHosts: "auto",
-      bonjour: {
-        type: "http",
-        protocol: "udp",
-      },
-      client: {
-        overlay: {
-          errors: true,
-          warnings: false,
-          reconnect: 5,
-        },
-      },
-      compress: true,
-      devMiddleware: {
-        index: true,
-        mimeTypes: { phtml: "text/html" },
-        publicPath: "/publicPathForDevServe",
-        serverSideRender: true,
-        writeToDisk: true,
-      },
-      http2: true,
-      historyApiFallback: true,
-      host: "0.0.0.0",
-      hot: "only",
-      liveReload: false,
-      magicHtml: true,
-      open: true,
-      port: 7777,
-      proxy: {
-        "/api": {
-          target: "http://localhost:3000",
-          bypass: function (req, res, proxyOptions) {
-            if (req.headers.accept.indexOf("html") !== -1) {
-              console.log("Skipping proxy for browser request.");
-              return "/index.html";
-            }
-          },
-        },
-      },
-      static: {
-        directoryPath: [`${client}/dist`],
-        staticOptions: {
-          redirect: true,
-        },
-      }
-    }
-    : undefined,
   entry: {
     directoryApi: `${root}/libs/directoryApi`,
     searchApi: `${root}/libs/searchApi`,
@@ -197,7 +148,6 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
-      root: `${client}`,
       dry: false,
       verbose: true,
       cleanOnceBeforeBuildPatterns: [

@@ -1,5 +1,6 @@
 const path = require("path");
 
+const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -11,65 +12,19 @@ const fileList = Search.getFileList(`${client}/pages`);
 const { _app, _document } = Search.getBaseComponentPath(fileList);
 
 const isDevelopment = process.env.NODE_ENV === "development";
-console.log("isDevelopment", isDevelopment);
+console.log("isDevelopment <server>", isDevelopment);
 
 module.exports = {
   target: "node",
-  mode: isDevelopment ? "development" : "production",
-  devServer: isDevelopment
-    ? {
-      allowedHosts: "auto",
-      bonjour: {
-        type: "http",
-        protocol: "udp",
-      },
-      client: {
-        overlay: {
-          errors: true,
-          warnings: false,
-          reconnect: 5,
-        },
-      },
-      compress: true,
-      devMiddleware: {
-        index: true,
-        mimeTypes: { phtml: "text/html" },
-        publicPath: "/publicPathForDevServe",
-        serverSideRender: true,
-        writeToDisk: true,
-      },
-      http2: true,
-      historyApiFallback: true,
-      host: "0.0.0.0",
-      hot: "only",
-      liveReload: false,
-      magicHtml: true,
-      open: true,
-      port: 7777,
-      proxy: {
-        "/api": {
-          target: "http://localhost:3000",
-          bypass: function (req, res, proxyOptions) {
-            if (req.headers.accept.indexOf("html") !== -1) {
-              console.log("Skipping proxy for browser request.");
-              return "/index.html";
-            }
-          },
-        },
-      },
-      static: {
-        directoryPath: [`${client}/dist`],
-        staticOptions: {
-          redirect: true,
-        },
-      }
-    }
-    : undefined,
+  mode: "production",
   entry: `${root}/server/_www.ts`,
   output: {
     filename: "_www.js",
     path: `${client}/dist/server`,
     assetModuleFilename: "../public/[contenthash][ext]",
+    library: "build-server",
+    libraryTarget: "umd",
+    globalObject: "this",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -81,7 +36,7 @@ module.exports = {
     },
   },
   optimization: {
-    minimize: isDevelopment ? false : true,
+    minimize: true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
@@ -112,22 +67,7 @@ module.exports = {
       },
       {
         test: /\.(less|scss|module.css)$/,
-        use:  isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: true,              
-            },
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "postcss-loader",
-          "less-loader",
-        ] : [
+        use: [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -152,14 +92,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: false,
-            },
-          },
-        ] : [
+        use: [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -194,10 +127,10 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.ContextReplacementPlugin(/express/),
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
-      root: `${client}`,
       verbose: true,
       dry: false,
       cleanOnceBeforeBuildPatterns: [

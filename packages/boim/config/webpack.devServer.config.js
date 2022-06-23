@@ -1,45 +1,44 @@
 const path = require("path");
 
+const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const nodeExternals = require("webpack-node-externals");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
-
-const Directory = require(`${client}/dist/lib/directoryApi`).default;
-const dir = new Directory();
-
-dir.searchDirectory(`${client}/pages`);
-const componentEntries = dir.getFilePaths();
-const dynamicPaths = dir.getDynamicPaths(`${client}/pages`);
-
-dir.writeHydrateComponent(componentEntries, dynamicPaths);
-dir.writeDynamicHydrateComponent(dynamicPaths);
-
-dir.searchDirectory(`${root}/client/hydratedComponents`);
-const hydratedComponentEntries = dir.getFilePaths();
-
 const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
-const { _app } = Search.getBaseComponentPath(fileList);
+const { _app, _document } = Search.getBaseComponentPath(fileList);
 
 const isDevelopment = process.env.NODE_ENV === "development";
-console.log("isDevelopment <hydration>", isDevelopment);
+console.log("isDevelopment <devServer>", isDevelopment);
 
 module.exports = {
+  externalsPresets: { node: true },
+  externals: [nodeExternals()],
+  devServer: {
+    open: true,
+    static: {
+      directory: `${client}/dist/pages`,
+      publicPath: "/"
+    },
+    compress: true,
+    port: 7777,
+    hot: "only",
+  },
   target: "node",
-  mode: isDevelopment ? "development" : "production",
-  entry: hydratedComponentEntries,
+  mode: "development",
+  entry: `${root}/server/_www.ts`,
   output: {
-    path: `${client}/dist/pages`,
-    filename: "[name][contenthash].js",
-    library: "build-page",
+    filename: "_www.js",
+    path: `${client}/dist/server`,
+    publicPath: "http://localhost:7777/pages",
+    assetModuleFilename: "../public/[contenthash][ext]",
+    library: "build-devServer",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -47,10 +46,11 @@ module.exports = {
       react: `${client}/node_modules/react`,
       "react-dom": `${client}/node_modules/react-dom`,
       app: _app,
+      document: _document,
     },
   },
   optimization: {
-    minimize: isDevelopment ? false : true,
+    minimize: false,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
@@ -81,14 +81,14 @@ module.exports = {
       },
       {
         test: /\.(less|scss|module.css)$/,
-        use:  isDevelopment ? [
+        use: [
           {
             loader: "style-loader",
           },
           {
             loader: "css-loader?exportOnlyLocals",
             options: {
-              modules: true,
+              modules: true,              
             },
           },
           {
@@ -99,47 +99,13 @@ module.exports = {
           },
           "postcss-loader",
           "less-loader",
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: true,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "postcss-loader",
-          "less-loader",
-        ],
+        ]
       },
       {
         test: /\.css$/,
-        use: isDevelopment ? [
+        use: [
           {
             loader: "style-loader",
-          },
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: false,
-            },
-          },
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: true,
-            },
           },
           {
             loader: "css-loader",
@@ -169,24 +135,14 @@ module.exports = {
     ],
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      inject: true,
-      filename: ".[name].html",
-    }),
-    new MiniCssExtractPlugin({
-      filename: "[name][contenthash:8].css",
-    }),
-    new WebpackManifestPlugin({
-      fileName: "../manifest.json",
-    }),
+    new webpack.ContextReplacementPlugin(/express/),
+    new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
       verbose: true,
       dry: false,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
-        "../public/**/*",
-        "../manifest.json",
         "!stats.json",
         "!important.js",
         "!folder/**/*",

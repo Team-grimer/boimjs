@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-import { ReactElement } from "react";
+import React, { ReactElement } from "react";
 
 import { Request, Response, NextFunction } from "express";
 
@@ -12,7 +12,7 @@ import Fetch from "../libs/fetchApi";
 import Search from "../libs/searchApi";
 
 interface Client {
-  default: ReactElement;
+  default: React.FC;
   SSG?: object;
   SSR?: object;
 }
@@ -20,7 +20,7 @@ interface Client {
 interface Resource {
   htmlFilePath: string | null;
   htmlFile: string | null;
-  component: ReactElement | null;
+  component: React.FC | null;
   componentProps: any | null;
   renderType: string | null;
   cssList: Array<string>;
@@ -78,6 +78,7 @@ export default async function handleGetPage(
     const manifestData: object = dir.parseJsonSync(
       `${pathAlias.client}/dist/manifest.json`
     );
+
     const dynamicManifestData: object = dir.parseJsonSync(
       `${pathAlias.client}/dist/dynamicManifest.json`
     );
@@ -86,8 +87,21 @@ export default async function handleGetPage(
       ? req.url.slice(0, req.url.length - 1)
       : req.url;
 
-    const { staticResult, dynamicResult }: ManifestResult =
-      Search.searchManifest(manifestData, dynamicManifestData, url);
+    let mamifeatResult: ManifestResult;
+
+    try {
+      mamifeatResult = Search.searchManifest(
+        manifestData,
+        dynamicManifestData,
+        url
+      );
+    } catch (err) {
+      res.statusCode = 404;
+      next(err);
+      return;
+    }
+
+    const { staticResult, dynamicResult } = mamifeatResult;
 
     let resource: Resource;
 
@@ -99,7 +113,7 @@ export default async function handleGetPage(
         dynamicResult
       );
     } else {
-      const routeType = staticResult.hasValue ? "static" : "dynamic";
+      const routeType: string = staticResult.hasValue ? "static" : "dynamic";
       resource = await getResources(
         url,
         routeType,
@@ -108,12 +122,20 @@ export default async function handleGetPage(
       );
     }
 
-    const newHtml: string = getHTML(
-      resource.component,
-      resource.componentProps,
-      resource.cssList,
-      resource.scriptList
-    );
+    let newHtml: string;
+
+    try {
+      newHtml = getHTML(
+        resource.component,
+        resource.componentProps,
+        resource.cssList,
+        resource.scriptList
+      );
+    } catch (err) {
+      res.statusCode = 405;
+      next(err);
+      return;
+    }
 
     if (resource.htmlFile !== newHtml) {
       dir.clearWriteSync(resource.htmlFilePath);

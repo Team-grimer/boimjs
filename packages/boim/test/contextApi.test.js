@@ -27,7 +27,7 @@ describe("contextApi test", () => {
           scriptList: [],
           head: null,
         },
-        setHead: null,
+        docComponentRendered: {},
       };
 
       return (

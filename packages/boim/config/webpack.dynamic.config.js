@@ -19,65 +19,16 @@ const fileList = Search.getFileList(`${client}/pages`);
 const { _app } = Search.getBaseComponentPath(fileList);
 
 const isDevelopment = process.env.NODE_ENV === "development";
-console.log("isDevelopment", isDevelopment);
+console.log("isDevelopment <dynamic>", isDevelopment);
 
 module.exports = {
   target: "node",
   mode: isDevelopment ? "development" : "production",
-  devServer: isDevelopment
-    ? {
-      allowedHosts: "auto",
-      bonjour: {
-        type: "http",
-        protocol: "udp",
-      },
-      client: {
-        overlay: {
-          errors: true,
-          warnings: false,
-          reconnect: 5,
-        },
-      },
-      compress: true,
-      devMiddleware: {
-        index: true,
-        mimeTypes: { phtml: "text/html" },
-        publicPath: "/publicPathForDevServe",
-        serverSideRender: true,
-        writeToDisk: true,
-      },
-      http2: true,
-      historyApiFallback: true,
-      host: "0.0.0.0",
-      hot: "only",
-      liveReload: false,
-      magicHtml: true,
-      open: true,
-      port: 7777,
-      proxy: {
-        "/api": {
-          target: "http://localhost:3000",
-          bypass: function (req, res, proxyOptions) {
-            if (req.headers.accept.indexOf("html") !== -1) {
-              console.log("Skipping proxy for browser request.");
-              return "/index.html";
-            }
-          },
-        },
-      },
-      static: {
-        directoryPath: [`${client}/dist`],
-        staticOptions: {
-          redirect: true,
-        },
-      }
-    }
-    : undefined,
   entry: hydratedDynamicComponentEntries,
   output: {
     path: `${client}/dist/pages`,
     filename: "[name][chunkhash].js",
-    library: "build-page",
+    library: "build-dynamic",
     libraryTarget: "umd",
     globalObject: "this",
     assetModuleFilename: "../public/[contenthash][ext]",
@@ -124,6 +75,9 @@ module.exports = {
         test: /\.(less|scss|module.css)$/,
         use:  isDevelopment ? [
           {
+            loader: "style-loader",
+          },
+          {
             loader: "css-loader?exportOnlyLocals",
             options: {
               modules: true,
@@ -164,6 +118,9 @@ module.exports = {
         test: /\.css$/,
         use: isDevelopment ? [
           {
+            loader: "style-loader",
+          },
+          {
             loader: "css-loader?exportOnlyLocals",
             options: {
               modules: false,
@@ -173,7 +130,7 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: false,
+              emit: true,
             },
           },
           {
@@ -183,7 +140,8 @@ module.exports = {
             },
           },
         ],
-      },      {
+      },
+      {
         test: /\.(png|jpg|jpeg|gif)$/i,
         type: "asset/resource",
         parser: {
@@ -204,7 +162,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: false,
+      inject: true,
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({
