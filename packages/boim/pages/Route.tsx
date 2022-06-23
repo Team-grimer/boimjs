@@ -82,7 +82,6 @@ const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
 <title>Boim js</title></head>`;
 
 const MemoedPage: React.FC<PageProps> = React.memo(Page);
-const MemoedPageHead: React.FC<PageHeadProps> = React.memo(PageHead);
 
 function Page({ componentInfo }: PageProps): ReactElement {
   return (
@@ -93,7 +92,7 @@ function Page({ componentInfo }: PageProps): ReactElement {
   );
 }
 
-function PageHead({ headList }: PageHeadProps): ReactElement {
+function renderPageHead(headList) {
   const DomParser: DOMParser = new DOMParser();
 
   const headElement: HTMLElement = document.querySelector("head");
@@ -216,7 +215,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
         renderProps: {
           props: {
             title:
-              'The default export is not a React Component in page: "pathname"',
+              "The default export is not a React Component in page: \"pathname\"",
           },
         },
       };
@@ -243,6 +242,8 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
 
   if (process.env.NODE_ENV !== "development") {
     if (!initialProps.renderProps || !initialProps.renderProps["props"]) {
+      Component = Error;
+      App = _App;
       initialProps = {
         renderType: "StaticSiteGeneration",
         renderProps: {
@@ -252,8 +253,16 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
           },
         },
       };
+
+      return {
+        _App: App,
+        initialProps,
+        Component,
+      };
     } else if (initialProps.renderProps.props) {
       if (typeof initialProps.renderProps.props !== "object") {
+        Component = Error;
+        App = _App;
         initialProps = {
           renderType: "StaticSiteGeneration",
           renderProps: {
@@ -262,11 +271,19 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
             },
           },
         };
+
+        return {
+          _App: App,
+          initialProps,
+          Component,
+        };
       }
 
       const propsKeyList = Object.keys(initialProps.renderProps.props);
 
       if (!propsKeyList.length) {
+        Component = Error;
+        App = _App;
         initialProps = {
           renderType: "StaticSiteGeneration",
           renderProps: {
@@ -275,17 +292,14 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
             },
           },
         };
+
+        return {
+          _App: App,
+          initialProps,
+          Component,
+        };
       }
     }
-
-    Component = Error;
-    App = _App;
-
-    return {
-      _App: App,
-      initialProps,
-      Component,
-    };
   }
 
   return {
@@ -384,9 +398,16 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
     setPageComponentInfo();
   }, [routeStatus]);
 
+  useEffect(() => {
+    if (routeStatus.isSSR) {
+      return;
+    }
+
+    renderPageHead(pageHeadList);
+  }, [pageHeadList]);
+
   return (
     <>
-      {!routeStatus.isSSR && <MemoedPageHead headList={pageHeadList} />}
       <RouterProvider value={renderInfo.routerContext}>
         <HeadProvider value={renderInfo.headContext}>
           <MemoedPage componentInfo={renderInfo.renderOption} />
