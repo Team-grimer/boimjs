@@ -131,7 +131,7 @@ export default async function handleGetPage(
         resource.scriptList
       );
     } catch (err) {
-      res.statusCode = 405;
+      res.statusCode = 500;
       next(err);
       return;
     }
