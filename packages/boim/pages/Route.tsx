@@ -163,6 +163,138 @@ async function getDynamicRoutePathInfo(initialInfo) {
   return result;
 }
 
+async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
+  const isDynamicRouting: boolean = dynamicInfo.hasOwnProperty(
+    routeStatus.path
+  );
+  const path: string = isDynamicRouting
+    ? dynamicInfo[routeStatus.path].path
+    : routeStatus.path;
+
+  let App;
+  let initialProps;
+  let Component;
+  let client;
+
+  if (process.env.NODE_ENV !== "development") {
+    try {
+      client = require(`../../../../pages${path}`);
+    } catch (err) {
+      initialProps = {
+        renderType: "StaticSiteGeneration",
+        renderProps: {
+          props: {
+            title: "Page Not Found",
+          },
+        },
+      };
+
+      App = _App;
+      Component = Error;
+
+      return {
+        _App: App,
+        initialProps,
+        Component,
+      };
+    }
+  } else {
+    client = require(`../../../../pages${path}`);
+  }
+
+  const app = Object.assign({}, client);
+
+  Component = app["default"];
+  App = initialInfo._App;
+
+  if (process.env.NODE_ENV !== "development") {
+    if (!ReactIs.isValidElementType(Component)) {
+      Component = Error;
+      App = _App;
+      initialProps = {
+        renderType: "StaticSiteGeneration",
+        renderProps: {
+          props: {
+            title:
+              'The default export is not a React Component in page: "pathname"',
+          },
+        },
+      };
+
+      return {
+        _App: App,
+        initialProps,
+        Component,
+      };
+    }
+  }
+
+  if (isDynamicRouting) {
+    const pageProps = await app.SSG(dynamicInfo[routeStatus.path].param);
+
+    initialProps = {
+      renderType: "StaticSiteGeneration",
+      renderProps: { props: pageProps.props },
+    };
+  } else {
+    const type: string = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+    initialProps = await Fetch.getProps(type, app[type]);
+  }
+
+  if (process.env.NODE_ENV !== "development") {
+    if (!initialProps.renderProps || !initialProps.renderProps["props"]) {
+      initialProps = {
+        renderType: "StaticSiteGeneration",
+        renderProps: {
+          props: {
+            title:
+              "function SSG or SSR must return an object containing the props property",
+          },
+        },
+      };
+    } else if (initialProps.renderProps.props) {
+      if (typeof initialProps.renderProps.props !== "object") {
+        initialProps = {
+          renderType: "StaticSiteGeneration",
+          renderProps: {
+            props: {
+              title: "props property must return an object",
+            },
+          },
+        };
+      }
+
+      const propsKeyList = Object.keys(initialProps.renderProps.props);
+
+      if (!propsKeyList.length) {
+        initialProps = {
+          renderType: "StaticSiteGeneration",
+          renderProps: {
+            props: {
+              title: "props property must return an object containing property",
+            },
+          },
+        };
+      }
+    }
+
+    Component = Error;
+    App = _App;
+
+    return {
+      _App: App,
+      initialProps,
+      Component,
+    };
+  }
+
+  return {
+    _App: App,
+    initialProps,
+    Component,
+  };
+}
+
 export default function Route({ initialInfo }: RouteProps): ReactElement {
   const [pageHeadList, setPageHeadList] = useState([]);
   const [dynamicInfo, setDynamicInfo] = useState({});
@@ -223,92 +355,12 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
       return;
     }
 
-    const isDynamicRouting: boolean = dynamicInfo.hasOwnProperty(
-      routeStatus.path
-    );
-    const path: string = isDynamicRouting
-      ? dynamicInfo[routeStatus.path].path
-      : routeStatus.path;
-
-    let client;
-    let initialProps: InitialProps;
-    let App: React.FC | React.ElementType;
-    let Component: React.FC;
-    let hasComponent = true;
-
-    try {
-      client = require(`../../../../pages${path}`);
-    } catch (err) {
-      initialProps = {
-        renderType: "StaticSiteGeneration",
-        renderProps: {
-          props: {
-            title: "Page Not Found",
-          },
-        },
-      };
-
-      App = _App;
-      Component = Error;
-      hasComponent = false;
-    }
-
-    async function getComponentProps() {
-      if (hasComponent) {
-        const app = Object.assign({}, client);
-        let isComponentReactElement = true;
-
-        Component = app["default"];
-        App = initialInfo._App;
-
-        if (!ReactIs.isValidElementType(Component)) {
-          Component = Error;
-          App = _App;
-          initialProps = {
-            renderType: "StaticSiteGeneration",
-            renderProps: {
-              props: {
-                title:
-                  "The default export is not a React Component in page: \"pathname\"",
-              },
-            },
-          };
-          isComponentReactElement = false;
-        }
-
-        if (isComponentReactElement) {
-          if (isDynamicRouting) {
-            const pageProps = await app.SSG(
-              dynamicInfo[routeStatus.path].param
-            );
-
-            initialProps = {
-              renderType: "StaticSiteGeneration",
-              renderProps: { props: pageProps.props },
-            };
-          } else {
-            const type: string = app["SSG"]
-              ? "SSG"
-              : app["SSR"]
-              ? "SSR"
-              : "DEFAULT";
-            initialProps = await Fetch.getProps(type, app[type]);
-          }
-
-          if (!initialProps.renderProps["props"]) {
-            Component = Error;
-            initialProps = {
-              renderType: "StaticSiteGeneration",
-              renderProps: {
-                props: {
-                  title:
-                    "function SSG or SSR must return an object containing the props property",
-                },
-              },
-            };
-          }
-        }
-      }
+    async function setPageComponentInfo() {
+      const { _App, initialProps, Component } = await getRenderInfo(
+        dynamicInfo,
+        routeStatus,
+        initialInfo
+      );
 
       setRenderInfo({
         routerContext: {
@@ -322,14 +374,14 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
         },
         renderOption: {
           ...renderInfo.renderOption,
-          _App: App,
+          _App,
           initialProps,
           Component,
         },
       });
     }
 
-    getComponentProps();
+    setPageComponentInfo();
   }, [routeStatus]);
 
   return (
