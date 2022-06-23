@@ -2,6 +2,7 @@ import React, { useState, useEffect, ReactElement } from "react";
 
 import qs from "querystringify";
 import reactElementToJSXString from "react-element-to-jsx-string";
+import * as ReactIs from "react-is";
 
 import _App from "../pages/_app";
 import Error from "../pages/_error";
@@ -128,6 +129,40 @@ function PageHead({ headList }: PageHeadProps): ReactElement {
   return null;
 }
 
+async function getDynamicRoutePathInfo(initialInfo) {
+  const result = {};
+
+  for (const directoryPath of Object.keys(initialInfo.dynamicPathInfo)) {
+    const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
+    const app = Object.assign({}, dynamicComponent);
+
+    if (dynamicComponent.hasOwnProperty("PATHS")) {
+      const { paths } = await app.PATHS();
+
+      const key = directoryPath
+        .split("/")
+        .pop()
+        .replace("[", "")
+        .replace("]", "");
+
+      paths.forEach((value) => {
+        const paramKey: string = value.params[key];
+        const outputKey: string = String(directoryPath).replace(
+          `[${key}]`,
+          paramKey
+        );
+
+        result[outputKey] = {
+          path: directoryPath,
+          param: value,
+        };
+      });
+    }
+  }
+
+  return result;
+}
+
 export default function Route({ initialInfo }: RouteProps): ReactElement {
   const [pageHeadList, setPageHeadList] = useState([]);
   const [dynamicInfo, setDynamicInfo] = useState({});
@@ -161,36 +196,8 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
   });
 
   useEffect(() => {
-    const result = {};
-
     async function setDynamicRoute() {
-      for (const directoryPath of Object.keys(initialInfo.dynamicPathInfo)) {
-        const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
-        const app = Object.assign({}, dynamicComponent);
-
-        if (dynamicComponent.hasOwnProperty("PATHS")) {
-          const { paths } = await app.PATHS();
-
-          const key = directoryPath
-            .split("/")
-            .pop()
-            .replace("[", "")
-            .replace("]", "");
-
-          paths.forEach((value) => {
-            const paramKey: string = value.params[key];
-            const outputKey: string = String(directoryPath).replace(
-              `[${key}]`,
-              paramKey
-            );
-
-            result[outputKey] = {
-              path: directoryPath,
-              param: value,
-            };
-          });
-        }
-      }
+      const result = await getDynamicRoutePathInfo(initialInfo);
 
       setDynamicInfo(result);
     }
@@ -236,7 +243,7 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
         renderType: "StaticSiteGeneration",
         renderProps: {
           props: {
-            title: "Page Not Fount",
+            title: "Page Not Found",
           },
         },
       };
@@ -249,37 +256,57 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
     async function getComponentProps() {
       if (hasComponent) {
         const app = Object.assign({}, client);
+        let isComponentReactElement = true;
 
         Component = app["default"];
         App = initialInfo._App;
 
-        if (isDynamicRouting) {
-          const pageProps = await app.SSG(dynamicInfo[routeStatus.path].param);
-
-          initialProps = {
-            renderType: "StaticSiteGeneration",
-            renderProps: { props: pageProps.props },
-          };
-        } else {
-          const type: string = app["SSG"]
-            ? "SSG"
-            : app["SSR"]
-            ? "SSR"
-            : "DEFAULT";
-          initialProps = await Fetch.getProps(type, app[type]);
-        }
-
-        if (!initialProps.renderProps["props"]) {
+        if (!ReactIs.isValidElementType(Component)) {
           Component = Error;
+          App = _App;
           initialProps = {
             renderType: "StaticSiteGeneration",
             renderProps: {
               props: {
                 title:
-                  "function SSG or SSR must return an object containing the props property",
+                  "The default export is not a React Component in page: \"pathname\"",
               },
             },
           };
+          isComponentReactElement = false;
+        }
+
+        if (isComponentReactElement) {
+          if (isDynamicRouting) {
+            const pageProps = await app.SSG(
+              dynamicInfo[routeStatus.path].param
+            );
+
+            initialProps = {
+              renderType: "StaticSiteGeneration",
+              renderProps: { props: pageProps.props },
+            };
+          } else {
+            const type: string = app["SSG"]
+              ? "SSG"
+              : app["SSR"]
+              ? "SSR"
+              : "DEFAULT";
+            initialProps = await Fetch.getProps(type, app[type]);
+          }
+
+          if (!initialProps.renderProps["props"]) {
+            Component = Error;
+            initialProps = {
+              renderType: "StaticSiteGeneration",
+              renderProps: {
+                props: {
+                  title:
+                    "function SSG or SSR must return an object containing the props property",
+                },
+              },
+            };
+          }
         }
       }
 
