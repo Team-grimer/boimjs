@@ -31,7 +31,7 @@ module.exports = {
     library: "build-dynamic",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[contenthash][ext]",
+    assetModuleFilename: "../public/[name][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -72,11 +72,8 @@ module.exports = {
         ],
       },
       {
-        test: /\.(less|scss|module.css)$/,
+        test: /\.(less|scss)$/,
         use:  isDevelopment ? [
-          {
-            loader: "style-loader",
-          },
           {
             loader: "css-loader?exportOnlyLocals",
             options: {
@@ -104,22 +101,51 @@ module.exports = {
               modules: true,
             },
           },
+          "postcss-loader",
           {
             loader: "sass-loader",
             options: {
               sourceMap: true,
             },
           },
+          "less-loader",
+        ],
+      },
+      {
+        test: /\.module\.css$/i,
+        use:  isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: { namedExport: true }
+            },
+          },
+        ] : [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: true,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
           "postcss-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
           "less-loader",
         ],
       },
       {
         test: /\.css$/,
         use: isDevelopment ? [
-          {
-            loader: "style-loader",
-          },
           {
             loader: "css-loader?exportOnlyLocals",
             options: {

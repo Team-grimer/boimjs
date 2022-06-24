@@ -12,7 +12,7 @@
     "build:devServer": "webpack --config ./config/webpack.devServer.config.js",
     "build:prod": "npm run build:lib && npm run build:hydration && npm run build:dynamic && npm run build:server",
     "build:dev": "npm run build:lib && npm run build:hydration && npm run build:dynamic && npm run build:devServer",
-    "start": "NODE_ENV=production npm run build:prod && node --experimental-modules ../../../dist/server/_www",
+    "start": "npm run build:prod && node --experimental-modules ../../../dist/server/_www",
     "dev": "NODE_ENV=development npm run build:dev && webpack serve --node-env development --config ./config/webpack.devServer.config.js"
   },
   "author": "grimer",

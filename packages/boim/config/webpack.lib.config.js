@@ -22,7 +22,7 @@ module.exports = {
     library: "build-module",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[contenthash][ext]",
+    assetModuleFilename: "../public/[name][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -62,7 +62,7 @@ module.exports = {
         ],
       },
       {
-        test: /\.(less|scss|module.css)$/,
+        test: /\.(less|scss)$/,
         use:  isDevelopment ? [
           {
             loader: "css-loader?exportOnlyLocals",
@@ -78,6 +78,38 @@ module.exports = {
           },
           "postcss-loader",
           "less-loader",
+        ] : [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+          "postcss-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "less-loader",
+        ],
+      },
+      {
+        test: /\.module\.css$/i,
+        use:  isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: false,
+            },
+          },
         ] : [
           {
             loader: MiniCssExtractPlugin.loader,

@@ -21,7 +21,7 @@ module.exports = {
   output: {
     filename: "_www.js",
     path: `${client}/dist/server`,
-    assetModuleFilename: "../public/[contenthash][ext]",
+    assetModuleFilename: "../public/[name][ext]",
     library: "build-server",
     libraryTarget: "umd",
     globalObject: "this",
@@ -66,16 +66,10 @@ module.exports = {
         ],
       },
       {
-        test: /\.(less|scss|module.css)$/,
-        use: [
+        test: /\.(less|scss)$/,
+        use:  isDevelopment ? [
           {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
+            loader: "css-loader?exportOnlyLocals",
             options: {
               modules: true,
             },
@@ -88,11 +82,71 @@ module.exports = {
           },
           "postcss-loader",
           "less-loader",
+        ] : [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+          "postcss-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "less-loader",
+        ],
+      },
+      {
+        test: /\.module\.css$/i,
+        use:  isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: false,
+            },
+          },
+        ] : [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              emit: false,
+            },
+          },
+          {
+            loader: "css-loader",
+            options: {
+              modules: true,
+            },
+          },
+          "postcss-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "less-loader",
         ],
       },
       {
         test: /\.css$/,
-        use: [
+        use: isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: false,
+            },
+          },
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
