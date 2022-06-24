@@ -37,7 +37,7 @@ export default class Search {
     Search.documentPath = "";
 
     fileList.forEach((file) => {
-      const fileName = file.split(".")[0];
+      const fileName: string = file.split(".")[0];
 
       if (fileName === BASECOMPONENT._app) {
         if (
@@ -71,9 +71,6 @@ export default class Search {
     if (Search.documentPath == "") {
       Search.documentPath = `${pathAlias.root}/pages/_document.tsx`;
     }
-
-    console.log(Search.appPath);
-    console.log(Search.documentPath);
 
     return {
       _app: Search.appPath,
