@@ -8,6 +8,7 @@ import { parse, HTMLElement } from "node-html-parser";
 
 import Context from "../../libs/contextApi";
 import Document from "../../libs/documentApi";
+import { DEFAULTHEADTAG } from "../../common/constants";
 
 interface HTMLProps {
   main: ReactElement;
@@ -20,10 +21,6 @@ interface HEADProps {
 }
 
 const { HtmlProvider, HeadProvider } = Context;
-
-const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
-<meta name="viewport" content="width=device-width,initial-scale=1"></meta>
-<title>Boim js</title></head>`;
 
 const CustomHead: React.FC<HEADProps> = ({ headList, cssList }) => {
   return (
@@ -49,8 +46,8 @@ function renderPageTree(
   return <App Component={Component} pageProps={pageProps.renderProps} />;
 }
 
-function getHeadString(defaultHeadTag, customHeadTagString) {
-  const originalDocument: HTMLElement = parse(defaultHeadTag);
+function getHeadString(DEFAULTHEADTAG, customHeadTagString) {
+  const originalDocument: HTMLElement = parse(DEFAULTHEADTAG);
   const customHeadDocument: HTMLElement = parse(customHeadTagString);
 
   const document: Document = new Document(
@@ -169,7 +166,7 @@ export function getHTML(
     />
   );
 
-  const head: string = getHeadString(defaultHeadTag, customHeadTag);
+  const head: string = getHeadString(DEFAULTHEADTAG, customHeadTag);
 
   html = html.replace("<head></head>", head);
 
@@ -207,7 +204,7 @@ export function renderToErrorPage(
     <CustomHead headList={headComponentList} cssList={[]} />
   );
 
-  const head: string = getHeadString(defaultHeadTag, customHeadTag);
+  const head: string = getHeadString(DEFAULTHEADTAG, customHeadTag);
 
   html = html.replace("<head></head>", head);
 

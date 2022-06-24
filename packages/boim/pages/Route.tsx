@@ -10,6 +10,7 @@ import Context from "../libs/contextApi";
 import Fetch from "../libs/fetchApi";
 import History from "../libs/historyApi";
 import Document from "../libs/documentApi";
+import { DEFAULTHEADTAG, RENDERTYPE, RENDERPROPSTYPE } from "../common/constants";
 
 interface Props {
   _App: React.FC | React.ElementType;
@@ -85,10 +86,6 @@ type InitialProps = {
 const { RouterProvider, HeadProvider } = Context;
 const { history } = History;
 
-const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
-<meta name="viewport" content="width=device-width,initial-scale=1"></meta>
-<title>Boim js</title></head>`;
-
 const MemoedPage: React.FC<PageProps> = React.memo(Page);
 
 function Page({ componentInfo }: PageProps): ReactElement {
@@ -105,7 +102,7 @@ function renderPageHead(headList: Array<ReactElement>) {
 
   const headElement: HTMLElement = document.querySelector("head");
   const defaultHeadElement: HTMLElement = DomParser.parseFromString(
-    defaultHeadTag,
+    DEFAULTHEADTAG,
     "text/html"
   ).querySelector("head");
 
@@ -187,7 +184,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
     client = require(`../../../../pages${path}`);
   } catch (err) {
     initialProps = {
-      renderType: "StaticSiteGeneration",
+      renderType: RENDERTYPE.ssg,
       renderProps: {
         props: {
           title: "Page Not Found",
@@ -220,11 +217,16 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
     const pageProps = await app.SSG(dynamicInfo[routeStatus.path].param);
 
     initialProps = {
-      renderType: "StaticSiteGeneration",
+      renderType: RENDERTYPE.ssg,
       renderProps: { props: pageProps.props },
     };
   } else {
-    const type: string = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+    const type: string =
+      app[RENDERPROPSTYPE.ssg]
+        ? RENDERPROPSTYPE.ssg
+        : app[RENDERPROPSTYPE.ssr]
+          ? RENDERPROPSTYPE.ssr
+          : RENDERPROPSTYPE.default;
     initialProps = await Fetch.getProps(type, app[type]);
   }
 
