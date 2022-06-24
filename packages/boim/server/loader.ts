@@ -5,7 +5,7 @@ import serveStatic from "serve-static";
 
 import pageRouter from "./route";
 import pathAlias from "../libs/pathAlias";
-import { getHTML, renderToErrorPage } from "../pages/templates/htmlTemplate";
+import { renderToErrorPage } from "../pages/templates/htmlTemplate";
 import Error from "../pages/_error";
 
 export default function (): Express {

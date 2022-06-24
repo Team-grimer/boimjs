@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
 
-import React, { ReactElement } from "react";
+import React from "react";
 
 import { Request, Response, NextFunction } from "express";
 
@@ -132,7 +132,7 @@ export default async function handleGetPage(
         resource.scriptList
       );
     } catch (err) {
-      res.statusCode = 405;
+      res.statusCode = 500;
       next(err);
       return;
     }

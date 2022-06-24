@@ -8,29 +8,36 @@ export default class Document {
     this.headElement = head;
     this.defaultHeadElement = defaultHead;
     this.customHeadElement = customHead;
-    this.headTargetList = ["meta[charset]", "meta[name=\"viewport\"]", "title"];
+    this.headTargetList = ["meta[charset]", 'meta[name="viewport"]', "title"];
   }
 
   setElement(type: string, element: HTMLElement) {
     switch (type) {
-      case "head":
-        this.headElement = element;
-        break;
-      case "defaultHead":
-        this.defaultHeadElement = element;
-        break;
-      case "customHead":
-        this.customHeadElement = element;
-        break;
-      default:
-        break;
+    case "head":
+      this.headElement = element;
+      break;
+    case "defaultHead":
+      this.defaultHeadElement = element;
+      break;
+    case "customHead":
+      this.customHeadElement = element;
+      break;
+    default:
+      break;
     }
   }
 
   removeChildrenOfHeadElement(): () => void {
+    let linkNode;
+
     while (this.headElement.firstChild) {
-      this.headElement.removeChild(this.headElement.lastChild);
+      if (this.headElement.firstChild.nodeName === "LINK") {
+        linkNode = this.headElement.firstChild;
+      }
+      this.headElement.removeChild(this.headElement.firstChild);
     }
+
+    this.headElement.appendChild(linkNode);
 
     return null;
   }
