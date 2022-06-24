@@ -5,7 +5,7 @@ import reactElementToJSXString from "react-element-to-jsx-string";
 import * as ReactIs from "react-is";
 
 import _App from "../pages/_app";
-import Error from "../pages/_error";
+import ErrorPage from "../pages/_error";
 import Context from "../libs/contextApi";
 import Fetch from "../libs/fetchApi";
 import History from "../libs/historyApi";
@@ -28,10 +28,6 @@ interface RouteProps {
 
 interface PageProps {
   componentInfo: Props;
-}
-
-interface PageHeadProps {
-  headList: Array<ReactElement>;
 }
 
 interface RouteState {
@@ -92,7 +88,7 @@ function Page({ componentInfo }: PageProps): ReactElement {
   );
 }
 
-function renderPageHead(headList) {
+function renderPageHead(headList: Array<ReactElement>) {
   const DomParser: DOMParser = new DOMParser();
 
   const headElement: HTMLElement = document.querySelector("head");
@@ -170,12 +166,12 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
     ? dynamicInfo[routeStatus.path].path
     : routeStatus.path;
 
-  let App;
-  let initialProps;
-  let Component;
+  let App: React.FC;
+  let initialProps: InitialProps;
+  let Component: React.FC;
   let client;
 
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== "production") {
     try {
       client = require(`../../../../pages${path}`);
     } catch (err) {
@@ -189,7 +185,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
       };
 
       App = _App;
-      Component = Error;
+      Component = ErrorPage;
 
       return {
         _App: App,
@@ -206,25 +202,11 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
   Component = app["default"];
   App = initialInfo._App;
 
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== "production") {
     if (!ReactIs.isValidElementType(Component)) {
-      Component = Error;
-      App = _App;
-      initialProps = {
-        renderType: "StaticSiteGeneration",
-        renderProps: {
-          props: {
-            title:
-              "The default export is not a React Component in page: \"pathname\"",
-          },
-        },
-      };
-
-      return {
-        _App: App,
-        initialProps,
-        Component,
-      };
+      throw new Error(
+        "The default export is not a React Component in page: 'pathname'"
+      );
     }
   }
 
@@ -240,64 +222,14 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
     initialProps = await Fetch.getProps(type, app[type]);
   }
 
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env.NODE_ENV !== "production") {
     if (!initialProps.renderProps || !initialProps.renderProps["props"]) {
-      Component = Error;
-      App = _App;
-      initialProps = {
-        renderType: "StaticSiteGeneration",
-        renderProps: {
-          props: {
-            title:
-              "function SSG or SSR must return an object containing the props property",
-          },
-        },
-      };
-
-      return {
-        _App: App,
-        initialProps,
-        Component,
-      };
+      throw new Error(
+        "function SSG or SSR must return an object containing the props property"
+      );
     } else if (initialProps.renderProps.props) {
       if (typeof initialProps.renderProps.props !== "object") {
-        Component = Error;
-        App = _App;
-        initialProps = {
-          renderType: "StaticSiteGeneration",
-          renderProps: {
-            props: {
-              title: "props property must return an object",
-            },
-          },
-        };
-
-        return {
-          _App: App,
-          initialProps,
-          Component,
-        };
-      }
-
-      const propsKeyList = Object.keys(initialProps.renderProps.props);
-
-      if (!propsKeyList.length) {
-        Component = Error;
-        App = _App;
-        initialProps = {
-          renderType: "StaticSiteGeneration",
-          renderProps: {
-            props: {
-              title: "props property must return an object containing property",
-            },
-          },
-        };
-
-        return {
-          _App: App,
-          initialProps,
-          Component,
-        };
+        throw new Error("props property must return an object");
       }
     }
   }
