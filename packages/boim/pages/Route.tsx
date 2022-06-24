@@ -204,9 +204,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
 
   if (process.env.NODE_ENV !== "production") {
     if (!ReactIs.isValidElementType(Component)) {
-      throw new Error(
-        "The default export is not a React Component in page: 'pathname'"
-      );
+      throw new Error("The default export is not a React Component in page");
     }
   }
 
