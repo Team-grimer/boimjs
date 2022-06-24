@@ -5,7 +5,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 const root = path.resolve("./");
-const client = path.resolve(root, "../../../");
+const client = path.resolve(root, "../../");
 
 const isDevelopment = process.env.NODE_ENV === "development";
 console.log("isDevelopment <lib>", isDevelopment);
@@ -42,12 +42,10 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
         use: { loader: "ts-loader" },
       },
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
         use: [
           {
             loader: "babel-loader",
@@ -62,7 +60,7 @@ module.exports = {
       },
       {
         test: /\.(less|scss)$/,
-        use:  isDevelopment ? [
+        use: isDevelopment ? [
           {
             loader: "css-loader?exportOnlyLocals",
             options: {

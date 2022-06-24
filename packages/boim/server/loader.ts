@@ -15,15 +15,15 @@ export default function (): Express {
   > = {
     maxAge: "31557600",
     setHeaders: function (res) {
-      res.set("Cache-Control", "public, must-revalidate");
+      res.set("Cache-Control", "public");
     },
   };
-  
+
   if (process.env.NODE_ENV === "development") {
     console.log("----------------------------------------------------------------");
     console.log("개발 모드 미들웨어 활성화 !!!!!!!");
     console.log("----------------------------------------------------------------");
-    
+
     const webpack = require("webpack");
     const middleware = require("webpack-dev-middleware");
     const devConfig = require("../config/webpack.devServer.config");
@@ -35,7 +35,7 @@ export default function (): Express {
       serverSideRender: true,
       publicPath: devConfig.output.publicPath,
       hot: true,
-      noInfo: true, 
+      noInfo: true,
       stats: "minimal",
       historyApiFallback: true
     });

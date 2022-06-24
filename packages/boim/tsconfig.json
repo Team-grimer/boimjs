@@ -6,8 +6,12 @@
     ],
     "baseUrl": "./",
     "paths": {
-      "document": [ "pages/_document" ],
-      "app": [ "pages/_app" ],
+      "document": [
+        "pages/_document"
+      ],
+      "app": [
+        "pages/_app"
+      ],
     },
     "rootDir": "./",
     "outDir": "./ts_build",
@@ -41,7 +45,9 @@
   "exclude": [
     "./dist/*",
     "./node_modules",
-    "../../../dist/*",
+    "../../dist/*",
     "./test",
+    "./bin/*"
   ]
 }
+// new-line
