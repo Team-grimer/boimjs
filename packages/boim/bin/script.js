@@ -1,8 +1,9 @@
 #! /usr/bin/env node --max-old-space-size=4096
 
+const { spawn } = require("child_process");
+
 const { program } = require("commander");
 const chalk = require("chalk");
-const { spawn } = require("child_process");
 
 const process = spawn("bash");
 
@@ -30,10 +31,10 @@ program
             process.kill();
           });
         } catch (err) {
-          console.log("error")
+          console.log("error");
           reject(err);
         }
-      })
+      });
     }
 
     await runScript();
