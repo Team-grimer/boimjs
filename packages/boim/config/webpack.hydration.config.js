@@ -7,7 +7,7 @@ const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const root = path.resolve("./");
-const client = path.resolve(root, "../../../");
+const client = path.resolve(root, "../../");
 
 const Directory = require(`${client}/dist/lib/directoryApi`).default;
 const dir = new Directory();
@@ -61,12 +61,10 @@ module.exports = {
     rules: [
       {
         test: /\.(ts|tsx)$/,
-        exclude: /node_modules/,
         use: { loader: "ts-loader" },
       },
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
         use: [
           {
             loader: "babel-loader",
@@ -81,7 +79,7 @@ module.exports = {
       },
       {
         test: /\.(less|scss)$/,
-        use:  isDevelopment ? [
+        use: isDevelopment ? [
           {
             loader: "css-loader?exportOnlyLocals",
             options: {
