@@ -2,9 +2,10 @@ import React, { useState, useEffect, ReactElement } from "react";
 
 import qs from "querystringify";
 import reactElementToJSXString from "react-element-to-jsx-string";
+import * as ReactIs from "react-is";
 
 import _App from "../pages/_app";
-import Error from "../pages/_error";
+import ErrorPage from "../pages/_error";
 import Context from "../libs/contextApi";
 import Fetch from "../libs/fetchApi";
 import History from "../libs/historyApi";
@@ -29,10 +30,6 @@ interface PageProps {
   componentInfo: Props;
 }
 
-interface PageHeadProps {
-  headList: Array<ReactElement>;
-}
-
 interface RouteState {
   isSSR: boolean;
   path: string;
@@ -42,6 +39,18 @@ interface RouteState {
   query: {
     [key: string]: string;
   };
+}
+
+interface ComponentInfo {
+  [key: string]: any;
+}
+
+interface DynamicPathInfo {
+  [key: string]: any;
+}
+
+interface Path {
+  paths?: Array<{ params: { id: string } }>;
 }
 
 interface RenderInfo {
@@ -81,7 +90,6 @@ const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
 <title>Boim js</title></head>`;
 
 const MemoedPage: React.FC<PageProps> = React.memo(Page);
-const MemoedPageHead: React.FC<PageHeadProps> = React.memo(PageHead);
 
 function Page({ componentInfo }: PageProps): ReactElement {
   return (
@@ -92,7 +100,7 @@ function Page({ componentInfo }: PageProps): ReactElement {
   );
 }
 
-function PageHead({ headList }: PageHeadProps): ReactElement {
+function renderPageHead(headList: Array<ReactElement>) {
   const DomParser: DOMParser = new DOMParser();
 
   const headElement: HTMLElement = document.querySelector("head");
@@ -128,9 +136,120 @@ function PageHead({ headList }: PageHeadProps): ReactElement {
   return null;
 }
 
+async function getDynamicRoutePathInfo(initialInfo) {
+  const result: DynamicPathInfo = {};
+
+  for (const directoryPath of Object.keys(initialInfo.dynamicPathInfo)) {
+    const dynamicComponent: ComponentInfo = require(`../../../../pages${directoryPath}/index.js`);
+    const app: ComponentInfo = Object.assign({}, dynamicComponent);
+
+    if (dynamicComponent.hasOwnProperty("PATHS")) {
+      const { paths }: Path = await app.PATHS();
+
+      const key: string = directoryPath
+        .split("/")
+        .pop()
+        .replace("[", "")
+        .replace("]", "");
+
+      paths.forEach((value) => {
+        const paramKey: string = value.params[key];
+        const outputKey: string = String(directoryPath).replace(
+          `[${key}]`,
+          paramKey
+        );
+
+        result[outputKey] = {
+          path: directoryPath,
+          param: value,
+        };
+      });
+    }
+  }
+
+  return result;
+}
+
+async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
+  const isDynamicRouting: boolean = dynamicInfo.hasOwnProperty(
+    routeStatus.path
+  );
+  const path: string = isDynamicRouting
+    ? dynamicInfo[routeStatus.path].path
+    : routeStatus.path;
+
+  let App: React.FC;
+  let initialProps: InitialProps;
+  let Component: React.FC;
+  let client: ComponentInfo;
+
+  try {
+    client = require(`../../../../pages${path}`);
+  } catch (err) {
+    initialProps = {
+      renderType: "StaticSiteGeneration",
+      renderProps: {
+        props: {
+          title: "Page Not Found",
+        },
+      },
+    };
+
+    App = _App;
+    Component = ErrorPage;
+
+    return {
+      _App: App,
+      initialProps,
+      Component,
+    };
+  }
+
+  const app: ComponentInfo = Object.assign({}, client);
+
+  Component = app["default"];
+  App = initialInfo._App;
+
+  if (process.env.NODE_ENV !== "production") {
+    if (!ReactIs.isValidElementType(Component)) {
+      throw new Error("The default export is not a React Component in page");
+    }
+  }
+
+  if (isDynamicRouting) {
+    const pageProps = await app.SSG(dynamicInfo[routeStatus.path].param);
+
+    initialProps = {
+      renderType: "StaticSiteGeneration",
+      renderProps: { props: pageProps.props },
+    };
+  } else {
+    const type: string = app["SSG"] ? "SSG" : app["SSR"] ? "SSR" : "DEFAULT";
+    initialProps = await Fetch.getProps(type, app[type]);
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    if (!initialProps.renderProps || !initialProps.renderProps["props"]) {
+      throw new Error(
+        "function SSG or SSR must return an object containing the props property"
+      );
+    } else if (initialProps.renderProps.props) {
+      if (typeof initialProps.renderProps.props !== "object") {
+        throw new Error("props property must return an object");
+      }
+    }
+  }
+
+  return {
+    _App: App,
+    initialProps,
+    Component,
+  };
+}
+
 export default function Route({ initialInfo }: RouteProps): ReactElement {
-  const [pageHeadList, setPageHeadList] = useState([]);
-  const [dynamicInfo, setDynamicInfo] = useState({});
+  const [pageHeadList, setPageHeadList] = useState<Array<ReactElement>>([]);
+  const [dynamicInfo, setDynamicInfo] = useState<DynamicPathInfo>({});
 
   const [routeStatus, setRouteStatus] = useState<RouteState>({
     isSSR: true,
@@ -161,36 +280,10 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
   });
 
   useEffect(() => {
-    const result = {};
-
     async function setDynamicRoute() {
-      for (const directoryPath of Object.keys(initialInfo.dynamicPathInfo)) {
-        const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
-        const app = Object.assign({}, dynamicComponent);
-
-        if (dynamicComponent.hasOwnProperty("PATHS")) {
-          const { paths } = await app.PATHS();
-
-          const key = directoryPath
-            .split("/")
-            .pop()
-            .replace("[", "")
-            .replace("]", "");
-
-          paths.forEach((value) => {
-            const paramKey: string = value.params[key];
-            const outputKey: string = String(directoryPath).replace(
-              `[${key}]`,
-              paramKey
-            );
-
-            result[outputKey] = {
-              path: directoryPath,
-              param: value,
-            };
-          });
-        }
-      }
+      const result: DynamicPathInfo = await getDynamicRoutePathInfo(
+        initialInfo
+      );
 
       setDynamicInfo(result);
     }
@@ -216,72 +309,12 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
       return;
     }
 
-    const isDynamicRouting: boolean = dynamicInfo.hasOwnProperty(
-      routeStatus.path
-    );
-    const path: string = isDynamicRouting
-      ? dynamicInfo[routeStatus.path].path
-      : routeStatus.path;
-
-    let client;
-    let initialProps: InitialProps;
-    let App: React.FC | React.ElementType;
-    let Component: React.FC;
-    let hasComponent = true;
-
-    try {
-      client = require(`../../../../pages${path}`);
-    } catch (err) {
-      initialProps = {
-        renderType: "StaticSiteGeneration",
-        renderProps: {
-          props: {
-            title: "Page Not Fount",
-          },
-        },
-      };
-
-      App = _App;
-      Component = Error;
-      hasComponent = false;
-    }
-
-    async function getComponentProps() {
-      if (hasComponent) {
-        const app = Object.assign({}, client);
-
-        Component = app["default"];
-        App = initialInfo._App;
-
-        if (isDynamicRouting) {
-          const pageProps = await app.SSG(dynamicInfo[routeStatus.path].param);
-
-          initialProps = {
-            renderType: "StaticSiteGeneration",
-            renderProps: { props: pageProps.props },
-          };
-        } else {
-          const type: string = app["SSG"]
-            ? "SSG"
-            : app["SSR"]
-            ? "SSR"
-            : "DEFAULT";
-          initialProps = await Fetch.getProps(type, app[type]);
-        }
-
-        if (!initialProps.renderProps["props"]) {
-          Component = Error;
-          initialProps = {
-            renderType: "StaticSiteGeneration",
-            renderProps: {
-              props: {
-                title:
-                  "function SSG or SSR must return an object containing the props property",
-              },
-            },
-          };
-        }
-      }
+    async function setPageComponentInfo() {
+      const { _App, initialProps, Component } = await getRenderInfo(
+        dynamicInfo,
+        routeStatus,
+        initialInfo
+      );
 
       setRenderInfo({
         routerContext: {
@@ -295,19 +328,26 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
         },
         renderOption: {
           ...renderInfo.renderOption,
-          _App: App,
+          _App,
           initialProps,
           Component,
         },
       });
     }
 
-    getComponentProps();
+    setPageComponentInfo();
   }, [routeStatus]);
+
+  useEffect(() => {
+    if (routeStatus.isSSR) {
+      return;
+    }
+
+    renderPageHead(pageHeadList);
+  }, [pageHeadList]);
 
   return (
     <>
-      {!routeStatus.isSSR && <MemoedPageHead headList={pageHeadList} />}
       <RouterProvider value={renderInfo.routerContext}>
         <HeadProvider value={renderInfo.headContext}>
           <MemoedPage componentInfo={renderInfo.renderOption} />
