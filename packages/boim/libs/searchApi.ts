@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import pathAlias from "./pathAlias";
+import { EXT, BASECOMPONENT } from "../common/constants";
 
 interface File {
   key: string;
@@ -35,15 +36,31 @@ export default class Search {
     Search.appPath = "";
     Search.documentPath = "";
 
-    fileList.forEach((value) => {
-      if (value === "_app.js" || value === "_app.ts") {
-        Search.appPath = `${pathAlias.client}/pages/${value}`;
-        return;
+    fileList.forEach((file) => {
+      const fileName = file.split(".")[0];
+
+      if (fileName === BASECOMPONENT._app) {
+        if (
+          file.endsWith(EXT.js) ||
+          file.endsWith(EXT.jsx) ||
+          file.endsWith(EXT.ts) ||
+          file.endsWith(EXT.tsx)
+        ) {
+          Search.appPath = `${pathAlias.client}/pages/${file}`;
+          return;
+        }
       }
 
-      if (value === "_document.js" || value === "_document.ts") {
-        Search.documentPath = `${pathAlias.client}/pages/${value}`;
-        return;
+      if (fileName === BASECOMPONENT._document) {
+        if (
+          file.endsWith(EXT.js) ||
+          file.endsWith(EXT.jsx) ||
+          file.endsWith(EXT.ts) ||
+          file.endsWith(EXT.tsx)
+        ) {
+          Search.documentPath = `${pathAlias.client}/pages/${file}`;
+          return;
+        }
       }
     });
 
@@ -54,6 +71,9 @@ export default class Search {
     if (Search.documentPath == "") {
       Search.documentPath = `${pathAlias.root}/pages/_document.tsx`;
     }
+
+    console.log(Search.appPath);
+    console.log(Search.documentPath);
 
     return {
       _app: Search.appPath,
