@@ -1,5 +1,6 @@
 const path = require("path");
 
+const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -10,6 +11,9 @@ const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
 const { _app, _document } = Search.getBaseComponentPath(fileList);
 
+const isDevelopment = process.env.NODE_ENV === "development";
+console.log("isDevelopment <server>", isDevelopment);
+
 module.exports = {
   target: "node",
   mode: "production",
@@ -17,7 +21,10 @@ module.exports = {
   output: {
     filename: "_www.js",
     path: `${client}/dist/server`,
-    assetModuleFilename: "../public/[contenthash][ext]",
+    assetModuleFilename: "../public/[name][ext]",
+    library: "build-server",
+    libraryTarget: "umd",
+    globalObject: "this",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -84,23 +91,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.module.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
-          },
-        ],
-      },
-      {
         test: /\.css$/,
         use: [
           {
@@ -112,8 +102,8 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: false,
-            },
+              modules: true,
+            }
           },
         ],
       },
@@ -137,14 +127,15 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.ContextReplacementPlugin(/express/),
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
-      root: `${client}`,
       verbose: true,
       dry: false,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
+        "../server/**/*",
         "!stats.json",
         "!important.js",
         "!folder/**/*",

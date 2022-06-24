@@ -78,6 +78,7 @@ export default async function handleGetPage(
     const manifestData: object = dir.parseJsonSync(
       `${pathAlias.client}/dist/manifest.json`
     );
+
     const dynamicManifestData: object = dir.parseJsonSync(
       `${pathAlias.client}/dist/dynamicManifest.json`
     );
@@ -112,7 +113,7 @@ export default async function handleGetPage(
         dynamicResult
       );
     } else {
-      const routeType = staticResult.hasValue ? "static" : "dynamic";
+      const routeType: string = staticResult.hasValue ? "static" : "dynamic";
       resource = await getResources(
         url,
         routeType,

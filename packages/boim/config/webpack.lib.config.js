@@ -7,9 +7,12 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
 
+const isDevelopment = process.env.NODE_ENV === "development";
+console.log("isDevelopment <lib>", isDevelopment);
+
 module.exports = {
   target: "node",
-  mode: "production",
+  mode: isDevelopment ? "development" : "production",
   entry: {
     directoryApi: `${root}/libs/directoryApi`,
     searchApi: `${root}/libs/searchApi`,
@@ -19,7 +22,6 @@ module.exports = {
     library: "build-module",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[contenthash][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -29,7 +31,7 @@ module.exports = {
     },
   },
   optimization: {
-    minimize: true,
+    minimize: isDevelopment ? false : true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
@@ -60,7 +62,22 @@ module.exports = {
       },
       {
         test: /\.(less|scss)$/,
-        use: [
+        use:  isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: true,
+            },
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "postcss-loader",
+          "less-loader",
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -84,8 +101,15 @@ module.exports = {
         ],
       },
       {
-        test: /\.module.css$/,
-        use: [
+        test: /\.css$/,
+        use: isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: false,
+            },
+          },
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -96,23 +120,6 @@ module.exports = {
             loader: "css-loader",
             options: {
               modules: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.css$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: false,
             },
           },
         ],
@@ -140,11 +147,11 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
-      root: `${client}`,
       dry: false,
       verbose: true,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
+        "../lib/**/*",
         "!stats.json",
         "!important.js",
         "!folder/**/*",

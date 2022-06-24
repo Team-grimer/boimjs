@@ -27,7 +27,7 @@ module.exports = {
   rules: {
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-var-requires": "off",
-    "prettier/prettier": "error",
+    "prettier/prettier": "off",
     indent: ["warn", 2],
     "linebreak-style": ["error", "unix"],
     quotes: ["warn", "double"],
