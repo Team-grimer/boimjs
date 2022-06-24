@@ -3,6 +3,7 @@ import path from "path";
 
 import "../config/fetchPolyfill";
 import pathAlias from "./pathAlias";
+import { EXT } from "../common/constants";
 
 interface pageProps {
   props: object;
@@ -92,23 +93,23 @@ export default class Directory {
 
         if (Absolute.match(/\.(svg|png|jpg|jpeg|gif|text)$/)) {
           const fileName: string = Absolute.replace(startDirectoryPath, "")
-            .replace(".svg", "")
-            .replace(".png", "")
-            .replace(".gif", "")
-            .replace(".text", "")
-            .replace(".jpg", "")
-            .replace(".jpeg", "");
+            .replace(EXT.svg, "")
+            .replace(EXT.png, "")
+            .replace(EXT.gif, "")
+            .replace(EXT.text, "")
+            .replace(EXT.jpg, "")
+            .replace(EXT.jpeg, "");
 
           this.assetFiles[fileName] = Absolute;
         }
 
         if (Absolute.match(/\.(css|less|sass|scss|module.css)$/)) {
           const fileName: string = Absolute.replace(startDirectoryPath, "")
-            .replace(".module.css", "")
-            .replace(".css", "")
-            .replace(".less", "")
-            .replace(".sass", "")
-            .replace(".scss", "");
+            .replace(EXT.moduleCss, "")
+            .replace(EXT.css, "")
+            .replace(EXT.less, "")
+            .replace(EXT.sass, "")
+            .replace(EXT.scss, "");
 
           this.cssFiles[fileName] = Absolute;
         }
@@ -117,7 +118,7 @@ export default class Directory {
           const fileName: string = Absolute.replace(
             startDirectoryPath,
             ""
-          ).replace(".js", "");
+          ).replace(EXT.js, "");
 
           this.filePaths[fileName] = Absolute;
         }
