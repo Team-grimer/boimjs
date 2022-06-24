@@ -125,17 +125,26 @@ export default async function handleGetPage(
 
     let newHtml: string;
 
-    try {
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        newHtml = getHTML(
+          resource.component,
+          resource.componentProps,
+          resource.cssList,
+          resource.scriptList
+        );
+      } catch (err) {
+        res.statusCode = 500;
+        next(err);
+        return;
+      }
+    } else {
       newHtml = getHTML(
         resource.component,
         resource.componentProps,
         resource.cssList,
         resource.scriptList
       );
-    } catch (err) {
-      res.statusCode = 500;
-      next(err);
-      return;
     }
 
     if (resource.htmlFile !== newHtml) {
