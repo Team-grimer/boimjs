@@ -28,16 +28,17 @@ export default class Document {
   }
 
   removeChildrenOfHeadElement(): () => void {
-    let linkNode: ChildNode | null;
+    let linkNode: ChildNode;
 
     while (this.headElement.firstChild) {
       if (this.headElement.firstChild.nodeName === "LINK") {
         linkNode = this.headElement.firstChild;
       }
+
       this.headElement.removeChild(this.headElement.firstChild);
     }
 
-    if (linkNode !== null) {
+    if (linkNode) {
       this.headElement.appendChild(linkNode);
     }
 
