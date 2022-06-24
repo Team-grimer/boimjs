@@ -71,7 +71,7 @@ export function getHTML(
   cssList: Array<string>,
   scriptList: Array<string>
 ): string {
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV !== "production") {
     if (!ReactIs.isValidElementType(_Document)) {
       throw new Error(
         'The default export is not a React Component in page: "/_document"'
@@ -85,9 +85,7 @@ export function getHTML(
     }
 
     if (!ReactIs.isValidElementType(Component)) {
-      throw new Error(
-        'The default export is not a React Component in page: "pathname"'
-      );
+      throw new Error("The default export is not a React Component in page");
     }
 
     if (!pageProps.renderProps || !pageProps.renderProps["props"]) {
@@ -97,14 +95,6 @@ export function getHTML(
     } else if (pageProps.renderProps.props) {
       if (typeof pageProps.renderProps.props !== "object") {
         throw new Error("props property must return an object");
-      }
-
-      const propsKeyList = Object.keys(pageProps.renderProps.props);
-
-      if (!propsKeyList.length) {
-        throw new Error(
-          "props property must return an object containing property"
-        );
       }
     }
   }
