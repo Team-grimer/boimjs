@@ -10,10 +10,12 @@ interface pageProps {
 export default class Directory {
   filePaths: { [key: string]: string };
   cssFiles: { [key: string]: string };
+  assetFiles: { [key: string]: string };
 
   constructor() {
     this.filePaths = {};
     this.cssFiles = {};
+    this.assetFiles = {};
   }
 
   getFilePaths(): { [key: string]: string } {
@@ -22,6 +24,10 @@ export default class Directory {
 
   getCssFiles(): { [key: string]: string } {
     return this.cssFiles;
+  }
+
+  getAssetFiles(): { [key: string]: string } {
+    return this.assetFiles;
   }
 
   async getDynamicRouteInfo() {
@@ -84,8 +90,21 @@ export default class Directory {
           return;
         }
 
-        if (Absolute.match(/\.(css|less|sass|scss)$/)) {
+        if (Absolute.match(/\.(svg|png|jpg|jpeg|gif|text)$/)) {
           const fileName: string = Absolute.replace(startDirectoryPath, "")
+            .replace(".svg", "")
+            .replace(".png", "")
+            .replace(".gif", "")
+            .replace(".text", "")
+            .replace(".jpg", "")
+            .replace(".jpeg", "");
+
+          this.assetFiles[fileName] = Absolute;
+        }
+
+        if (Absolute.match(/\.(css|less|sass|scss|module.css)$/)) {
+          const fileName: string = Absolute.replace(startDirectoryPath, "")
+            .replace(".module.css", "")
             .replace(".css", "")
             .replace(".less", "")
             .replace(".sass", "")

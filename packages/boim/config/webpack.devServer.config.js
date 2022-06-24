@@ -81,7 +81,7 @@ module.exports = {
       },
       {
         test: /\.(less|scss)$/,
-        use:  isDevelopment ? [
+        use: [
           {
             loader: "css-loader?exportOnlyLocals",
             options: {
@@ -96,84 +96,18 @@ module.exports = {
           },
           "postcss-loader",
           "less-loader",
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: true,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: false,
-            },
-          },
-          "postcss-loader",
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "less-loader",
-        ],
-      },
-      {
-        test: /\.module\.css$/i,
-        use:  isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: false,
-            },
-          },
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
-          },
-          "postcss-loader",
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "less-loader",
-        ],
+        ] 
       },
       {
         test: /\.css$/,
-        use: isDevelopment ? [
+        use: [
           {
             loader: "css-loader?exportOnlyLocals",
             options: {
-              modules: false,
+              modules: true,
             },
           },
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: false,
-            },
-          },
-        ],
+        ] 
       },
       {
         test: /\.(png|jpg|jpeg|gif)$/i,
@@ -203,6 +137,7 @@ module.exports = {
       dry: false,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
+        "../server/**/*",
         "!stats.json",
         "!important.js",
         "!folder/**/*",
