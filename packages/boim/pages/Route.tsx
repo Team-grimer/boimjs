@@ -247,7 +247,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
   };
 }
 
-export default function Route({ initialInfo }: RouteProps): ReactElement {
+const Route: React.FC<RouteProps> = ({ initialInfo }) => {
   const [pageHeadList, setPageHeadList] = useState<Array<ReactElement>>([]);
   const [dynamicInfo, setDynamicInfo] = useState<DynamicPathInfo>({});
 
@@ -355,4 +355,6 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
       </RouterProvider>
     </>
   );
-}
+};
+
+export default Route;
