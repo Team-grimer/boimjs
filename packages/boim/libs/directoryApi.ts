@@ -38,7 +38,7 @@ export default class Directory {
     );
 
     for (const directoryPath of Object.keys(dynamicPaths)) {
-      const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
+      const dynamicComponent = require(`../../../pages${directoryPath}/index.js`);
       const app = Object.assign({}, dynamicComponent);
 
       if (dynamicComponent.hasOwnProperty("PATHS")) {
@@ -186,7 +186,7 @@ hydrate();
     });
 
     for (const directoryPath of Object.keys(files)) {
-      const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
+      const dynamicComponent = require(`../../../pages${directoryPath}/index.js`);
       const app = Object.assign({}, dynamicComponent);
 
       const createDynamicFiles = async (): Promise<void> => {
@@ -202,9 +202,7 @@ hydrate();
           const content = `
             import React from "react";
             import ReactDOM from "react-dom";
-            import Component from "${
-  pathAlias.client
-}/pages${directoryPath}/index.js";
+            import Component from "${pathAlias.client}/pages${directoryPath}/index.js";
             import Route from "${pathAlias.root}/pages/Route";
             import _App from "app";
             const dynamicPathInfo = ${JSON.stringify(files)};

@@ -4,7 +4,7 @@ const TerserPlugin = require("terser-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const root = path.resolve("./");
-const client = path.resolve(root, "../../../");
+const client = path.resolve(root, "../../");
 
 const Directory = require(`${client}/dist/lib/directoryApi`).default;
 const dir = new Directory();

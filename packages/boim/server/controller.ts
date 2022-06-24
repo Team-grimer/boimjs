@@ -144,8 +144,9 @@ export default async function handleGetPage(
     }
 
     if (resource.renderType === RENDERPROPSTYPE.ssg || resource.renderType === RENDERPROPSTYPE.default) {
-      res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+      res.set("Cache-Control", "public, no-cache, max-age=31557600");
       res.set({ ETag: buildId });
+
       const htmlFile = fs.readFileSync(resource.htmlFilePath, "utf-8");
       res.send(htmlFile);
       return;
@@ -194,7 +195,7 @@ const getResources = async (
   values.htmlFile = fs.readFileSync(values.htmlFilePath, "utf-8");
 
   if (routeType === "static") {
-    const client: Client = require(`../../../../pages${url}/index.js`);
+    const client: Client = require(`../../../pages${url}/index.js`);
 
     values.renderType =
       client.SSG
@@ -223,7 +224,7 @@ const getResources = async (
       url,
       pagePropsData.routeKey
     );
-    const client: Client = require(`../../../../pages${clientFileUrl}`);
+    const client: Client = require(`../../../pages${clientFileUrl}`);
 
     values.renderType = RENDERPROPSTYPE.ssg;
     values.component = client.default;

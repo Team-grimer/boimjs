@@ -137,7 +137,7 @@ async function getDynamicRoutePathInfo(initialInfo) {
   const result: DynamicPathInfo = {};
 
   for (const directoryPath of Object.keys(initialInfo.dynamicPathInfo)) {
-    const dynamicComponent: ComponentInfo = require(`../../../../pages${directoryPath}/index.js`);
+    const dynamicComponent: ComponentInfo = require(`../../../pages${directoryPath}/index.js`);
     const app: ComponentInfo = Object.assign({}, dynamicComponent);
 
     if (dynamicComponent.hasOwnProperty("PATHS")) {
@@ -181,7 +181,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
   let client: ComponentInfo;
 
   try {
-    client = require(`../../../../pages${path}`);
+    client = require(`../../../pages${path}`);
   } catch (err) {
     initialProps = {
       renderType: RENDERTYPE.ssg,
