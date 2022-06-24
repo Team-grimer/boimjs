@@ -9,7 +9,7 @@
     "react ssr",
     "react ssg"
   ],
-  "main": "boim",
+  "main": "main.js",
   "homepage": "https://github.com/Team-grimer/boimjs",
   "bugs": {
     "url": "https://github.com/Team-grimer/boimjs/issues",
