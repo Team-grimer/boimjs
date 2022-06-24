@@ -41,6 +41,18 @@ interface RouteState {
   };
 }
 
+interface ComponentInfo {
+  [key: string]: any;
+}
+
+interface DynamicPathInfo {
+  [key: string]: any;
+}
+
+interface Path {
+  paths?: Array<{ params: { id: string } }>;
+}
+
 interface RenderInfo {
   routerContext: {
     push: (pathName: string, param: { [key: string]: any }) => void;
@@ -125,16 +137,16 @@ function renderPageHead(headList: Array<ReactElement>) {
 }
 
 async function getDynamicRoutePathInfo(initialInfo) {
-  const result = {};
+  const result: DynamicPathInfo = {};
 
   for (const directoryPath of Object.keys(initialInfo.dynamicPathInfo)) {
-    const dynamicComponent = require(`../../../../pages${directoryPath}/index.js`);
-    const app = Object.assign({}, dynamicComponent);
+    const dynamicComponent: ComponentInfo = require(`../../../../pages${directoryPath}/index.js`);
+    const app: ComponentInfo = Object.assign({}, dynamicComponent);
 
     if (dynamicComponent.hasOwnProperty("PATHS")) {
-      const { paths } = await app.PATHS();
+      const { paths }: Path = await app.PATHS();
 
-      const key = directoryPath
+      const key: string = directoryPath
         .split("/")
         .pop()
         .replace("[", "")
@@ -169,35 +181,31 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
   let App: React.FC;
   let initialProps: InitialProps;
   let Component: React.FC;
-  let client;
+  let client: ComponentInfo;
 
-  if (process.env.NODE_ENV !== "production") {
-    try {
-      client = require(`../../../../pages${path}`);
-    } catch (err) {
-      initialProps = {
-        renderType: "StaticSiteGeneration",
-        renderProps: {
-          props: {
-            title: "Page Not Found",
-          },
-        },
-      };
-
-      App = _App;
-      Component = ErrorPage;
-
-      return {
-        _App: App,
-        initialProps,
-        Component,
-      };
-    }
-  } else {
+  try {
     client = require(`../../../../pages${path}`);
+  } catch (err) {
+    initialProps = {
+      renderType: "StaticSiteGeneration",
+      renderProps: {
+        props: {
+          title: "Page Not Found",
+        },
+      },
+    };
+
+    App = _App;
+    Component = ErrorPage;
+
+    return {
+      _App: App,
+      initialProps,
+      Component,
+    };
   }
 
-  const app = Object.assign({}, client);
+  const app: ComponentInfo = Object.assign({}, client);
 
   Component = app["default"];
   App = initialInfo._App;
@@ -240,8 +248,8 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
 }
 
 export default function Route({ initialInfo }: RouteProps): ReactElement {
-  const [pageHeadList, setPageHeadList] = useState([]);
-  const [dynamicInfo, setDynamicInfo] = useState({});
+  const [pageHeadList, setPageHeadList] = useState<Array<ReactElement>>([]);
+  const [dynamicInfo, setDynamicInfo] = useState<DynamicPathInfo>({});
 
   const [routeStatus, setRouteStatus] = useState<RouteState>({
     isSSR: true,
@@ -273,7 +281,9 @@ export default function Route({ initialInfo }: RouteProps): ReactElement {
 
   useEffect(() => {
     async function setDynamicRoute() {
-      const result = await getDynamicRoutePathInfo(initialInfo);
+      const result: DynamicPathInfo = await getDynamicRoutePathInfo(
+        initialInfo
+      );
 
       setDynamicInfo(result);
     }
