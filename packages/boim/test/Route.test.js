@@ -3,7 +3,7 @@
  */
 import React from "react";
 
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 
 import Route from "../pages/Route";
 
@@ -16,7 +16,7 @@ describe("Route Component render test", () => {
     return <p>boim 페이지</p>;
   }
 
-  test("Route Component render test", () => {
+  test("Route Component render test", async () => {
     const initialInfo = {
       _App: App,
       initialProps: {},
@@ -26,6 +26,6 @@ describe("Route Component render test", () => {
 
     render(<Route initialInfo={initialInfo} />);
 
-    expect(screen.getByText("boim 페이지")).toBeTruthy();
+    await waitFor(() => expect(screen.getByText("boim 페이지")).toBeTruthy());
   });
 });
