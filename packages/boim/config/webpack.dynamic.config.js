@@ -112,38 +112,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.module\.css$/i,
-        use:  isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: { namedExport: true }
-            },
-          },
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: true,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
-          },
-          "postcss-loader",
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "less-loader",
-        ],
-      },
-      {
         test: /\.css$/,
         use: isDevelopment ? [
           {
@@ -162,8 +130,8 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: false,
-            },
+              modules: true,
+            }
           },
         ],
       },

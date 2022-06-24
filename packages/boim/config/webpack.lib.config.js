@@ -22,7 +22,6 @@ module.exports = {
     library: "build-module",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[name][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -102,38 +101,6 @@ module.exports = {
         ],
       },
       {
-        test: /\.module\.css$/i,
-        use:  isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: false,
-            },
-          },
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "postcss-loader",
-          "less-loader",
-        ],
-      },
-      {
         test: /\.css$/,
         use: isDevelopment ? [
           {
@@ -152,7 +119,7 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: false,
+              modules: true,
             },
           },
         ],
@@ -184,6 +151,7 @@ module.exports = {
       verbose: true,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
+        "../lib/**/*",
         "!stats.json",
         "!important.js",
         "!folder/**/*",

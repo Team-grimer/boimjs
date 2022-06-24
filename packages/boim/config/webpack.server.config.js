@@ -67,54 +67,7 @@ module.exports = {
       },
       {
         test: /\.(less|scss)$/,
-        use:  isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: true,
-            },
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "postcss-loader",
-          "less-loader",
-        ] : [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              emit: false,
-            },
-          },
-          {
-            loader: "css-loader",
-            options: {
-              modules: true,
-            },
-          },
-          "postcss-loader",
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          "less-loader",
-        ],
-      },
-      {
-        test: /\.module\.css$/i,
-        use:  isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: false,
-            },
-          },
-        ] : [
+        use: [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -139,14 +92,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: isDevelopment ? [
-          {
-            loader: "css-loader?exportOnlyLocals",
-            options: {
-              modules: false,
-            },
-          },
-        ] : [
+        use: [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -156,8 +102,8 @@ module.exports = {
           {
             loader: "css-loader",
             options: {
-              modules: false,
-            },
+              modules: true,
+            }
           },
         ],
       },
@@ -189,6 +135,7 @@ module.exports = {
       dry: false,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
+        "../server/**/*",
         "!stats.json",
         "!important.js",
         "!folder/**/*",
