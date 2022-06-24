@@ -18,17 +18,20 @@ const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
 const { _app } = Search.getBaseComponentPath(fileList);
 
+const isDevelopment = process.env.NODE_ENV === "development";
+console.log("isDevelopment <dynamic>", isDevelopment);
+
 module.exports = {
   target: "node",
-  mode: "production",
+  mode: isDevelopment ? "development" : "production",
   entry: hydratedDynamicComponentEntries,
   output: {
     path: `${client}/dist/pages`,
     filename: "[name][chunkhash].js",
-    library: "build-page",
+    library: "build-dynamic",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[contenthash][ext]",
+    assetModuleFilename: "../public/[name][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
@@ -39,7 +42,7 @@ module.exports = {
     },
   },
   optimization: {
-    minimize: true,
+    minimize: isDevelopment ? false : true,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
@@ -70,7 +73,22 @@ module.exports = {
       },
       {
         test: /\.(less|scss)$/,
-        use: [
+        use:  isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: true,
+            },
+          },
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "postcss-loader",
+          "less-loader",
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -94,8 +112,15 @@ module.exports = {
         ],
       },
       {
-        test: /\.module.css$/,
-        use: [
+        test: /\.module\.css$/i,
+        use:  isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: { namedExport: true }
+            },
+          },
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -108,11 +133,26 @@ module.exports = {
               modules: true,
             },
           },
+          "postcss-loader",
+          {
+            loader: "sass-loader",
+            options: {
+              sourceMap: true,
+            },
+          },
+          "less-loader",
         ],
       },
       {
         test: /\.css$/,
-        use: [
+        use: isDevelopment ? [
+          {
+            loader: "css-loader?exportOnlyLocals",
+            options: {
+              modules: false,
+            },
+          },
+        ] : [
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
@@ -148,7 +188,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      inject: false,
+      inject: true,
       filename: ".[name].html",
     }),
     new MiniCssExtractPlugin({

@@ -183,8 +183,8 @@ hydrate();
             import React from "react";
             import ReactDOM from "react-dom";
             import Component from "${
-              pathAlias.client
-            }/pages${directoryPath}/index.js";
+  pathAlias.client
+}/pages${directoryPath}/index.js";
             import Route from "${pathAlias.root}/pages/Route";
             import _App from "app";
             const dynamicPathInfo = ${JSON.stringify(files)};

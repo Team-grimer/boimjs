@@ -74,18 +74,20 @@ export function getHTML(
   if (process.env.NODE_ENV !== "production") {
     if (!ReactIs.isValidElementType(_Document)) {
       throw new Error(
-        'The default export is not a React Component in page: "/_document"'
+        "The default export is not a React Component in page: \"/_document\""
       );
     }
 
     if (!ReactIs.isValidElementType(_App)) {
       throw new Error(
-        'The default export is not a React Component in page: "/_app"'
+        "The default export is not a React Component in page: \"/_app\""
       );
     }
 
     if (!ReactIs.isValidElementType(Component)) {
-      throw new Error("The default export is not a React Component in page");
+      throw new Error(
+        "The default export is not a React Component in page: \"pathname\""
+      );
     }
 
     if (!pageProps.renderProps || !pageProps.renderProps["props"]) {

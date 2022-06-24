@@ -13,12 +13,12 @@
     "outDir": "./ts_build",
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
-    "module": "esnext",
+    "module": "AMD",
     "noImplicitAny": false,
     "preserveConstEnums": true,
     "removeComments": true,
     "sourceMap": true,
-    "target": "es2015",
+    "target": "ES2015",
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
@@ -36,7 +36,7 @@
     "./pages/*",
     "./pages/templates/*",
     "./common/*",
-    "./config/fetchPolyfill.js",
+    "./config/*"
   ],
   "exclude": [
     "./dist/*",

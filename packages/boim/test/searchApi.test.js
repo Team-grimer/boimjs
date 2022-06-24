@@ -12,8 +12,8 @@ describe("searchApi test", () => {
   });
 
   test("getFileList static metho test", () => {
-    const tempFileList = fs.readdirSync(`${PathAlias.client}/pages`);
-    const fileList = Search.getFileList(`${PathAlias.client}/pages`);
+    const tempFileList = fs.readdirSync(`${PathAlias.root}/test/sample`);
+    const fileList = Search.getFileList(`${PathAlias.root}/test/sample`);
 
     expect(tempFileList.length).toBe(fileList.length);
   });

@@ -1,38 +1,56 @@
 const path = require("path");
 
+const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
-const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+const nodeExternals = require("webpack-node-externals");
 
 const root = path.resolve("./");
 const client = path.resolve(root, "../../../");
+const Search = require(`${client}/dist/lib/searchApi`).default;
+const fileList = Search.getFileList(`${client}/pages`);
+const { _app, _document } = Search.getBaseComponentPath(fileList);
 
 const isDevelopment = process.env.NODE_ENV === "development";
-console.log("isDevelopment <lib>", isDevelopment);
+console.log("isDevelopment <devServer>", isDevelopment);
 
 module.exports = {
-  target: "node",
-  mode: isDevelopment ? "development" : "production",
-  entry: {
-    directoryApi: `${root}/libs/directoryApi`,
-    searchApi: `${root}/libs/searchApi`,
+  externalsPresets: { node: true },
+  externals: [nodeExternals()],
+  devServer: {
+    open: true,
+    static: {
+      directory: `${client}/dist/pages`,
+      publicPath: "/"
+    },
+    compress: true,
+    port: 7777,
+    hot: "only",
   },
+  target: "node",
+  mode: "development",
+  entry: `${root}/server/_www.ts`,
   output: {
-    path: `${client}/dist/lib`,
-    library: "build-module",
+    filename: "_www.js",
+    path: `${client}/dist/server`,
+    publicPath: "http://localhost:7777/pages",
+    assetModuleFilename: "../public/[name][ext]",
+    library: "build-devServer",
     libraryTarget: "umd",
     globalObject: "this",
-    assetModuleFilename: "../public/[name][ext]",
   },
   resolve: {
     extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
     alias: {
       react: `${client}/node_modules/react`,
       "react-dom": `${client}/node_modules/react-dom`,
+      app: _app,
+      document: _document,
     },
   },
   optimization: {
-    minimize: isDevelopment ? false : true,
+    minimize: false,
     minimizer: [
       new TerserPlugin({
         extractComments: false,
@@ -82,13 +100,13 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              emit: false,
+              emit: true,
             },
           },
           {
             loader: "css-loader",
             options: {
-              modules: true,
+              modules: false,
             },
           },
           "postcss-loader",
@@ -123,13 +141,13 @@ module.exports = {
               modules: true,
             },
           },
+          "postcss-loader",
           {
             loader: "sass-loader",
             options: {
               sourceMap: true,
             },
           },
-          "postcss-loader",
           "less-loader",
         ],
       },
@@ -177,17 +195,17 @@ module.exports = {
     ],
   },
   plugins: [
+    new webpack.ContextReplacementPlugin(/express/),
     new MiniCssExtractPlugin(),
     new CleanWebpackPlugin({
       dangerouslyAllowCleanPatternsOutsideProject: true,
-      dry: false,
       verbose: true,
+      dry: false,
       cleanOnceBeforeBuildPatterns: [
         "**/*",
         "!stats.json",
         "!important.js",
         "!folder/**/*",
-        `${root}/client/**/*`,
       ],
     }),
   ],
