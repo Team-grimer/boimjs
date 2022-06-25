@@ -13,31 +13,32 @@ export default class Document {
 
   setElement(type: string, element: HTMLElement) {
     switch (type) {
-      case "head":
-        this.headElement = element;
-        break;
-      case "defaultHead":
-        this.defaultHeadElement = element;
-        break;
-      case "customHead":
-        this.customHeadElement = element;
-        break;
-      default:
-        break;
+    case "head":
+      this.headElement = element;
+      break;
+    case "defaultHead":
+      this.defaultHeadElement = element;
+      break;
+    case "customHead":
+      this.customHeadElement = element;
+      break;
+    default:
+      break;
     }
   }
 
   removeChildrenOfHeadElement(): () => void {
-    let linkNode = null;
+    let linkNode: ChildNode;
 
     while (this.headElement.firstChild) {
       if (this.headElement.firstChild.nodeName === "LINK") {
         linkNode = this.headElement.firstChild;
       }
+
       this.headElement.removeChild(this.headElement.firstChild);
     }
 
-    if (linkNode !== null) {
+    if (linkNode) {
       this.headElement.appendChild(linkNode);
     }
 

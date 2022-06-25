@@ -1,23 +1,23 @@
 import React, { createContext, ReactElement } from "react";
 
-interface HtmlState {
+export interface HtmlState {
   context: {
     main: ReactElement;
     scriptList: Array<string> | null;
-  } | null;
+  };
   docComponentRendered: {
     [key: string]: boolean;
   };
 }
 
-interface HeadState {
+export interface HeadState {
   cssList: Array<string> | null;
-  headInstance: Set<unknown>;
-  setHead: (headChildren: React.ReactNode) => void | null;
+  headInstance: Set<any>;
+  setHead: (headChildren: React.ReactChild | React.ReactChild[] | null) => void | null;
 }
 
-interface RouteState {
-  push: (arg: string, state: { [key: string]: any }) => void | null;
+export interface RouteState {
+  push: (arg: string, state?: { [key: string]: any } ) => void | null;
   path: string;
   param: {
     [key: string]: any;

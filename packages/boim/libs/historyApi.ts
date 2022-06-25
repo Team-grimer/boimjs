@@ -1,5 +1,5 @@
-import { createBrowserHistory } from "history";
+import { createBrowserHistory, BrowserHistory } from "history";
 
 export default class History {
-  static history = createBrowserHistory();
+  static history: BrowserHistory = createBrowserHistory();
 }

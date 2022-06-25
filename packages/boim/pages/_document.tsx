@@ -6,7 +6,7 @@ const isServer = typeof window === "undefined";
 
 interface Props {
   lang?: string | "en";
-  children?: React.ReactNode | null;
+  children?: React.ReactChild | React.ReactChild[] | null;
 }
 
 const { HtmlContext, HeadContext } = Context;

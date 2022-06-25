@@ -10,6 +10,7 @@ import Directory from "../libs/directoryApi";
 import pathAlias from "../libs/pathAlias";
 import Fetch from "../libs/fetchApi";
 import Search from "../libs/searchApi";
+import { EXT, RENDER_PROPS_TYPE } from "../common/constants";
 
 interface Client {
   default: React.FC;
@@ -63,14 +64,14 @@ export default async function handleGetPage(
     }
 
     if (
-      req.url.endsWith(".js") ||
-      req.url.endsWith(".css") ||
-      req.url.endsWith(".png") ||
-      req.url.endsWith(".jpg") ||
-      req.url.endsWith(".jpeg") ||
-      req.url.endsWith(".gif") ||
-      req.url.endsWith(".svg") ||
-      req.url.endsWith(".txt")
+      req.url.endsWith(EXT.js) ||
+      req.url.endsWith(EXT.css) ||
+      req.url.endsWith(EXT.png) ||
+      req.url.endsWith(EXT.jpg) ||
+      req.url.endsWith(EXT.jpeg) ||
+      req.url.endsWith(EXT.gif) ||
+      req.url.endsWith(EXT.svg) ||
+      req.url.endsWith(EXT.txt)
     ) {
       return next();
     }
@@ -124,17 +125,26 @@ export default async function handleGetPage(
 
     let newHtml: string;
 
-    try {
+    if (process.env.NODE_ENV !== "production") {
+      try {
+        newHtml = getHTML(
+          resource.component,
+          resource.componentProps,
+          resource.cssList,
+          resource.scriptList
+        );
+      } catch (err) {
+        res.statusCode = 500;
+        next(err);
+        return;
+      }
+    } else {
       newHtml = getHTML(
         resource.component,
         resource.componentProps,
         resource.cssList,
         resource.scriptList
       );
-    } catch (err) {
-      res.statusCode = 500;
-      next(err);
-      return;
     }
 
     if (resource.htmlFile !== newHtml) {
@@ -142,7 +152,7 @@ export default async function handleGetPage(
       dir.updateWriteSync(resource.htmlFilePath, newHtml);
     }
 
-    if (resource.renderType === "SSG" || resource.renderType === "DEFAULT") {
+    if (resource.renderType === RENDER_PROPS_TYPE.ssg || resource.renderType === RENDER_PROPS_TYPE.default) {
       res.set("Cache-Control", "public, no-cache, max-age=31557600");
       res.set({ ETag: buildId });
 
@@ -196,7 +206,12 @@ const getResources = async (
   if (routeType === "static") {
     const client: Client = require(`../../../pages${url}/index.js`);
 
-    values.renderType = client.SSG ? "SSG" : client.SSR ? "SSR" : "DEFAULT";
+    values.renderType =
+      client.SSG
+        ? RENDER_PROPS_TYPE.ssg
+        : client.SSR
+          ? RENDER_PROPS_TYPE.ssr
+          : RENDER_PROPS_TYPE.default;
     values.component = client.default;
     values.componentProps = await Fetch.getProps(
       values.renderType,
@@ -220,7 +235,7 @@ const getResources = async (
     );
     const client: Client = require(`../../../pages${clientFileUrl}`);
 
-    values.renderType = "SSG";
+    values.renderType = RENDER_PROPS_TYPE.ssg;
     values.component = client.default;
     values.componentProps = pagePropsData;
     values.scriptList = [dynamicResult.fileInfo.js[0]?.value];

@@ -1,6 +1,7 @@
 import fs from "fs";
 
 import pathAlias from "./pathAlias";
+import { EXT, BASE_COMPONENT } from "../common/constants";
 
 interface File {
   key: string;
@@ -35,15 +36,31 @@ export default class Search {
     Search.appPath = "";
     Search.documentPath = "";
 
-    fileList.forEach((value) => {
-      if (value === "_app.js" || value === "_app.ts") {
-        Search.appPath = `${pathAlias.client}/pages/${value}`;
-        return;
+    fileList.forEach((file) => {
+      const fileName: string = file.split(".")[0];
+
+      if (fileName === BASE_COMPONENT._app) {
+        if (
+          file.endsWith(EXT.js) ||
+          file.endsWith(EXT.jsx) ||
+          file.endsWith(EXT.ts) ||
+          file.endsWith(EXT.tsx)
+        ) {
+          Search.appPath = `${pathAlias.client}/pages/${file}`;
+          return;
+        }
       }
 
-      if (value === "_document.js" || value === "_document.ts") {
-        Search.documentPath = `${pathAlias.client}/pages/${value}`;
-        return;
+      if (fileName === BASE_COMPONENT._document) {
+        if (
+          file.endsWith(EXT.js) ||
+          file.endsWith(EXT.jsx) ||
+          file.endsWith(EXT.ts) ||
+          file.endsWith(EXT.tsx)
+        ) {
+          Search.documentPath = `${pathAlias.client}/pages/${file}`;
+          return;
+        }
       }
     });
 

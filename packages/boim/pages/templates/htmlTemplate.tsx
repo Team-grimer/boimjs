@@ -6,26 +6,23 @@ import _App from "app";
 import ReactDOMServer from "react-dom/server";
 import { parse, HTMLElement } from "node-html-parser";
 
-import Context from "../../libs/contextApi";
+import Context, { HtmlState, HeadState } from "../../libs/contextApi";
 import Document from "../../libs/documentApi";
+import { DEFAULT_HEAD_TAG } from "../../common/constants";
 
-interface HTMLProps {
+interface HtmlProps {
   main: ReactElement;
   scriptList: Array<string>;
 }
 
-interface HEADProps {
+interface HeadProps {
   headList?: Array<React.ReactNode> | null;
   cssList?: Array<string> | null;
 }
 
 const { HtmlProvider, HeadProvider } = Context;
 
-const defaultHeadTag = `<head><meta charSet="utf-8"></meta>
-<meta name="viewport" content="width=device-width,initial-scale=1"></meta>
-<title>Boim js</title></head>`;
-
-const CustomHead: React.FC<HEADProps> = ({ headList, cssList }) => {
+const CustomHead: React.FC<HeadProps> = ({ headList, cssList }) => {
   return (
     <head>
       <>{headList.map((value) => value)}</>
@@ -49,8 +46,8 @@ function renderPageTree(
   return <App Component={Component} pageProps={pageProps.renderProps} />;
 }
 
-function getHeadString(defaultHeadTag, customHeadTagString) {
-  const originalDocument: HTMLElement = parse(defaultHeadTag);
+function getHeadString(DEFAULTHEADTAG: string, customHeadTagString: string): string {
+  const originalDocument: HTMLElement = parse(DEFAULTHEADTAG);
   const customHeadDocument: HTMLElement = parse(customHeadTagString);
 
   const document: Document = new Document(
@@ -101,16 +98,16 @@ export function getHTML(
     }
   }
 
-  const pageComponent = renderPageTree(_App, Component, pageProps);
+  const pageComponent: ReactElement = renderPageTree(_App, Component, pageProps);
 
-  const htmlProps: HTMLProps = {
+  const htmlProps: HtmlProps = {
     main: pageComponent,
     scriptList,
   };
 
-  const headComponentList: ReactElement[] = [];
+  const headComponentList: Array<React.ReactChild | React.ReactChild[] | null> = [];
 
-  const htmlContextValue = {
+  const htmlContextValue: HtmlState = {
     context: htmlProps,
     docComponentRendered: {
       Html: false,
@@ -120,7 +117,7 @@ export function getHTML(
     },
   };
 
-  const headContextValue = {
+  const headContextValue: HeadState = {
     cssList,
     headInstance: new Set(),
     setHead: (headChildren) => {
@@ -141,8 +138,8 @@ export function getHTML(
   html = ReactDOMServer.renderToString(document);
 
   if (process.env.NODE_ENV === "production") {
-    const nonRenderedComponents = [];
-    const expectedDocComponents = ["Main", "Head", "Script", "Html"];
+    const nonRenderedComponents: Array<string> = [];
+    const expectedDocComponents: Array<string> = ["Main", "Head", "Script", "Html"];
 
     for (const comp of expectedDocComponents) {
       if (!htmlContextValue.docComponentRendered[comp]) {
@@ -151,10 +148,10 @@ export function getHTML(
     }
 
     if (nonRenderedComponents.length) {
-      const missingComponentList = nonRenderedComponents
+      const missingComponentList: string = nonRenderedComponents
         .map((e) => `<${e} />`)
         .join(", ");
-      const plural = nonRenderedComponents.length !== 1 ? "s" : "";
+      const plural: string = nonRenderedComponents.length !== 1 ? "s" : "";
       throw new Error(
         `Your custom Document (pages/_document) did not render all the required subcomponent${plural}.\n` +
           `Missing component${plural}: ${missingComponentList}\n`
@@ -169,7 +166,7 @@ export function getHTML(
     />
   );
 
-  const head: string = getHeadString(defaultHeadTag, customHeadTag);
+  const head: string = getHeadString(DEFAULT_HEAD_TAG, customHeadTag);
 
   html = html.replace("<head></head>", head);
 
@@ -180,9 +177,9 @@ export function renderToErrorPage(
   Component: React.FC,
   pageProps: { [key: string]: any }
 ) {
-  const headComponentList: ReactElement[] = [];
+  const headComponentList: Array<React.ReactChild | React.ReactChild[] | null> = [];
 
-  const headContextValue = {
+  const headContextValue: HeadState = {
     cssList: [],
     headInstance: new Set(),
     setHead: (headChildren) => {
@@ -191,14 +188,14 @@ export function renderToErrorPage(
   };
 
   const document: ReactElement = (
-    <HeadProvider value={headContextValue}>
-      <html>
-        <head></head>
-        <body>
+    <html>
+      <head></head>
+      <body>
+        <HeadProvider value={headContextValue}>
           <Component {...pageProps.renderProps.props} />
-        </body>
-      </html>
-    </HeadProvider>
+        </HeadProvider>
+      </body>
+    </html>
   );
 
   let html: string = ReactDOMServer.renderToString(document);
@@ -207,7 +204,7 @@ export function renderToErrorPage(
     <CustomHead headList={headComponentList} cssList={[]} />
   );
 
-  const head: string = getHeadString(defaultHeadTag, customHeadTag);
+  const head: string = getHeadString(DEFAULT_HEAD_TAG, customHeadTag);
 
   html = html.replace("<head></head>", head);
 

@@ -25,14 +25,14 @@ const Error: React.FC<ErrorProps> = ({ title, statusCode }) => {
           dangerouslySetInnerHTML={{
             __html: `
                 body { margin: 0; color: #000; background: #fff; }
-                .next-error-h1 {
+                .boim-error-h1 {
                   border-right: 1px solid rgba(0, 0, 0, .3);
                 }
                 `,
           }}
         />
         {statusCode ? (
-          <h1 className="next-error-h1" style={styles.h1}>
+          <h1 className="boim-error-h1" style={styles.h1}>
             {statusCode}
           </h1>
         ) : null}
@@ -45,7 +45,7 @@ const Error: React.FC<ErrorProps> = ({ title, statusCode }) => {
   );
 };
 
-const styles: { [k: string]: React.CSSProperties } = {
+const styles: { [key: string]: React.CSSProperties } = {
   error: {
     fontFamily:
       "-apple-system, BlinkMacSystemFont, Roboto, \"Segoe UI\", \"Fira Sans\", Avenir, \"Helvetica Neue\", \"Lucida Grande\", sans-serif",
