@@ -263,6 +263,16 @@ const Route: React.FC<RouteProps> = ({ initialInfo }) => {
   const [renderInfo, setRenderInfo] = useState<RenderInfo>({
     routerContext: {
       push: (pathName, state) => {
+        if (typeof pathName !== "string") {
+          throw new Error("router first parameter require String type");
+        }
+
+        if (state) {
+          if (typeof state !== "object" || Array.isArray(state)) {
+            throw new Error("router second parameter require Object type");
+          }
+        }
+
         history.push(pathName, state);
       },
       path: "",

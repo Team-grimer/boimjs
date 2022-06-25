@@ -17,7 +17,7 @@ export interface HeadState {
 }
 
 export interface RouteState {
-  push: (arg: string, state: { [key: string]: any }) => void | null;
+  push: (arg: string, state?: { [key: string]: any } ) => void | null;
   path: string;
   param: {
     [key: string]: any;
