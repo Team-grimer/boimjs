@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import pathAlias from "./pathAlias";
-import { EXT, BASECOMPONENT } from "../common/constants";
+import { EXT, BASE_COMPONENT } from "../common/constants";
 
 interface File {
   key: string;
@@ -39,7 +39,7 @@ export default class Search {
     fileList.forEach((file) => {
       const fileName: string = file.split(".")[0];
 
-      if (fileName === BASECOMPONENT._app) {
+      if (fileName === BASE_COMPONENT._app) {
         if (
           file.endsWith(EXT.js) ||
           file.endsWith(EXT.jsx) ||
@@ -51,7 +51,7 @@ export default class Search {
         }
       }
 
-      if (fileName === BASECOMPONENT._document) {
+      if (fileName === BASE_COMPONENT._document) {
         if (
           file.endsWith(EXT.js) ||
           file.endsWith(EXT.jsx) ||

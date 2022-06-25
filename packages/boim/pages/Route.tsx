@@ -10,7 +10,7 @@ import Context from "../libs/contextApi";
 import Fetch from "../libs/fetchApi";
 import History from "../libs/historyApi";
 import Document from "../libs/documentApi";
-import { DEFAULTHEADTAG, RENDERTYPE, RENDERPROPSTYPE } from "../common/constants";
+import { DEFAULT_HEAD_TAG, RENDER_TYPE, RENDER_PROPS_TYPE } from "../common/constants";
 
 interface Props {
   _App: React.FC | React.ElementType;
@@ -102,7 +102,7 @@ function renderPageHead(headList: Array<ReactElement>) {
 
   const headElement: HTMLElement = document.querySelector("head");
   const defaultHeadElement: HTMLElement = DomParser.parseFromString(
-    DEFAULTHEADTAG,
+    DEFAULT_HEAD_TAG,
     "text/html"
   ).querySelector("head");
 
@@ -184,7 +184,7 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
     client = require(`../../../pages${path}`);
   } catch (err) {
     initialProps = {
-      renderType: RENDERTYPE.ssg,
+      renderType: RENDER_TYPE.ssg,
       renderProps: {
         props: {
           title: "Page Not Found",
@@ -217,16 +217,16 @@ async function getRenderInfo(dynamicInfo, routeStatus, initialInfo) {
     const pageProps = await app.SSG(dynamicInfo[routeStatus.path].param);
 
     initialProps = {
-      renderType: RENDERTYPE.ssg,
+      renderType: RENDER_TYPE.ssg,
       renderProps: { props: pageProps.props },
     };
   } else {
     const type: string =
-      app[RENDERPROPSTYPE.ssg]
-        ? RENDERPROPSTYPE.ssg
-        : app[RENDERPROPSTYPE.ssr]
-          ? RENDERPROPSTYPE.ssr
-          : RENDERPROPSTYPE.default;
+      app[RENDER_PROPS_TYPE.ssg]
+        ? RENDER_PROPS_TYPE.ssg
+        : app[RENDER_PROPS_TYPE.ssr]
+          ? RENDER_PROPS_TYPE.ssr
+          : RENDER_PROPS_TYPE.default;
     initialProps = await Fetch.getProps(type, app[type]);
   }
 

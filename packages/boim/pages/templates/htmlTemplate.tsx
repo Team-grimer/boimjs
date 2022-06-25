@@ -8,7 +8,7 @@ import { parse, HTMLElement } from "node-html-parser";
 
 import Context, { HtmlState, HeadState } from "../../libs/contextApi";
 import Document from "../../libs/documentApi";
-import { DEFAULTHEADTAG } from "../../common/constants";
+import { DEFAULT_HEAD_TAG } from "../../common/constants";
 
 interface HtmlProps {
   main: ReactElement;
@@ -166,7 +166,7 @@ export function getHTML(
     />
   );
 
-  const head: string = getHeadString(DEFAULTHEADTAG, customHeadTag);
+  const head: string = getHeadString(DEFAULT_HEAD_TAG, customHeadTag);
 
   html = html.replace("<head></head>", head);
 
@@ -204,7 +204,7 @@ export function renderToErrorPage(
     <CustomHead headList={headComponentList} cssList={[]} />
   );
 
-  const head: string = getHeadString(DEFAULTHEADTAG, customHeadTag);
+  const head: string = getHeadString(DEFAULT_HEAD_TAG, customHeadTag);
 
   html = html.replace("<head></head>", head);
 

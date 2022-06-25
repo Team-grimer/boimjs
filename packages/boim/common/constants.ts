@@ -21,22 +21,22 @@ export const EXT: Constants = {
   jpeg: ".jpeg",
 };
 
-export const RENDERTYPE: Constants = {
+export const RENDER_TYPE: Constants = {
   ssg: "StaticSiteGeneration",
   ssr: "ServerSideRendering",
 };
 
-export const RENDERPROPSTYPE: Constants = {
+export const RENDER_PROPS_TYPE: Constants = {
   ssg: "SSG",
   ssr: "SSR",
   default: "DEFAULT"
 };
 
-export const BASECOMPONENT: Constants = {
+export const BASE_COMPONENT: Constants = {
   _app: "_app",
   _document: "_document"
 };
 
-export const DEFAULTHEADTAG = `<head><meta charSet="utf-8"></meta>
+export const DEFAULT_HEAD_TAG = `<head><meta charSet="utf-8"></meta>
 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
 <title>Boim js</title></head>`;

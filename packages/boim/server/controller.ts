@@ -10,7 +10,7 @@ import Directory from "../libs/directoryApi";
 import pathAlias from "../libs/pathAlias";
 import Fetch from "../libs/fetchApi";
 import Search from "../libs/searchApi";
-import { EXT, RENDERPROPSTYPE } from "../common/constants";
+import { EXT, RENDER_PROPS_TYPE } from "../common/constants";
 
 interface Client {
   default: React.FC;
@@ -152,7 +152,7 @@ export default async function handleGetPage(
       dir.updateWriteSync(resource.htmlFilePath, newHtml);
     }
 
-    if (resource.renderType === RENDERPROPSTYPE.ssg || resource.renderType === RENDERPROPSTYPE.default) {
+    if (resource.renderType === RENDER_PROPS_TYPE.ssg || resource.renderType === RENDER_PROPS_TYPE.default) {
       res.set("Cache-Control", "public, no-cache, max-age=31557600");
       res.set({ ETag: buildId });
 
@@ -208,10 +208,10 @@ const getResources = async (
 
     values.renderType =
       client.SSG
-        ? RENDERPROPSTYPE.ssg
+        ? RENDER_PROPS_TYPE.ssg
         : client.SSR
-          ? RENDERPROPSTYPE.ssr
-          : RENDERPROPSTYPE.default;
+          ? RENDER_PROPS_TYPE.ssr
+          : RENDER_PROPS_TYPE.default;
     values.component = client.default;
     values.componentProps = await Fetch.getProps(
       values.renderType,
@@ -235,7 +235,7 @@ const getResources = async (
     );
     const client: Client = require(`../../../pages${clientFileUrl}`);
 
-    values.renderType = RENDERPROPSTYPE.ssg;
+    values.renderType = RENDER_PROPS_TYPE.ssg;
     values.component = client.default;
     values.componentProps = pagePropsData;
     values.scriptList = [dynamicResult.fileInfo.js[0]?.value];
