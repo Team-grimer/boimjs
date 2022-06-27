@@ -91,7 +91,7 @@ export default class Directory {
           return;
         }
 
-        if (Absolute.match(/\.(svg|png|jpg|jpeg|gif|text)$/)) {
+        if (Absolute.match(/\.(svg|png|jpg|jpeg|gif|txt|json)$/)) {
           const fileName: string = Absolute.replace(startDirectoryPath, "")
             .replace(EXT.svg, "")
             .replace(EXT.png, "")

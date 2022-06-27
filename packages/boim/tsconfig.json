@@ -2,7 +2,7 @@
   "compilerOptions": {
     "types": [
       "node",
-      "jest"
+      "jest",
     ],
     "baseUrl": "./",
     "paths": {
@@ -13,7 +13,7 @@
         "pages/_app"
       ],
     },
-    "rootDir": "./",
+    "emitDeclarationOnly": false,
     "outDir": "./ts_build",
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
@@ -40,13 +40,13 @@
     "./pages/*",
     "./pages/templates/*",
     "./common/*",
-    "./config/*"
+    "./config/*",
   ],
   "exclude": [
     "./dist/*",
     "./node_modules",
-    "../../dist/*",
     "./test",
+    "../../dist/*",
     "./bin/*"
   ]
 }
