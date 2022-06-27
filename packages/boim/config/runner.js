@@ -28,11 +28,15 @@ function createConfig(entries, outputOption, additionalAlias, mod, emit, plugins
         ...additionalAlias,
       }
     },
+    devtool: isDev ? "eval-source-map": false,
     optimization: {
       minimize: isDev ? false : true,
       minimizer: [
         new TerserPlugin({
           extractComments: false,
+          terserOptions: {
+            sourceMap: isDev ? true : false,
+          }
         }),
       ],
     },
