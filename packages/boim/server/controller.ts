@@ -51,6 +51,7 @@ interface ManifestResult {
 
 const dir = new Directory();
 const buildId = Math.random().toString(26).slice(2);
+const isDevelopment = process.env.NODE_ENV === "development";
 
 export default async function handleGetPage(
   req: Request,
@@ -59,7 +60,9 @@ export default async function handleGetPage(
 ): Promise<Response<unknown, Record<string, unknown>> | void> {
   try {
     if (req.url.endsWith("/favicon.ico")) {
-      res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+      if (!isDevelopment) {
+        res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+      } 
       return res.end();
     }
 
@@ -153,15 +156,19 @@ export default async function handleGetPage(
     }
 
     if (resource.renderType === RENDER_PROPS_TYPE.ssg || resource.renderType === RENDER_PROPS_TYPE.default) {
-      res.set("Cache-Control", "public, no-cache, max-age=31557600");
-      res.set({ ETag: buildId });
+      if (!isDevelopment) {
+        res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+        res.set({ ETag: buildId });
+      }
 
       const htmlFile = fs.readFileSync(resource.htmlFilePath, "utf-8");
       res.send(htmlFile);
       return;
     }
 
-    res.set("Cache-Control", "no-store");
+    if (!isDevelopment) {
+      res.set("Cache-Control", "no-store");
+    }
     res.send(newHtml);
     return;
   } catch (e) {

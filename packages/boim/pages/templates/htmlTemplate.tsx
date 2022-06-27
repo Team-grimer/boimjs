@@ -174,7 +174,7 @@ export function getHTML(
 }
 
 export function renderToErrorPage(
-  Component: React.FC,
+  Component: React.FC | any,
   pageProps: { [key: string]: any }
 ) {
   const headComponentList: Array<React.ReactChild | React.ReactChild[] | null> = [];
