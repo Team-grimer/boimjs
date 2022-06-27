@@ -11,7 +11,7 @@ const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
 const { _app, _document } = Search.getBaseComponentPath(fileList);
 
-const runner = require("./commonConfig");
+const runner = require("./runner");
 const devEntries = {
   _error: `${root}/pages/_error.tsx`,
   htmlTemplate: `${root}/pages/templates/htmlTemplate.tsx`,

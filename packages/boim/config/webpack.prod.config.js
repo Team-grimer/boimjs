@@ -10,7 +10,7 @@ const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
 const { _app, _document } = Search.getBaseComponentPath(fileList);
 
-const runner = require("./commonConfig");
+const runner = require("./runner");
 const entry =  {
   _www: `${root}/server/_www.ts`
 }

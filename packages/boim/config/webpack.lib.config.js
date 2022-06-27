@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const root = path.resolve("./");
 const client = path.resolve(root, "../../");
 
-const runner = require("./commonConfig");
+const runner = require("./runner");
 const entries = {
   directoryApi: `${root}/libs/directoryApi`,
   searchApi: `${root}/libs/searchApi`,

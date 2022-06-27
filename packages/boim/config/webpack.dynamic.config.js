@@ -16,7 +16,7 @@ const Search = require(`${client}/dist/lib/searchApi`).default;
 const fileList = Search.getFileList(`${client}/pages`);
 const { _app } = Search.getBaseComponentPath(fileList);
 
-const runner = require("./commonConfig");
+const runner = require("./runner");
 const isDevelopment = process.env.NODE_ENV === "development";
 const outputOption = {
   filename: isDevelopment ? "[name].js" : "[name][contenthash].js",

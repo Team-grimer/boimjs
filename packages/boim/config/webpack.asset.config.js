@@ -10,7 +10,7 @@ const dir = new Directory();
 dir.searchDirectory(`${client}/public`);
 const assetEntries = dir.getAssetFiles();
 
-const runner = require("./commonConfig");
+const runner = require("./runner");
 const outputOption = {
   filename: "",
   path: `${client}/dist/public`,

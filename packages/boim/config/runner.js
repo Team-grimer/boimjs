@@ -22,14 +22,11 @@ function createConfig(entries, outputOption, additionalAlias, mod, emit, plugins
     },
     resolve: {
       extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
-      alias: additionalAlias ? {
+      alias: {
         react: `${client}/node_modules/react`,
         "react-dom": `${client}/node_modules/react-dom`,
         ...additionalAlias,
-      } : {
-        react: `${client}/node_modules/react`,
-        "react-dom": `${client}/node_modules/react-dom`,
-      },
+      }
     },
     optimization: {
       minimize: isDev ? false : true,
@@ -129,6 +126,5 @@ function createConfig(entries, outputOption, additionalAlias, mod, emit, plugins
     plugins: [...plugins],
   };
 }
-
 
 module.exports = { createConfig };
