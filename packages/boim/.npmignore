@@ -1,9 +1,0 @@
-/test
-/ts_build
-/node_modules
-package-lock.json
-.gitignore
-.DS_Store
-.git*
-.idea
-.vscode
