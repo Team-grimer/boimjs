@@ -2,6 +2,10 @@
 
 .env
 
+/client/hydratedComponents
+
+/ts_build
+
 .DS_Store
 .git*
 .idea

@@ -20,8 +20,6 @@ jobs:
       - name: My test step
         run: |
           npm install
-          cd packages/boim
-          npm install
           npm run test
 
       - name: Create pull request
