@@ -1,0 +1,10 @@
+/test
+/ts_build
+.gitignore
+.DS_Store
+.git*
+.idea
+.vscode
+.eslintrc.js
+jest.config.js
+/config/test-teardown-globals.js

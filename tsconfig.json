@@ -1,0 +1,53 @@
+{
+  "compilerOptions": {
+    "types": [
+      "node",
+      "jest",
+    ],
+    "baseUrl": "./",
+    "paths": {
+      "document": [
+        "pages/_document"
+      ],
+      "app": [
+        "pages/_app"
+      ],
+    },
+    "emitDeclarationOnly": false,
+    "outDir": "./ts_build",
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react",
+    "module": "AMD",
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "target": "ES2015",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "strict": false,
+    "incremental": true,
+    "composite": true,
+    "allowJs": true,
+    "checkJs": true,
+    "skipLibCheck": true,
+  },
+  "include": [
+    "./libs/*",
+    "./server/*",
+    "./pages/*",
+    "./pages/templates/*",
+    "./common/*",
+    "./config/*",
+  ],
+  "exclude": [
+    "./dist/*",
+    "./node_modules",
+    "./test",
+    "../../dist/*",
+    "./bin/*"
+  ]
+}
+// new-line
