@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://boim.netlify.app">
+  <a href="https://boim-documentation.herokuapp.com">
     <img width="100" alt="logo" src="https://user-images.githubusercontent.com/54696956/176232689-526bc046-3ddc-47d4-8eac-ce8426383541.png">
   </a>
 </p>
@@ -22,7 +22,7 @@ Visit <a aria-label="boim.js learn" href="https://boim.netlify.app">https://boim
 
 ## Documentation
 
-Visit [https://boim.netlify.app/document](https://boim.netlify.app/document) to view the full documentation.
+Visit [https://boim-documentation.herokuapp.com](https://boim-documentation.herokuapp.com) to view the full documentation.
 
 ## Boim.js
 
