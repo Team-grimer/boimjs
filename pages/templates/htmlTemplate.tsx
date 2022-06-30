@@ -46,8 +46,8 @@ function renderPageTree(
   return <App Component={Component} pageProps={pageProps.renderProps} />;
 }
 
-function getHeadString(DEFAULTHEADTAG: string, customHeadTagString: string): string {
-  const originalDocument: HTMLElement = parse(DEFAULTHEADTAG);
+function getHeadString(DEFAULT_HEAD_TAG: string, customHeadTagString: string): string {
+  const originalDocument: HTMLElement = parse(DEFAULT_HEAD_TAG);
   const customHeadDocument: HTMLElement = parse(customHeadTagString);
 
   const document: Document = new Document(
@@ -137,7 +137,7 @@ export function getHTML(
 
   html = ReactDOMServer.renderToString(document);
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === "development") {
     const nonRenderedComponents: Array<string> = [];
     const expectedDocComponents: Array<string> = ["Main", "Head", "Script", "Html"];
 
