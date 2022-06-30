@@ -1,6 +1,6 @@
 {
   "name": "boim",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "The React Framework",
   "keywords": [
     "server side rendering",
@@ -28,7 +28,7 @@
     "build:dynamic": "webpack --config ./config/webpack.dynamic.config.js",
     "build:prod": "webpack --config ./config/webpack.prod.config.js",
     "build": "npm run build:lib && npm run build:asset && npm run build:hydration && npm run build:dynamic && npm run build:prod",
-    "start": "NODE_ENV=production npm run build && node ../../dist/server/_www",
+    "start": "NODE_ENV=production node ../../dist/server/_www",
     "build:dev": "webpack --config ./config/webpack.dev.config.js",
     "dev": "NODE_ENV=development npm run build:lib && NODE_ENV=development npm run build:asset && NODE_ENV=development npm run build:hydration && NODE_ENV=development npm run build:dynamic && NODE_ENV=development npm run build:dev && NODE_ENV=development node ./server/_dev"
   },
@@ -47,9 +47,7 @@
     "@webpack-cli/serve": "^1.7.0",
     "babel-loader": "^8.2.5",
     "bluebird": "^3.7.2",
-    "chalk": "^4.0.0",
     "clean-webpack-plugin": "^4.0.0",
-    "commander": "^7.0.0",
     "core-js": "^3.23.2",
     "css-loader": "^6.7.1",
     "dotenv": "^16.0.1",
