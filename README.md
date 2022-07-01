@@ -2,7 +2,7 @@
 
 <br/><br/>
 
-## Docs: [도큐먼트 URL](url)
+## Docs: [공식문서](https://boim-documentation.herokuapp.com/)
 ---
 <br/>
 
@@ -322,6 +322,5 @@ Server Side Rendering으로 초기 정적인 HTML이 만들어지기 때문에 �
 이때 js를 생성할 수 있도록 ReactDOM은 API를 제공합니다. React 18 버전에서는 hydrationRoot API를 제공하여 해당 작업을 쉽게 할 수 있도록 지원해주었고, 해당 API를 사용하여 코드를 구성하였습니다.
 
 - 문제 발견 및 해결
-hydrationRoot 사용 시, React 초기 UI와 서버에서 렌더링 된 것이 일치하지 않기 때문에 `Hydration failed because the initial UI does not match what was rendered on the server` 해당 에러가 발생하였습니다.  
-서칭 결과 React 18 버전에서 에러가 발생하지만 17 버전에서는 문제가 되지 않는다는 내용을 발견하였고, 테스트로 17 버전의 hydrate를 적용하였더니 에러가 사라졌습니다. 조금 더 자세히 살펴보니, Next.js에서 흔히 발생하는 문제이고 사용자가 특정 로직을 추가하여 에러를 없애는 여러 가지 방법이 있었습니다.  
-하지만 사용자가 에러를 찾아 코드로 직접 해결하게 하는 것보단 안정적으로 프레임워크를 제공하는 것이 맞다고 생각했기에 React 버전을 낮추고 해당 이슈를 해결하는 방법을 선택하게 되었습니다.
+hydrationRoot 사용 시, React 초기 UI와 서버에서 렌더링 된 것이 일치하지 않기 때문에 `Hydration failed because the initial UI does not match what was rendered on the server` 해당 에러가 발생하였습니다.
+서칭 결과 React 18 버전에서 에러가 발생하지만 17 버전에서는 문제가 되지 않는다는 내용을 발견하였고, 테스트로 17 버전의 hydrate를 적용하였더니 에러가 사라졌습니다. 조금 더 자세히 살펴보니, Next.js에서 흔히 발생하는 문제이고 사용자가 특정 로직을 추가하여 에러를 없애는 여러 가지 방법이 있었습니다. 하지만 사용자가 에러를 찾아 코드로 직접 해결하게 하는 것보단 안정적으로 프레임워크를 제공하는 것이 맞다고 생각했기에 React 버전을 낮추고 해당 이슈를 해결하는 방법을 선택하게 되었습니다.
