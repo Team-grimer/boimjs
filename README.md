@@ -1,4 +1,4 @@
-<p align="center"><img width="200" height="200" alt="Team Grimer Logo" src="https://user-images.githubusercontent.com/78071591/176203856-55c10163-c15d-4b2b-88e0-d9849c8dabf3.png"></p>
+<p align="center"><img width="200" height="200" alt="Team Grimer Logo" src="https://user-images.githubusercontent.com/54696956/176232689-526bc046-3ddc-47d4-8eac-ce8426383541.png"></p>
 
 <br/><br/>
 
