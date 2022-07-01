@@ -2,7 +2,7 @@
 
 <br/><br/>
 
-## Docs: [도큐먼트 URL](url)
+## Docs: [공식문서]([url](https://boim-documentation.herokuapp.com/))
 ---
 <br/>
 
