@@ -39,4 +39,5 @@ export const BASE_COMPONENT: Constants = {
 
 export const DEFAULT_HEAD_TAG = `<head><meta charSet="utf-8"></meta>
 <meta name="viewport" content="width=device-width,initial-scale=1"></meta>
+<meta name="description" content="Web site created using create-boim-app"></meta>
 <title>Boim js</title></head>`;
