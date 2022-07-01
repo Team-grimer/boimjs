@@ -168,7 +168,7 @@ export function getHTML(
 
   const head: string = getHeadString(DEFAULT_HEAD_TAG, customHeadTag);
 
-  html = html.replace("<head></head>", head);
+  html = "<!DOCTYPE html" + html.replace("<head></head>", head);
 
   return html;
 }
