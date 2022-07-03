@@ -62,7 +62,7 @@ export default async function handleGetPage(
     if (req.url.endsWith("/favicon.ico")) {
       if (!isDevelopment) {
         res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
-      } 
+      }
       return res.end();
     }
 
@@ -157,7 +157,7 @@ export default async function handleGetPage(
 
     if (resource.renderType === RENDER_PROPS_TYPE.ssg || resource.renderType === RENDER_PROPS_TYPE.default) {
       if (!isDevelopment) {
-        res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
+        res.set("Cache-Control", "public, no-cache, max-age=31557600");
         res.set({ ETag: buildId });
       }
 
@@ -211,7 +211,8 @@ const getResources = async (
   values.htmlFile = fs.readFileSync(values.htmlFilePath, "utf-8");
 
   if (routeType === "static") {
-    const client: Client = require(`../../../pages${url}/index.js`);
+    const fileName = staticResult.fileInfo.js[0].key;
+    const client: Client = require(`../../../pages${fileName}`);
 
     values.renderType =
       client.SSG
