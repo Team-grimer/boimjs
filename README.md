@@ -302,7 +302,7 @@ React 18 버전이 release 되었고, 발 빠르게 18 버전에 맞춰 프로�
 Server Side Rendering으로 초기 정적인 HTML이 만들어지기 때문에 페이지 이동이라든지, interection에 의한 로직 실행 등 기존 마크업에 이벤트 리스너를 연결하는 핸들러 로직이 담긴 js를 주입하여 동적인 요소를 추가해주어야 합니다.
 각 컴포넌트로 생성된 정적인 HTML과 함께 사용될 js 코드를 생성하기 위해 ReactDOM의 hydrate를 사용하여 동적인 웹사이트를 렌더링 할 수 있게 됩니다. 따라서 사용자가 작성한 컴포넌트를 hyrate 한 js 파일과, 컴포넌트를 HTML로 만들어 정적인 html 파일을 만들어 html 파일에 sciprt로 js를 주입해주었습니다.
 이때 js를 생성할 수 있도록 ReactDOM은 API를 제공합니다. React 18 버전에서는 hydrationRoot API를 제공하여 해당 작업을 쉽게 할 수 있도록 지원해주었고, 해당 API를 사용하여 코드를 구성하였습니다.
-<br />
+
 - 문제 발견 및 해결
 
   hydrationRoot 사용 시, React 초기 UI와 서버에서 렌더링 된 것이 일치하지 않기 때문에 `Hydration failed because the initial UI does not match what was rendered on the server` 해당 에러가 발생하였습니다.
