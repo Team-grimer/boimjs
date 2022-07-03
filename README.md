@@ -34,44 +34,44 @@ React , React-Dom , Type-script , Jest , Express , Webpack , CI/CD(Github), Etc.
 <details>
   <summary>파일 구조 상세 설명</summary>
 
-  boim
- ┣ bin
- ┃ ┗ script.js: "package.json scripts command loginc"
- ┣ common
- ┃ ┗ constants.ts
- ┣ config
- ┃ ┣ fetchPolyfill.js
- ┃ ┣ runner.js: "common webpack config"
- ┃ ┣ webpack.asset.config.js: "client public asset webpack config"
- ┃ ┣ webpack.dev.config.js: "dev mode webpack config"
- ┃ ┣ webpack.dynamic.config.js: "dynamic routing webpack config"
- ┃ ┣ webpack.hydration.config.js: "server side rendering, server side generation webpack config"
- ┃ ┣ webpack.lib.config.js: "directoryApi, searchApi webpack config"
- ┃ ┗ webpack.prod.config.js: "prod mode webpack config"
- ┣ libs
- ┃ ┣ contextApi.ts: "HtmlContext, HeadContext, RouteContext define"
- ┃ ┣ directoryApi.ts: "get filepath, generate hydrate.js, generate webpack entry, etc..."
- ┃ ┣ documentApi.ts: "Html head tag custom logic"
- ┃ ┣ fetchApi.ts: "SSR(server side rendering), SSG(server side generation) logic"
- ┃ ┣ historyApi.ts: "history library(createBrowserHistory)"
- ┃ ┣ pathAlias.ts: "client path, boim path define"
- ┃ ┗ searchApi.ts: "check custom _app,_document, get filepath from manifest, etc..."
- ┣ pages
- ┃ ┣ templates
- ┃ ┃ ┗ htmlTemplate.tsx: "rendering Html logic"
- ┃ ┣ Link.tsx: "client side rendering component(similar a(Html Element) tag)"
- ┃ ┣ Route.tsx: "client side rendering component(similar react-router-dom)"
- ┃ ┣ _app.tsx: "custom global css"
- ┃ ┣ _document.tsx: "custom global layout"
- ┃ ┣ _error.tsx: "default error component"
- ┃ ┗ useRouter.tsx: "route hook(similar react useHistory, useLocation)"
- ┣ server
- ┃ ┣ _dev.js: "development mode express server"
- ┃ ┣ _www.ts: "production mode express server (includes: controller, express, loader, route)"
- ┃ ┣ controller.ts
- ┃ ┣ express.ts
- ┃ ┣ loader.ts
- ┃ ┗ route.ts
+  boim  
+ ┣ bin  
+ ┃ ┗ script.js: "package.json scripts command loginc"  
+ ┣ common  
+ ┃ ┗ constants.ts  
+ ┣ config  
+ ┃ ┣ fetchPolyfill.js  
+ ┃ ┣ runner.js: "common webpack config"  
+ ┃ ┣ webpack.asset.config.js: "client public asset webpack config"  
+ ┃ ┣ webpack.dev.config.js: "dev mode webpack config"  
+ ┃ ┣ webpack.dynamic.config.js: "dynamic routing webpack config"  
+ ┃ ┣ webpack.hydration.config.js: "server side rendering, server side generation webpack config"  
+ ┃ ┣ webpack.lib.config.js: "directoryApi, searchApi webpack config"  
+ ┃ ┗ webpack.prod.config.js: "prod mode webpack config"  
+ ┣ libs  
+ ┃ ┣ contextApi.ts: "HtmlContext, HeadContext, RouteContext define"  
+ ┃ ┣ directoryApi.ts: "get filepath, generate hydrate.js, generate webpack entry, etc..."  
+ ┃ ┣ documentApi.ts: "Html head tag custom logic". 
+ ┃ ┣ fetchApi.ts: "SSR(server side rendering), SSG(server side generation) logic"  
+ ┃ ┣ historyApi.ts: "history library(createBrowserHistory)"  
+ ┃ ┣ pathAlias.ts: "client path, boim path define"  
+ ┃ ┗ searchApi.ts: "check custom _app,_document, get filepath from manifest, etc..."  
+ ┣ pages  
+ ┃ ┣ templates  
+ ┃ ┃ ┗ htmlTemplate.tsx: "rendering Html logic"  
+ ┃ ┣ Link.tsx: "client side rendering component(similar a(Html Element) tag)"  
+ ┃ ┣ Route.tsx: "client side rendering component(similar react-router-dom)"  
+ ┃ ┣ _app.tsx: "custom global css"  
+ ┃ ┣ _document.tsx: "custom global layout"  
+ ┃ ┣ _error.tsx: "default error component"  
+ ┃ ┗ useRouter.tsx: "route hook(similar react useHistory, useLocation)"  
+ ┣ server  
+ ┃ ┣ _dev.js: "development mode express server"  
+ ┃ ┣ _www.ts: "production mode express server (includes: controller, express, loader, route)"  
+ ┃ ┣ controller.ts  
+ ┃ ┣ express.ts  
+ ┃ ┣ loader.ts  
+ ┃ ┗ route.ts  
 </details>
 
 
