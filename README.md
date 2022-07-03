@@ -307,3 +307,10 @@ Server Side Rendering으로 초기 정적인 HTML이 만들어지기 때문에 �
 
   hydrationRoot 사용 시, React 초기 UI와 서버에서 렌더링 된 것이 일치하지 않기 때문에 `Hydration failed because the initial UI does not match what was rendered on the server` 해당 에러가 발생하였습니다.
 서칭 결과 React 18 버전에서 에러가 발생하지만 17 버전에서는 문제가 되지 않는다는 내용을 발견하였고, 테스트로 17 버전의 hydrate를 적용하였더니 에러가 사라졌습니다. 조금 더 자세히 살펴보니, Next.js에서 흔히 발생하는 문제이고 사용자가 특정 로직을 추가하여 에러를 없애는 여러 가지 방법이 있었습니다. 하지만 사용자가 에러를 찾아 코드로 직접 해결하게 하는 것보단 안정적으로 프레임워크를 제공하는 것이 맞다고 생각했기에 React 버전을 낮추고 해당 이슈를 해결하는 방법을 선택하게 되었습니다.
+
+</br>
+
+### script 명령어 이슈
+node, commander등을 이용하여 작성한 boim-runner라는 create-boim-app에서 사용하는 script명령어 관련 npm 패키지를 배포하여 로컬에서의 동작을 확인하고 Heroku를 이용하여 boim 공식문서를 배포하는 도중 script 명령로직이 동작하지 않는 현상을 발견했고 node, npm 버전의 문제인지 확인한 결과 이상이 없었습니다.  
+에러 로그도 표시되지 않아 원일을 정확히 알 수 없어 방식의 수정이나 로직의 수정도 여러번 거쳤으나 동일하게 동작하지 않는 증상이 반복되어  
+package.json의 script명령어를 cd node_modules/boim && npm run build 의 형식으로 작성하게 되었습니다.
