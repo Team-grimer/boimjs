@@ -31,7 +31,7 @@ Boim.js is a React framework supports server-side rendering, static site generat
 #### 💡The Hybrid Architecture
 Boim framework supports Server-Side Rendering, Static Site Generation, Client Side Rendering. Depending on how your application is used, you can render content in different ways. Our frameworks support a hybrid SSR/CSR approach, which produces web contents on the server at the first request time but generates other pages on user browsers via internal page navigations.
 
-#### 💡File-Base Routing
+#### 💡File-Based Routing
 React handles routing in a code-based routing method. On the other hand, Boim framework provides file-based routing. When a component file is created, the route is implemented by reading the folder structure inside the pages.
 
 #### 💡Search Engine Optimization
