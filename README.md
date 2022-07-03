@@ -311,6 +311,7 @@ Server Side Rendering으로 초기 정적인 HTML이 만들어지기 때문에 �
 </br>
 
 ### script 명령어 이슈
-node, commander등을 이용하여 작성한 boim-runner라는 create-boim-app에서 사용하는 script명령어 관련 npm 패키지를 배포하여 로컬에서의 동작을 확인하고 Heroku를 이용하여 boim 공식문서를 배포하는 도중 script 명령로직이 동작하지 않는 현상을 발견했고 node, npm 버전의 문제인지 확인한 결과 이상이 없었습니다.  
+node, commander등을 이용하여 작성한 boim-runner라는 create-boim-app에서 사용하는 script명령어 관련 npm 패키지를 배포하여 로컬에서의 동작을 확인하고  
+Heroku를 이용하여 boim 공식문서를 배포하는 도중 script 명령로직이 동작하지 않는 현상을 발견했고 node, npm 버전의 문제인지 확인한 결과 이상이 없었습니다.    
 에러 로그도 표시되지 않아 원일을 정확히 알 수 없어 방식의 수정이나 로직의 수정도 여러번 거쳤으나 동일하게 동작하지 않는 증상이 반복되어  
 package.json의 script명령어를 cd node_modules/boim && npm run build 의 형식으로 작성하게 되었습니다.
