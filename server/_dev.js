@@ -16,7 +16,7 @@ const hydrationConfig = require(`${pathAlias.root}/config/webpack.hydration.conf
 const dynamicConfig = require(`${pathAlias.root}/config/webpack.dynamic.config.js`);
 
 const hydrationCompiler = webpack({
-  ...hydrationConfig, 
+  ...hydrationConfig,
   watchOptions: {
     aggregateTimeout: 300,
     poll: true,
@@ -25,7 +25,7 @@ const hydrationCompiler = webpack({
   },
 });
 const dynamicCompiler = webpack({
-  ...dynamicConfig, 
+  ...dynamicConfig,
   watchOptions: {
     aggregateTimeout: 300,
     poll: true,
@@ -40,6 +40,7 @@ const hydrationMiddleware = mdw(hydrationCompiler, {
   serverSideRender: true,
   stats: false
 });
+
 const dynamicMiddleware = mdw(dynamicCompiler, {
   publicPath: `${pathAlias.client}/dist/pages`,
   writeToDisk: true,
@@ -47,11 +48,17 @@ const dynamicMiddleware = mdw(dynamicCompiler, {
   stats: false
 });
 
+const option = {
+  setHeaders: function (res) {
+    res.set("Cache-Control", "no-store");
+  },
+};
+
 app.use("/", pageRouter);
 app.use(hydrationMiddleware);
 app.use(dynamicMiddleware);
 app.use(express.static(`${pathAlias.client}/dist/pages`));
-app.use(express.static(`${pathAlias.client}/dist`));
+app.use(express.static(`${pathAlias.client}/dist`, option));
 
 app.use((err, req, res, next) => {
   res.statusCode = res.statusCode === 200 ? 500 : res.statusCode;
