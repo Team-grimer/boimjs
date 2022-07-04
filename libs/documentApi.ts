@@ -13,17 +13,17 @@ export default class Document {
 
   setElement(type: string, element: HTMLElement) {
     switch (type) {
-    case "head":
-      this.headElement = element;
-      break;
-    case "defaultHead":
-      this.defaultHeadElement = element;
-      break;
-    case "customHead":
-      this.customHeadElement = element;
-      break;
-    default:
-      break;
+      case "head":
+        this.headElement = element;
+        break;
+      case "defaultHead":
+        this.defaultHeadElement = element;
+        break;
+      case "customHead":
+        this.customHeadElement = element;
+        break;
+      default:
+        break;
     }
   }
 
@@ -31,8 +31,10 @@ export default class Document {
     let linkNode: ChildNode;
 
     while (this.headElement.firstChild) {
-      if (this.headElement.firstChild.nodeName === "LINK") {
-        linkNode = this.headElement.firstChild;
+      const linkElement: HTMLElement = this.headElement.querySelector("link")
+
+      if (linkElement.getAttribute("rel") === "stylesheet") {
+        linkNode = linkElement;
       }
 
       this.headElement.removeChild(this.headElement.firstChild);
