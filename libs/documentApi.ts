@@ -31,8 +31,8 @@ export default class Document {
     let linkNode: ChildNode;
 
     while (this.headElement.firstChild) {
-      if (this.headElement.firstChild.nodeName === "LINK") {
-        linkNode = this.headElement.firstChild;
+      if (this.headElement.querySelector("link").getAttribute("rel") === "stylesheet") {
+        linkNode = this.headElement.querySelector("link");
       }
 
       this.headElement.removeChild(this.headElement.firstChild);
