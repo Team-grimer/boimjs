@@ -157,7 +157,7 @@ export default async function handleGetPage(
 
     if (resource.renderType === RENDER_PROPS_TYPE.ssg || resource.renderType === RENDER_PROPS_TYPE.default) {
       if (!isDevelopment) {
-        res.set("Cache-Control", "public, no-cache, max-age=31557600");
+        res.set("Cache-Control", "public, no-cache, max-age=0");
         res.set({ ETag: buildId });
       }
 
