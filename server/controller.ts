@@ -91,10 +91,10 @@ export default async function handleGetPage(
       ? req.url.slice(0, req.url.length - 1)
       : req.url;
 
-    let mamifeatResult: ManifestResult;
+    let manifeatResult: ManifestResult;
 
     try {
-      mamifeatResult = Search.searchManifest(
+      manifeatResult = Search.searchManifest(
         manifestData,
         dynamicManifestData,
         url
@@ -105,7 +105,7 @@ export default async function handleGetPage(
       return;
     }
 
-    const { staticResult, dynamicResult } = mamifeatResult;
+    const { staticResult, dynamicResult } = manifeatResult;
 
     let resource: Resource;
 
