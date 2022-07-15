@@ -70,13 +70,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     margin: 0,
     marginRight: "20px",
     padding: "10px 23px 10px 0",
-    fontSize: "60px",
+    fontSize: "50px",
     fontWeight: 500,
     verticalAlign: "top",
   },
 
   h2: {
-    fontSize: "40px",
+    fontSize: "30px",
     fontWeight: "normal",
     lineHeight: "inherit",
     margin: 0,
