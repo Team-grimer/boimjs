@@ -14,9 +14,6 @@ export default function (): Express {
     express.Response<unknown, Record<string, unknown>>
   > = {
     maxAge: "31557600",
-    setHeaders: function (res) {
-      res.set("Cache-Control", "public");
-    },
   };
 
   app.use("/", pageRouter);
