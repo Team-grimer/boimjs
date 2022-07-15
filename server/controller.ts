@@ -167,6 +167,8 @@ export default async function handleGetPage(
     return;
   } catch (e) {
     console.log("Error occurred in server.", e);
+    next({ message: "Sorry, an error has occurred and the service cannot be provided" });
+    return;
   }
 }
 
