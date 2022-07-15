@@ -20,7 +20,7 @@ const alias = false;
 const mod = {
   rules: [
     {
-      test: /\.(png|jpg|jpeg|gif)$/i,
+      test: /\.(png|jpg|jpeg|gif|ico)$/i,
       type: "asset/resource",
       parser: {
         dataUrlCondition: {
