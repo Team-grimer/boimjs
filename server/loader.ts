@@ -27,7 +27,7 @@ export default function (): Express {
       renderProps: {
         props: {
           title: err.message,
-          statusCode: res.statusCode,
+          statusCode: process.env.NODE_ENV === "production" ? "" : res.statusCode,
         },
       },
     });
