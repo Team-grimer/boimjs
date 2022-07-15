@@ -59,13 +59,6 @@ export default async function handleGetPage(
   next: NextFunction
 ): Promise<Response<unknown, Record<string, unknown>> | void> {
   try {
-    if (req.url.endsWith("/favicon.ico")) {
-      if (!isDevelopment) {
-        res.set("Cache-Control", "public, must-revalidate, max-age=31557600");
-      }
-      return res.end();
-    }
-
     if (
       req.url.endsWith(EXT.js) ||
       req.url.endsWith(EXT.css) ||
@@ -74,7 +67,8 @@ export default async function handleGetPage(
       req.url.endsWith(EXT.jpeg) ||
       req.url.endsWith(EXT.gif) ||
       req.url.endsWith(EXT.svg) ||
-      req.url.endsWith(EXT.txt)
+      req.url.endsWith(EXT.txt) ||
+      req.url.endsWith(EXT.ico)
     ) {
       return next();
     }
@@ -157,7 +151,7 @@ export default async function handleGetPage(
 
     if (resource.renderType === RENDER_PROPS_TYPE.ssg || resource.renderType === RENDER_PROPS_TYPE.default) {
       if (!isDevelopment) {
-        res.set("Cache-Control", "public, no-cache, max-age=0");
+        res.set("Cache-Control", "no-cache, max-age=0");
         res.set({ ETag: buildId });
       }
 
