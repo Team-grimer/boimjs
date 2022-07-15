@@ -19,6 +19,7 @@ export const EXT: Constants = {
   txt: ".txt",
   jpg: ".jpg",
   jpeg: ".jpeg",
+  ico: ".ico",
 };
 
 export const RENDER_TYPE: Constants = {
