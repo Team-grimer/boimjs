@@ -51,7 +51,7 @@ React , React-Dom , Type-script , Jest , Express , Webpack , CI/CD(Github), Etc.
  ┣ libs  
  ┃ ┣ contextApi.ts: "HtmlContext, HeadContext, RouteContext define"  
  ┃ ┣ directoryApi.ts: "get filepath, generate hydrate.js, generate webpack entry, etc..."  
- ┃ ┣ documentApi.ts: "Html head tag custom logic". 
+ ┃ ┣ documentApi.ts: "Html head tag custom logic".  
  ┃ ┣ fetchApi.ts: "SSR(server side rendering), SSG(server side generation) logic"  
  ┃ ┣ historyApi.ts: "history library(createBrowserHistory)"  
  ┃ ┣ pathAlias.ts: "client path, boim path define"  
